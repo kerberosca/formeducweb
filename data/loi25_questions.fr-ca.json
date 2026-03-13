@@ -1,0 +1,618 @@
+{
+    "version": "1.0.0",
+    "locale": "fr-CA",
+    "title": "Auto-évaluation – Loi 25 (Préparation)",
+    "subtitle": "Un outil d’auto-évaluation pour identifier vos forces, vos écarts et un plan d’action.",
+    "disclaimer": "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un avis juridique. Une validation par un conseiller juridique peut être recommandée selon votre contexte.",
+    "scoring": {
+      "maxRawScoreNote": "Le score final est normalisé sur 100 à partir des scores pondérés.",
+      "levels": [
+        { "min": 0, "max": 39, "label": "Débutant", "tagline": "Vous avez des bases à mettre en place rapidement." },
+        { "min": 40, "max": 69, "label": "En progression", "tagline": "Vous êtes sur la bonne voie, mais il reste des écarts importants." },
+        { "min": 70, "max": 100, "label": "Avancé", "tagline": "Vous êtes bien préparé, gardez le rythme et documentez vos pratiques." }
+      ],
+      "recommendationSelection": {
+        "topGapsCount": 5,
+        "threshold": 2,
+        "thresholdNote": "Une recommandation est déclenchée si le score de la question est inférieur à threshold (sur 0..4) ou si la question est 'not_applicable' et critique."
+      }
+    },
+    "sections": [
+      {
+        "id": "A",
+        "title": "Profil de l’entreprise",
+        "description": "Contexte général pour adapter les recommandations."
+      },
+      {
+        "id": "B",
+        "title": "Données personnelles & collecte",
+        "description": "Comprendre quelles données vous collectez et pourquoi."
+      },
+      {
+        "id": "C",
+        "title": "Site web, formulaires & consentements",
+        "description": "Évaluer votre présence web et les mécanismes de consentement."
+      },
+      {
+        "id": "D",
+        "title": "Sécurité, accès & sauvegardes",
+        "description": "Mesures techniques qui réduisent les risques d’incident."
+      },
+      {
+        "id": "E",
+        "title": "Incidents & gestion (registre, procédure)",
+        "description": "Capacité à réagir, documenter et améliorer."
+      },
+      {
+        "id": "F",
+        "title": "Gouvernance & documentation",
+        "description": "Rôles, politiques, pratiques et preuves."
+      }
+    ],
+    "questions": [
+      {
+        "id": "A1",
+        "sectionId": "A",
+        "title": "Votre organisation est :",
+        "type": "single_select",
+        "required": true,
+        "weight": 0,
+        "options": [
+          { "value": "pme", "label": "PME (privé)" },
+          { "value": "obnl", "label": "OBNL" },
+          { "value": "travailleur_autonome", "label": "Travailleur autonome" },
+          { "value": "autre", "label": "Autre" }
+        ],
+        "scoreMap": { "pme": 0, "obnl": 0, "travailleur_autonome": 0, "autre": 0 },
+        "helpText": "Cette info sert à personnaliser le rapport (sans impact direct sur le score).",
+        "recommendation": null
+      },
+      {
+        "id": "A2",
+        "sectionId": "A",
+        "title": "Nombre d’employés (approx.)",
+        "type": "single_select",
+        "required": true,
+        "weight": 0,
+        "options": [
+          { "value": "0_1", "label": "0–1" },
+          { "value": "2_9", "label": "2–9" },
+          { "value": "10_49", "label": "10–49" },
+          { "value": "50_199", "label": "50–199" },
+          { "value": "200_plus", "label": "200+" }
+        ],
+        "scoreMap": { "0_1": 0, "2_9": 0, "10_49": 0, "50_199": 0, "200_plus": 0 },
+        "helpText": "Permet d’estimer la complexité (sans impacter le score directement).",
+        "recommendation": null
+      },
+      {
+        "id": "A3",
+        "sectionId": "A",
+        "title": "Votre secteur principal",
+        "type": "single_select",
+        "required": true,
+        "weight": 0,
+        "options": [
+          { "value": "services", "label": "Services" },
+          { "value": "commerce", "label": "Commerce / e-commerce" },
+          { "value": "sante", "label": "Santé / services sociaux" },
+          { "value": "education", "label": "Éducation" },
+          { "value": "manufacturier", "label": "Manufacturier / industriel" },
+          { "value": "construction", "label": "Construction" },
+          { "value": "autre", "label": "Autre" }
+        ],
+        "scoreMap": {
+          "services": 0,
+          "commerce": 0,
+          "sante": 0,
+          "education": 0,
+          "manufacturier": 0,
+          "construction": 0,
+          "autre": 0
+        },
+        "helpText": "Certains secteurs ont des attentes plus élevées (données sensibles).",
+        "recommendation": null
+      },
+  
+      {
+        "id": "B1",
+        "sectionId": "B",
+        "title": "Collectez-vous des renseignements personnels (clients, prospects, employés ou fournisseurs) ?",
+        "type": "yes_no",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "yes", "label": "Oui" },
+          { "value": "no", "label": "Non" },
+          { "value": "not_sure", "label": "Je ne suis pas certain" }
+        ],
+        "scoreMap": { "yes": 4, "no": 1, "not_sure": 0 },
+        "helpText": "Exemples : nom, email, téléphone, adresse, infos de paiement, dossiers RH.",
+        "recommendation": {
+          "title": "Clarifier la collecte de renseignements",
+          "text": "Faites un inventaire simple de ce que vous collectez (site web, formulaires, RH, CRM) et pour quelles finalités. C’est la base de toute démarche."
+        }
+      },
+      {
+        "id": "B2",
+        "sectionId": "B",
+        "title": "Avez-vous une liste des endroits où les données sont stockées ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "complete", "label": "Oui, liste complète (site, CRM, courriels, dossiers, cloud…)" },
+          { "value": "partial", "label": "Partielle" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "complete": 4, "partial": 2, "no": 0 },
+        "helpText": "Ça peut être un simple tableau : système, type de données, responsable, durée de conservation.",
+        "recommendation": {
+          "title": "Cartographier les systèmes et les données",
+          "text": "Créez un tableau de “cartographie des données” : sources (formulaires), destinations (CRM), stockage (Drive/OneDrive), accès (qui) et conservation (combien de temps)."
+        }
+      },
+      {
+        "id": "B3",
+        "sectionId": "B",
+        "title": "Collectez-vous des données dites sensibles ? (ex. santé, NAS, infos bancaires, biométrie)",
+        "type": "single_select",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "no", "label": "Non" },
+          { "value": "yes", "label": "Oui" },
+          { "value": "not_sure", "label": "Je ne suis pas certain" }
+        ],
+        "scoreMap": { "no": 4, "yes": 2, "not_sure": 0 },
+        "helpText": "Si oui, ça augmente le niveau de risque et les mesures à prévoir.",
+        "recommendation": {
+          "title": "Renforcer les mesures si données sensibles",
+          "text": "Si vous traitez des données sensibles, priorisez : MFA, contrôles d’accès stricts, chiffrement, journalisation, et procédures d’incidents plus robustes."
+        }
+      },
+      {
+        "id": "B4",
+        "sectionId": "B",
+        "title": "Avez-vous défini la finalité (le “pourquoi”) pour chaque type de donnée collectée ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 4,
+        "options": [
+          { "value": "yes_all", "label": "Oui, pour toutes" },
+          { "value": "some", "label": "Pour certaines" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes_all": 4, "some": 2, "no": 0 },
+        "helpText": "Ex : facturation, support, livraison, RH, marketing.",
+        "recommendation": {
+          "title": "Documenter les finalités de collecte",
+          "text": "Documentez le “pourquoi” derrière chaque collecte (finalité). Ça simplifie votre politique de confidentialité et vos pratiques de consentement."
+        }
+      },
+      {
+        "id": "B5",
+        "sectionId": "B",
+        "title": "Avez-vous des règles de conservation/suppression (durée) pour vos données ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "yes", "label": "Oui, documentées et appliquées" },
+          { "value": "informal", "label": "Informelles (pas documentées)" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "informal": 2, "no": 0 },
+        "helpText": "Ex : supprimer les leads inactifs après X mois; dossiers RH selon obligations.",
+        "recommendation": {
+          "title": "Mettre en place une politique de conservation",
+          "text": "Définissez des durées de conservation par type de données et appliquez des règles de suppression/archivage. Moins vous gardez, moins vous risquez."
+        }
+      },
+  
+      {
+        "id": "C1",
+        "sectionId": "C",
+        "title": "Avez-vous une politique de confidentialité accessible sur votre site web ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 8,
+        "options": [
+          { "value": "yes_updated", "label": "Oui, à jour et facile à trouver" },
+          { "value": "yes_old", "label": "Oui, mais probablement dépassée" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes_updated": 4, "yes_old": 2, "no": 0 },
+        "helpText": "Un lien en footer + sections claires : données collectées, finalités, partage, contact.",
+        "recommendation": {
+          "title": "Publier/mettre à jour la politique de confidentialité",
+          "text": "Ajoutez une page de politique de confidentialité claire (FR-CA), accessible dans le footer, et reflétant vos formulaires, cookies, outils et finalités."
+        }
+      },
+      {
+        "id": "C2",
+        "sectionId": "C",
+        "title": "Avez-vous des formulaires (contact, soumission, inscription, emploi) qui collectent des données ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "many", "label": "Oui, plusieurs" },
+          { "value": "few", "label": "Oui, 1–2" },
+          { "value": "none", "label": "Non" }
+        ],
+        "scoreMap": { "many": 2, "few": 3, "none": 4 },
+        "helpText": "Plus vous avez de formulaires, plus il faut les encadrer (consentement + minimisation).",
+        "recommendation": {
+          "title": "Revoir les formulaires (minimisation + consentement)",
+          "text": "Vérifiez chaque formulaire : champs nécessaires seulement, message de transparence, et mécanisme de consentement au besoin."
+        }
+      },
+      {
+        "id": "C3",
+        "sectionId": "C",
+        "title": "Vos formulaires affichent-ils un message clair sur l’usage des données ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "yes", "label": "Oui (message + lien politique)" },
+          { "value": "partial", "label": "Partiellement" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Ex : “Nous utiliserons ces infos pour vous répondre. Voir la politique de confidentialité.”",
+        "recommendation": {
+          "title": "Ajouter une transparence sur les formulaires",
+          "text": "Ajoutez un court avis de transparence sous les formulaires (finalité + lien vers la politique)."
+        }
+      },
+      {
+        "id": "C4",
+        "sectionId": "C",
+        "title": "Utilisez-vous des outils de suivi/analytics ou pixels publicitaires (GA, Meta Pixel, etc.) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "yes", "label": "Oui" },
+          { "value": "no", "label": "Non" },
+          { "value": "not_sure", "label": "Je ne suis pas certain" }
+        ],
+        "scoreMap": { "yes": 2, "no": 4, "not_sure": 0 },
+        "helpText": "Si oui, il faut documenter et gérer le consentement selon votre contexte.",
+        "recommendation": {
+          "title": "Inventorier cookies/trackers et clarifier le consentement",
+          "text": "Faites un inventaire des cookies/trackers (GA, pixels, chat) et documentez-les dans la politique. Envisagez une bannière de consentement configurée proprement."
+        }
+      },
+      {
+        "id": "C5",
+        "sectionId": "C",
+        "title": "Avez-vous une bannière/gestion du consentement (cookies) configurée de façon contrôlée ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 7,
+        "options": [
+          { "value": "yes", "label": "Oui (préférences + catégories + preuve)" },
+          { "value": "basic", "label": "Basique (simple bannière/avis)" },
+          { "value": "no", "label": "Non" },
+          { "value": "na", "label": "Non applicable (aucun cookie/outil de suivi)" }
+        ],
+        "scoreMap": { "yes": 4, "basic": 2, "no": 0, "na": 4 },
+        "helpText": "Objectif : maîtriser ce qui se déclenche avant/après consentement (si applicable).",
+        "recommendation": {
+          "title": "Mettre en place une gestion du consentement (si applicable)",
+          "text": "Implantez une solution de consentement (CMP ou plugin) et configurez les scripts pour éviter les déclenchements non souhaités."
+        }
+      },
+  
+      {
+        "id": "D1",
+        "sectionId": "D",
+        "title": "Utilisez-vous l’authentification multifacteur (MFA) sur vos comptes importants (email, admin site, cloud) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 9,
+        "options": [
+          { "value": "all", "label": "Oui, sur presque tout" },
+          { "value": "some", "label": "Sur certains comptes seulement" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "all": 4, "some": 2, "no": 0 },
+        "helpText": "MFA est l’un des meilleurs gestes “impact vs effort”.",
+        "recommendation": {
+          "title": "Activer MFA partout où possible",
+          "text": "Activez MFA au minimum sur : comptes courriel, admin WordPress, hébergement, outils marketing, CRM, et comptes cloud."
+        }
+      },
+      {
+        "id": "D2",
+        "sectionId": "D",
+        "title": "Les accès aux données sont-ils limités au “besoin de savoir” (droits par rôle) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 7,
+        "options": [
+          { "value": "yes", "label": "Oui, rôles et accès contrôlés" },
+          { "value": "partial", "label": "Partiellement" },
+          { "value": "no", "label": "Non (accès trop larges)" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Ex : comptes individuels, pas de “admin” partagé; rôles WordPress; accès Drive/OneDrive.",
+        "recommendation": {
+          "title": "Mettre en place un contrôle d’accès par rôles",
+          "text": "Réduisez les accès : comptes individuels, rôles limités, révision trimestrielle, et retrait rapide lors de départ d’employé."
+        }
+      },
+      {
+        "id": "D3",
+        "sectionId": "D",
+        "title": "Avez-vous des sauvegardes régulières (site web + données critiques) et testez-vous la restauration ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 8,
+        "options": [
+          { "value": "yes_tested", "label": "Oui, et restauration testée" },
+          { "value": "yes_not_tested", "label": "Oui, mais restauration jamais testée" },
+          { "value": "no", "label": "Non / incertain" }
+        ],
+        "scoreMap": { "yes_tested": 4, "yes_not_tested": 2, "no": 0 },
+        "helpText": "Les backups sans test = faux sentiment de sécurité.",
+        "recommendation": {
+          "title": "Mettre en place des sauvegardes + tests de restauration",
+          "text": "Automatisez les sauvegardes (site + base de données) et testez une restauration au moins 1–2 fois par année."
+        }
+      },
+      {
+        "id": "D4",
+        "sectionId": "D",
+        "title": "Mises à jour : vos systèmes (WP/plugins, OS, apps) sont-ils maintenus à jour ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "regular", "label": "Oui, routine mensuelle/hebdo" },
+          { "value": "sometimes", "label": "Parfois" },
+          { "value": "rare", "label": "Rarement" }
+        ],
+        "scoreMap": { "regular": 4, "sometimes": 2, "rare": 0 },
+        "helpText": "La majorité des incidents exploitent des failles non patchées.",
+        "recommendation": {
+          "title": "Mettre une routine de mises à jour",
+          "text": "Planifiez une routine : mises à jour WP/plugins, thèmes, serveurs, postes. Ajoutez un staging si possible."
+        }
+      },
+      {
+        "id": "D5",
+        "sectionId": "D",
+        "title": "Journalisez-vous les accès/admin actions (au moins sur les systèmes critiques) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "yes", "label": "Oui (logs consultables)" },
+          { "value": "partial", "label": "Partiel" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Utile pour enquêter si un incident survient (qui a fait quoi, quand).",
+        "recommendation": {
+          "title": "Activer la journalisation (logs) sur les systèmes critiques",
+          "text": "Activez des journaux d’accès et actions admin (WP, CRM, cloud). Conservez-les une période raisonnable."
+        }
+      },
+  
+      {
+        "id": "E1",
+        "sectionId": "E",
+        "title": "Avez-vous un processus écrit pour gérer un incident (quoi faire, qui appeler) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 8,
+        "options": [
+          { "value": "yes", "label": "Oui, documenté et connu" },
+          { "value": "partial", "label": "Partiellement" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Un incident = accès non autorisé, perte, divulgation, etc. Le but : réagir vite.",
+        "recommendation": {
+          "title": "Créer un plan d’intervention incident (simple)",
+          "text": "Écrivez une procédure 1 page : détection, containment, communication interne, documentation, amélioration."
+        }
+      },
+      {
+        "id": "E2",
+        "sectionId": "E",
+        "title": "Tenez-vous un registre des incidents (même mineurs) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 7,
+        "options": [
+          { "value": "yes", "label": "Oui (registre structuré)" },
+          { "value": "informal", "label": "Informel (notes/courriels)" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "informal": 2, "no": 0 },
+        "helpText": "Un registre aide à apprendre de vos incidents et à démontrer une gouvernance.",
+        "recommendation": {
+          "title": "Mettre en place un registre d’incidents",
+          "text": "Créez un registre (Excel/outil) : date, système, impact, mesures prises, leçons apprises."
+        }
+      },
+      {
+        "id": "E3",
+        "sectionId": "E",
+        "title": "Avez-vous déjà simulé un incident (ex. perte d’accès, rançongiciel, fuite) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 4,
+        "options": [
+          { "value": "yes_recent", "label": "Oui, dans les 12 derniers mois" },
+          { "value": "yes_old", "label": "Oui, mais ça fait longtemps" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes_recent": 4, "yes_old": 2, "no": 0 },
+        "helpText": "Même une simulation simple (table-top) révèle beaucoup de trous.",
+        "recommendation": {
+          "title": "Faire une simulation “table-top”",
+          "text": "Faites un exercice de 30–60 minutes : scénario, rôles, étapes, décisions. Ajustez votre procédure ensuite."
+        }
+      },
+      {
+        "id": "E4",
+        "sectionId": "E",
+        "title": "En cas d’incident, savez-vous quelles données seraient touchées et où elles se trouvent ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "yes", "label": "Oui (cartographie claire)" },
+          { "value": "partial", "label": "Partiellement" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Lien direct avec l’inventaire (où les données vivent).",
+        "recommendation": {
+          "title": "Relier la cartographie des données au plan d’incident",
+          "text": "Ajoutez au plan d’incident un aide-mémoire : quels systèmes contiennent quelles données (priorité de vérification)."
+        }
+      },
+  
+      {
+        "id": "F1",
+        "sectionId": "F",
+        "title": "Avez-vous désigné un responsable interne (personne de référence) pour la protection des renseignements ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 7,
+        "options": [
+          { "value": "yes", "label": "Oui" },
+          { "value": "informal", "label": "Oui, mais informel (pas clair)" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "informal": 2, "no": 0 },
+        "helpText": "Le but : responsabilité claire et point de contact interne.",
+        "recommendation": {
+          "title": "Clarifier la responsabilité interne (RPRP)",
+          "text": "Désignez une personne responsable (même à temps partiel) pour coordonner les pratiques, les demandes et les incidents."
+        }
+      },
+      {
+        "id": "F2",
+        "sectionId": "F",
+        "title": "Votre équipe a-t-elle reçu une formation/sensibilisation sur les bonnes pratiques (phishing, données, accès) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "yes_recent", "label": "Oui, dans les 12 derniers mois" },
+          { "value": "yes_old", "label": "Oui, mais ça date" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes_recent": 4, "yes_old": 2, "no": 0 },
+        "helpText": "La sensibilisation réduit énormément les incidents (courriels frauduleux, mots de passe).",
+        "recommendation": {
+          "title": "Mettre une sensibilisation annuelle",
+          "text": "Planifiez 30–60 minutes par année : phishing, mots de passe, partage de fichiers, procédures d’incident."
+        }
+      },
+      {
+        "id": "F3",
+        "sectionId": "F",
+        "title": "Avez-vous une procédure pour gérer les demandes liées aux données (ex. accès, correction, retrait) ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 5,
+        "options": [
+          { "value": "yes", "label": "Oui, procédure claire" },
+          { "value": "partial", "label": "Partiellement" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Même une procédure simple évite l’improvisation (où chercher, qui répond, délais).",
+        "recommendation": {
+          "title": "Créer une procédure de traitement des demandes",
+          "text": "Définissez : point d’entrée (email/form), vérification d’identité, recherche des données, réponse et documentation."
+        }
+      },
+      {
+        "id": "F4",
+        "sectionId": "F",
+        "title": "Avez-vous des ententes/clauses avec vos fournisseurs (hébergement, CRM, marketing) sur la protection des données ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 6,
+        "options": [
+          { "value": "yes", "label": "Oui, vérifiées" },
+          { "value": "partial", "label": "Partiellement / pas clair" },
+          { "value": "no", "label": "Non" },
+          { "value": "na", "label": "Non applicable (aucun fournisseur externe significatif)" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0, "na": 4 },
+        "helpText": "Vos sous-traitants ont souvent accès aux données (ou à l’infrastructure).",
+        "recommendation": {
+          "title": "Revoir les fournisseurs et les clauses",
+          "text": "Listez vos fournisseurs et vérifiez les clauses : sécurité, accès, incidents, localisation, sous-traitance, suppression."
+        }
+      },
+      {
+        "id": "F5",
+        "sectionId": "F",
+        "title": "Avez-vous un “dossier de preuves” (documents, captures, procédures) qui démontre vos pratiques ?",
+        "type": "single_select",
+        "required": true,
+        "weight": 7,
+        "options": [
+          { "value": "yes", "label": "Oui (centralisé et à jour)" },
+          { "value": "partial", "label": "Partiel" },
+          { "value": "no", "label": "Non" }
+        ],
+        "scoreMap": { "yes": 4, "partial": 2, "no": 0 },
+        "helpText": "Ex : politiques, registre, captures CMP, preuve backups, liste accès, procédures.",
+        "recommendation": {
+          "title": "Constituer un dossier de conformité (preuves)",
+          "text": "Centralisez vos documents et preuves : politiques, procédures, inventaires, registres, captures d’écran, et dates de révision."
+        }
+      }
+    ],
+    "report": {
+      "sectionsScoring": [
+        { "sectionId": "B", "label": "Données & collecte" },
+        { "sectionId": "C", "label": "Web & consentements" },
+        { "sectionId": "D", "label": "Sécurité & accès" },
+        { "sectionId": "E", "label": "Incidents & registre" },
+        { "sectionId": "F", "label": "Gouvernance & preuves" }
+      ],
+      "planTemplates": {
+        "days30": [
+          "Créer l’inventaire des données et des systèmes (cartographie).",
+          "Mettre/mettre à jour la politique de confidentialité + liens visibles.",
+          "Activer MFA sur les comptes critiques.",
+          "Mettre en place une routine de sauvegardes et tester une restauration.",
+          "Démarrer un registre d’incidents + procédure 1 page."
+        ],
+        "days90": [
+          "Revoir les accès par rôles et faire un nettoyage des comptes.",
+          "Mettre en place/ajuster la gestion du consentement (si cookies/trackers).",
+          "Documenter une procédure de demandes liées aux données (accès/correction).",
+          "Revoir les fournisseurs et clauses liées à la protection des données.",
+          "Faire une simulation d’incident (table-top) et améliorer la procédure."
+        ]
+      }
+    },
+    "leadCapture": {
+      "fields": [
+        { "id": "contactName", "label": "Nom", "type": "text", "required": true },
+        { "id": "companyName", "label": "Entreprise", "type": "text", "required": true },
+        { "id": "email", "label": "Courriel", "type": "email", "required": true },
+        { "id": "phone", "label": "Téléphone (optionnel)", "type": "tel", "required": false }
+      ],
+      "consent": {
+        "id": "consentMarketing",
+        "label": "J’accepte de recevoir des communications de FormÉducWeb (je peux me désabonner en tout temps).",
+        "defaultChecked": false
+      }
+    }
+  }
