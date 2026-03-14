@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, Save, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw, Save, ShieldCheck } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -27,7 +27,8 @@ import {
   getWizardSteps,
   loadWizardDraft,
   saveWizardDraft,
-  type WizardDataset
+  type WizardDataset,
+  type WizardFormDraft
 } from "@/lib/wizard";
 
 const wizardClientSchema = leadCaptureSchema.extend({
@@ -47,11 +48,22 @@ type WizardResultState = AssessmentApiResponse & {
   answers: Record<string, string | undefined>;
 };
 
+function hasDraftContent(draft: WizardFormDraft | null) {
+  if (!draft) return false;
+
+  const hasAnswers = Object.values(draft.answers).some((value) => Boolean(value));
+  const hasLead = Boolean(draft.contactName || draft.companyName || draft.email || draft.phone);
+
+  return hasAnswers || hasLead;
+}
+
 export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [questionErrors, setQuestionErrors] = useState<Record<string, string>>({});
   const [resultState, setResultState] = useState<WizardResultState | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<WizardFormDraft | null>(null);
+  const [draftReady, setDraftReady] = useState(false);
 
   const sectionSteps = useMemo(
     () => getWizardSteps(wizard).map((step) => ({ ...step, kind: "questions" as const })),
@@ -84,21 +96,16 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
   useEffect(() => {
     const draft = loadWizardDraft();
 
-    if (!draft) return;
+    if (hasDraftContent(draft)) {
+      setPendingDraft(draft);
+    }
 
-    form.reset({
-      answers: draft.answers,
-      contactName: draft.contactName,
-      companyName: draft.companyName,
-      email: draft.email,
-      phone: draft.phone,
-      consentMarketing: draft.consentMarketing
-    });
-
-    toast.info("Un brouillon local a été restauré.");
-  }, [form]);
+    setDraftReady(true);
+  }, []);
 
   useEffect(() => {
+    if (!draftReady || pendingDraft) return;
+
     const subscription = form.watch((values) => {
       saveWizardDraft({
         answers: values.answers ?? {},
@@ -111,11 +118,35 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [draftReady, pendingDraft, form]);
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleRestoreDraft = () => {
+    if (!pendingDraft) return;
+
+    form.reset({
+      answers: pendingDraft.answers,
+      contactName: pendingDraft.contactName,
+      companyName: pendingDraft.companyName,
+      email: pendingDraft.email,
+      phone: pendingDraft.phone,
+      consentMarketing: pendingDraft.consentMarketing
+    });
+    setPendingDraft(null);
+    toast.success("Votre progression a été restaurée.");
+  };
+
+  const handleDiscardDraft = () => {
+    clearWizardDraft();
+    form.reset(createEmptyDraft());
+    setPendingDraft(null);
+    setCurrentStepIndex(0);
+    setQuestionErrors({});
+    toast.success("La sauvegarde locale a été effacée.");
   };
 
   const validateQuestionStep = () => {
@@ -228,6 +259,7 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
     setQuestionErrors({});
     setCurrentStepIndex(0);
     setResultState(null);
+    setPendingDraft(null);
     toast.success("La wizard a été remise à zéro.");
   };
 
@@ -236,6 +268,7 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
       <ReportView
         wizard={wizard}
         leadCapture={resultState.leadCapture}
+        answers={resultState.answers}
         scoreResult={resultState.scoreResult}
         report={resultState.report}
         onEdit={() => setResultState(null)}
@@ -261,6 +294,29 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
         </div>
 
         <div className="space-y-6">
+          {pendingDraft ? (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-2">
+                  <p className="eyebrow">Sauvegarde trouvée</p>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    Une progression locale a été trouvée dans ce navigateur. Vous pouvez reprendre là où vous étiez ou
+                    repartir à neuf.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button type="button" onClick={handleRestoreDraft}>
+                    Reprendre ma progression
+                  </Button>
+                  <Button type="button" variant="secondary" onClick={handleDiscardDraft}>
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Recommencer
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
+
           <Card className="overflow-hidden">
             <CardContent className="space-y-6 p-8">
               <div className="flex flex-wrap items-center gap-3">
@@ -364,5 +420,4 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
     </section>
   );
 }
-
 

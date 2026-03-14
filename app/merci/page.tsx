@@ -1,16 +1,15 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 type MerciPageProps = {
-  searchParams?: {
-    source?: string;
-  };
+  searchParams?: Promise<{ source?: string }>;
 };
 
-export default function MerciPage({ searchParams }: MerciPageProps) {
-  const source = searchParams?.source;
+export default async function MerciPage({ searchParams }: MerciPageProps) {
+  const resolved = await searchParams;
+  const source = resolved?.source;
   const isContact = source === "contact";
 
   return (

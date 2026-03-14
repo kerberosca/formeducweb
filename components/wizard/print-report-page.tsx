@@ -1,104 +1,110 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Download, PhoneCall, RotateCcw, SquarePen } from "lucide-react";
-import { toast } from "sonner";
+import { useEffect, useSyncExternalStore } from "react";
+import { Printer, RotateCcw } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { filenameFromCompany } from "@/lib/report-pdf-shared";
-import type { GeneratedReport } from "@/lib/recommendations";
-import type { ScoreResult } from "@/lib/scoring";
-import type { LeadCaptureInput } from "@/lib/schemas";
-import { siteConfig } from "@/lib/site";
-import type { WizardDataset } from "@/lib/wizard";
+import { readAssessmentReport } from "@/lib/report-print";
 
-type ReportViewProps = {
-  wizard: WizardDataset;
-  leadCapture: LeadCaptureInput;
-  answers: Record<string, string | undefined>;
-  scoreResult: ScoreResult;
-  report: GeneratedReport;
-  onEdit: () => void;
-  onRestart: () => void;
-};
+function subscribe() {
+  return () => undefined;
+}
 
-export function ReportView({ wizard, leadCapture, answers, scoreResult, report, onEdit, onRestart }: ReportViewProps) {
-  const bookingHref = siteConfig.bookingUrl;
-  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+function getClientReadySnapshot() {
+  return true;
+}
 
-  const handleDownloadPdf = async () => {
-    setIsDownloadingPdf(true);
+function getServerReadySnapshot() {
+  return false;
+}
 
-    try {
-      const response = await fetch("/api/assessment/pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          leadCapture,
-          answers
-        })
-      });
+function getClientReportSnapshot() {
+  return readAssessmentReport();
+}
 
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(payload?.error || "Impossible de générer le PDF pour le moment.");
-      }
+function getServerReportSnapshot() {
+  return null;
+}
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
+export function PrintReportPage() {
+  const ready = useSyncExternalStore(subscribe, getClientReadySnapshot, getServerReadySnapshot);
+  const payload = useSyncExternalStore(subscribe, getClientReportSnapshot, getServerReportSnapshot);
 
-      link.href = url;
-      link.download = filenameFromCompany(leadCapture.companyName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      toast.success("Le PDF a été téléchargé.");
-    } catch (error) {
-      console.error("PDF download error", error);
-      toast.error(error instanceof Error ? error.message : "Impossible de générer le PDF pour le moment.");
-    } finally {
-      setIsDownloadingPdf(false);
-    }
-  };
+  useEffect(() => {
+    if (!payload) return;
+
+    const timeout = window.setTimeout(() => {
+      window.print();
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
+  }, [payload]);
+
+  if (ready && !payload) {
+    return (
+      <section className="container py-16 md:py-24">
+        <Card className="mx-auto max-w-3xl">
+          <CardContent className="space-y-6 p-10 text-center">
+            <p className="eyebrow">Impression PDF</p>
+            <h1 className="font-heading text-4xl font-semibold tracking-tight">Aucun rapport à imprimer</h1>
+            <p className="text-lg leading-8 text-muted-foreground">
+              Retournez à la wizard, générez le rapport puis réessayez le bouton Télécharger PDF.
+            </p>
+            <div className="flex flex-col justify-center gap-3 sm:flex-row">
+              <Button asChild>
+                <Link href="/loi-25/wizard">Retour à la wizard</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    );
+  }
+
+  if (!payload) {
+    return null;
+  }
+
+  const { wizard, leadCapture, scoreResult, report, savedAt } = payload;
 
   return (
-    <section className="container py-12 md:py-16">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between print-hidden">
+    <section className="print-page-shell container py-10 md:py-16">
+      <div className="print-hidden mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="eyebrow">Rapport généré</p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
+          <p className="eyebrow">Impression PDF</p>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight">Version optimisée pour impression</h1>
           <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Rapport préparé pour {leadCapture.companyName}. Ce diagnostic vise l’alignement et la priorisation des
-            prochaines actions.
+            Cette page ouvre une version plus stable du rapport pour Enregistrer en PDF.
           </p>
         </div>
-
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button type="button" variant="secondary" onClick={handleDownloadPdf} disabled={isDownloadingPdf}>
-            <Download className="mr-2 h-4 w-4" />
-            {isDownloadingPdf ? "Préparation du PDF..." : "Télécharger PDF"}
+          <Button type="button" variant="secondary" onClick={() => window.print()}>
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimer / Enregistrer en PDF
           </Button>
-          <Button type="button" variant="secondary" onClick={onEdit}>
-            <SquarePen className="mr-2 h-4 w-4" />
-            Modifier mes réponses
-          </Button>
-          <Button type="button" variant="ghost" onClick={onRestart}>
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Recommencer
+          <Button asChild variant="secondary">
+            <Link href="/loi-25/wizard">Retour au rapport</Link>
           </Button>
         </div>
       </div>
 
-      <div id="rapport-loi25" className="space-y-8 print-surface">
-        <Card className="overflow-hidden">
-          <CardContent className="grid gap-6 p-8 md:grid-cols-[1fr_auto] md:items-center">
+      <article className="report-print-root space-y-6">
+        <header className="report-avoid-break rounded-[28px] border border-border/70 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.05)]">
+          <p className="report-print-eyebrow">Rapport d’auto-évaluation Loi 25</p>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
+          <div className="mt-4 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
+            <p>Entreprise: {leadCapture.companyName}</p>
+            <p>Contact: {leadCapture.contactName}</p>
+            <p>Courriel: {leadCapture.email}</p>
+            <p>Rapport préparé le: {new Date(savedAt).toLocaleString("fr-CA")}</p>
+          </div>
+        </header>
+
+        <Card className="report-avoid-break overflow-hidden">
+          <CardContent className="report-summary-grid grid gap-6 p-8 md:grid-cols-[1fr_auto] md:items-center">
             <div className="space-y-4">
               <Badge>{scoreResult.level.label}</Badge>
               <div>
@@ -108,27 +114,11 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">{scoreResult.level.tagline}</p>
               <p className="text-sm leading-6 text-muted-foreground">{wizard.disclaimer}</p>
             </div>
-
-            <div className="print-hidden space-y-3 rounded-[28px] border border-border/70 bg-muted/40 p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Prochaine étape</p>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Planifiez un appel de 20 minutes pour passer vos priorités et choisir le bon niveau d’accompagnement.
-              </p>
-              <Button asChild>
-                <a href={bookingHref}>
-                  <PhoneCall className="mr-2 h-4 w-4" />
-                  Planifier un appel 20 min
-                </a>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/contact?source=rapport-loi25">Poser une question</Link>
-              </Button>
-            </div>
           </CardContent>
         </Card>
 
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <Card>
+        <div className="report-stack-grid grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <Card className="report-avoid-break">
             <CardHeader>
               <CardTitle>Notes et lecture rapide</CardTitle>
             </CardHeader>
@@ -162,7 +152,7 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="report-avoid-break">
             <CardHeader>
               <CardTitle>Scores par section</CardTitle>
             </CardHeader>
@@ -186,13 +176,16 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
           </Card>
         </div>
 
-        <Card>
+        <Card className="report-avoid-break">
           <CardHeader>
             <CardTitle>Écarts prioritaires</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
+          <CardContent className="report-gaps-grid grid gap-4 md:grid-cols-2">
             {report.topGaps.map((gap) => (
-              <div key={`${gap.section}-${gap.title}`} className="rounded-[24px] border border-border/70 bg-background p-5">
+              <div
+                key={`${gap.section}-${gap.title}`}
+                className="report-avoid-break rounded-[24px] border border-border/70 bg-background p-5"
+              >
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="font-medium">{gap.title}</p>
                   <Badge variant="outline">{gap.priority}</Badge>
@@ -205,8 +198,8 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
           </CardContent>
         </Card>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
+        <div className="report-stack-grid grid gap-6 lg:grid-cols-2">
+          <Card className="report-avoid-break">
             <CardHeader>
               <CardTitle>Plan 30 jours</CardTitle>
             </CardHeader>
@@ -224,7 +217,7 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="report-avoid-break">
             <CardHeader>
               <CardTitle>Plan 90 jours</CardTitle>
             </CardHeader>
@@ -243,7 +236,7 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
           </Card>
         </div>
 
-        <Card>
+        <Card className="report-avoid-break">
           <CardHeader>
             <CardTitle>Disclaimers</CardTitle>
           </CardHeader>
@@ -253,8 +246,20 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
             ))}
           </CardContent>
         </Card>
-      </div>
+
+        <Card className="print-hidden border-primary/20 bg-primary/5">
+          <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm leading-7 text-muted-foreground">
+              Si la boîte d’impression ne s’ouvre pas automatiquement, utilisez le bouton ci-dessus pour imprimer ou
+              enregistrer en PDF.
+            </p>
+            <Button type="button" variant="secondary" onClick={() => window.location.reload()}>
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Relancer l’impression
+            </Button>
+          </CardContent>
+        </Card>
+      </article>
     </section>
   );
 }
-
