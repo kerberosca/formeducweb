@@ -103,8 +103,8 @@ DATABASE_URL=file:./prisma/dev.db
 ASSESSMENT_RETENTION_UNPAID_DAYS=180
 ASSESSMENT_RETENTION_PAID_DAYS=730
 ADMIN_NOTIFICATION_EMAIL=
-ADMIN_EMAIL=bonjour@formeducweb.ca
-CONTACT_TO_EMAIL=bonjour@formeducweb.ca
+ADMIN_EMAIL=info@formeducweb.ca
+CONTACT_TO_EMAIL=info@formeducweb.ca
 RESEND_API_KEY=
 RESEND_FROM=ForméducWeb <noreply@example.com>
 ```

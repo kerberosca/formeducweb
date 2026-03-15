@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Space_Grotesk, Source_Sans_3 } from "next/font/google";
 
 import { CookieConsentBanner } from "@/components/cookies/cookie-consent-banner";
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="fr-CA" className={`${headingFont.variable} ${bodyFont.variable}`}>
       <body>
         <div className="relative flex min-h-screen flex-col">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(circle_at_top,rgba(11,57,46,0.15),transparent_50%)]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(circle_at_top,rgba(21,113,212,0.16),transparent_50%)]" />
           <SiteHeader />
           <main className="relative z-10 flex-1">{children}</main>
           <SiteFooter />

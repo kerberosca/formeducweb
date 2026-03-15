@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { siteConfig } from "@/lib/site";
 
 export default function ContactPage() {
   return (
@@ -18,9 +19,8 @@ export default function ContactPage() {
           <Card>
             <CardContent className="space-y-4 p-8 text-sm leading-7 text-muted-foreground">
               <p>Réponse habituelle en 1 à 2 jours ouvrables.</p>
-              <p>Montréal, Québec</p>
-              <p>bonjour@formeducweb.ca</p>
-              <p>(514) 555-0148</p>
+              <p>{siteConfig.address}</p>
+              <p>{siteConfig.email}</p>
             </CardContent>
           </Card>
           <Button asChild variant="secondary">
@@ -33,4 +33,3 @@ export default function ContactPage() {
     </section>
   );
 }
-

@@ -5,18 +5,18 @@ export default function ConditionsUtilisationPage() {
     <section className="container py-16 md:py-24">
       <div className="max-w-4xl space-y-8">
         <div className="space-y-4">
-          <p className="eyebrow">Conditions d&apos;utilisation</p>
-          <h1 className="font-heading text-5xl font-semibold tracking-tight">Utilisation du site et de l&apos;outil d&apos;auto-évaluation</h1>
+          <p className="eyebrow">Conditions d’utilisation</p>
+          <h1 className="font-heading text-5xl font-semibold tracking-tight">Utilisation du site et de l’outil d’auto-évaluation</h1>
           <p className="text-lg leading-8 text-muted-foreground">
-            L&apos;utilisation du site implique l&apos;acceptation générale des présentes conditions.
+            L’utilisation du site implique l’acceptation générale des présentes conditions.
           </p>
         </div>
 
         {[
           {
-            title: "Nature de l&apos;outil",
+            title: "Nature de l’outil",
             body:
-              "La wizard Loi 25 est un outil de diagnostic et d'alignement. Elle sert à faire ressortir des écarts, à orienter un plan d'action et à soutenir une discussion plus approfondie."
+              "L’assistant Loi 25 est un outil de diagnostic et d'alignement. Il sert à faire ressortir des écarts, à orienter un plan d'action et à soutenir une discussion plus approfondie."
           },
           {
             title: "Pas un avis juridique",

@@ -60,7 +60,7 @@ export const homeFaq = [
   {
     question: "Combien de temps faut-il prévoir?",
     answer:
-      "La wizard prend généralement entre 8 et 12 minutes. Le rapport est généré à la fin de la soumission."
+      "L’assistant prend généralement entre 8 et 12 minutes. Le rapport est généré à la fin de la soumission."
   },
   {
     question: "Est-ce adapté aux PME et OBNL?",

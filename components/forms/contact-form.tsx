@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -145,14 +145,14 @@ export function ContactForm() {
               )}
             />
             <Label className="leading-6 text-muted-foreground">
-              J&apos;accepte de recevoir des communications de ForméducWeb. Mon consentement est optionnel et je peux me
+              J’accepte de recevoir des communications de ForméducWeb. Mon consentement est optionnel et je peux me
               désabonner en tout temps.
             </Label>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-muted-foreground">
-              Aucune promesse de conformité n&apos;est faite ici. On parle de diagnostic, d&apos;alignement et d&apos;implantation.
+              Aucune promesse de conformité n’est faite ici. On parle de diagnostic, d’alignement et d’implantation.
               Consultez notre{" "}
               <Link href="/politique-confidentialite" className="underline underline-offset-4">
                 politique de confidentialité

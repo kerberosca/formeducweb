@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -131,7 +131,7 @@ export function PrivacyRequestForm() {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-muted-foreground">
-              Ce formulaire sert à la gestion des demandes de confidentialité. Une vérification d&apos;identité peut être
+              Ce formulaire sert à la gestion des demandes de confidentialité. Une vérification d’identité peut être
               demandée selon la nature de la requête.
             </p>
             <Button type="submit" disabled={isSubmitting}>

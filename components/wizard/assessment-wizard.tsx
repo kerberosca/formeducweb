@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -349,7 +349,7 @@ export function AssessmentWizard({
     setResultState(null);
     setPendingDraft(null);
     setLastSavedAt(null);
-    toast.success("La wizard a été remise à zéro.");
+    toast.success("L’assistant a été remis à zéro.");
   };
 
   const handleEditResult = () => {

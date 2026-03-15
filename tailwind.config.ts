@@ -62,11 +62,11 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)"
       },
       boxShadow: {
-        halo: "0 18px 60px rgba(11, 57, 46, 0.12)"
+        halo: "0 18px 60px rgba(21, 113, 212, 0.18)"
       },
       backgroundImage: {
         "hero-grid":
-          "linear-gradient(to right, rgba(11,57,46,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(11,57,46,0.06) 1px, transparent 1px)"
+          "linear-gradient(to right, rgba(21,113,212,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(21,113,212,0.06) 1px, transparent 1px)"
       }
     }
   },

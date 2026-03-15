@@ -72,7 +72,7 @@ export function CookieConsentBanner() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary/80">Cookies et consentement</p>
             <p className="text-sm leading-7 text-muted-foreground">
               Nous utilisons des cookies techniques nécessaires. Les cookies non essentiels sont bloqués tant que vous
-              n&apos;avez pas choisi. Consultez la{" "}
+              n’avez pas choisi. Consultez la{" "}
               <Link href="/politique-cookies" className="underline underline-offset-4">
                 politique cookies
               </Link>

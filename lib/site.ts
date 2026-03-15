@@ -3,9 +3,9 @@ export const siteConfig = {
   description: "Diagnostic Loi 25, sites web, SEO et cybersécurité légère pour PME et OBNL du Québec.",
   locale: "fr-CA",
   territory: "Basé au Québec",
-  email: "bonjour@formeducweb.ca",
-  phone: "(514) 555-0148",
-  address: "Montréal, Québec",
+  email: "info@formeducweb.ca",
+  phone: "",
+  address: "101-5121 av. Chauveau Ouest, Québec (Québec) G2E 5A6, Canada",
   bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || "/contact?source=appel-loi-25"
 };
 

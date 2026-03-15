@@ -12,7 +12,7 @@ type MailOptions = {
 };
 
 function getAdminNotificationEmail() {
-  return process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || process.env.CONTACT_TO_EMAIL;
+  return process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || process.env.CONTACT_TO_EMAIL || "info@formeducweb.ca";
 }
 
 function maskEmail(email: string) {
@@ -39,12 +39,16 @@ async function sendMail(options: MailOptions) {
   const { Resend } = await import("resend");
   const resend = new Resend(apiKey);
 
-  await resend.emails.send({
+  const response = await resend.emails.send({
     from,
     to: options.to,
     subject: options.subject,
     html: options.html
   });
+
+  if (response.error) {
+    throw new Error(`Resend error: ${response.error.message}`);
+  }
 
   return { skipped: false };
 }
@@ -133,7 +137,7 @@ export async function sendReportUnlockedEmails(payload: {
 }
 
 export async function sendContactEmail(data: ContactFormInput) {
-  const adminEmail = process.env.CONTACT_TO_EMAIL || process.env.ADMIN_EMAIL;
+  const adminEmail = process.env.CONTACT_TO_EMAIL || process.env.ADMIN_EMAIL || "info@formeducweb.ca";
 
   if (!adminEmail) {
     console.log("Contact MVP fallback", {

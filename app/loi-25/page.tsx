@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { FileText, Layers3, ShieldCheck } from "lucide-react";
 
 import { CtaBand } from "@/components/marketing/cta-band";
@@ -87,7 +87,7 @@ export default function Loi25Page() {
         <SectionHeading
           eyebrow="Ce que vous obtenez"
           title="Un livrable utile dès la première étape"
-          description="La wizard prépare un rapport qui peut ensuite servir de base à un appel de lecture ou à une implantation plus complète."
+          description="L’assistant prépare un rapport qui peut ensuite servir de base à un appel de lecture ou à une implantation plus complète."
         />
         <div className="mt-10 rounded-[32px] border border-border/70 bg-white/85 p-6 md:p-8">
           <Tabs defaultValue="Starter" className="w-full">
@@ -146,7 +146,7 @@ export default function Loi25Page() {
 
       <CtaBand
         title="Envie d’un premier portrait avant d’investir plus loin?"
-        description="La wizard vous donne une base structurée pour discuter ensuite de vos priorités web, légales et opérationnelles."
+        description="L’assistant vous donne une base structurée pour discuter ensuite de vos priorités web, légales et opérationnelles."
       />
     </>
   );

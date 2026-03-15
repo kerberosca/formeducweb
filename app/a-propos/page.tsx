@@ -49,7 +49,7 @@ export default function AboutPage() {
 
       <CtaBand
         title="Vous voulez une lecture honnête de votre situation?"
-        description="Commencez par la wizard ou écrivez-nous pour expliquer votre contexte."
+        description="Commencez par l’assistant d’auto-évaluation ou écrivez-nous pour expliquer votre contexte."
       />
     </>
   );

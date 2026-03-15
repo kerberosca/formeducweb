@@ -46,7 +46,7 @@ export default function HomePage() {
 
           <div className="surface-grid relative overflow-hidden rounded-[40px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(245,245,239,0.92))] p-8 shadow-halo">
             <div className="absolute right-6 top-6 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-primary">
-              Lead magnet
+              Auto-évaluation gratuite
             </div>
             <div className="space-y-6">
               <p className="eyebrow">Diagnostic guidé</p>

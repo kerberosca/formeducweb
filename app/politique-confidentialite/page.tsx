@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -10,8 +10,8 @@ export default function PolitiqueConfidentialitePage() {
           <p className="eyebrow">Politique de confidentialité</p>
           <h1 className="font-heading text-5xl font-semibold tracking-tight">Comment ForméducWeb traite les renseignements transmis</h1>
           <p className="text-lg leading-8 text-muted-foreground">
-            Cette page décrit la collecte, l&apos;utilisation, la conservation et les droits associés aux données recueillies
-            via le contact, la wizard Loi 25 et les paiements Stripe.
+            Cette page décrit la collecte, l’utilisation, la conservation et les droits associés aux données recueillies
+            via le contact, l’assistant Loi 25 et les paiements Stripe.
           </p>
         </div>
 
@@ -29,12 +29,12 @@ export default function PolitiqueConfidentialitePage() {
           {
             title: "Cookies et technologies similaires",
             body:
-              "Le site peut utiliser des cookies techniques nécessaires au fonctionnement et à la sécurité. Aucun cookie marketing ou analytics n&apos;est activé par défaut dans ce projet. Pour les détails, consultez la Politique cookies."
+              "Le site peut utiliser des cookies techniques nécessaires au fonctionnement et à la sécurité. Aucun cookie marketing ou analytics n’est activé par défaut dans ce projet. Pour les détails, consultez la Politique cookies."
           },
           {
             title: "Conservation",
             body:
-              "Les brouillons locaux du wizard expirent automatiquement. Côté serveur, les données sont conservées selon une durée raisonnable liée aux finalités d'affaires, à la sécurité et aux obligations applicables."
+              "Les brouillons locaux de l’assistant expirent automatiquement. Côté serveur, les données sont conservées selon une durée raisonnable liée aux finalités d'affaires, à la sécurité et aux obligations applicables."
           },
           {
             title: "Sécurité",
@@ -49,7 +49,7 @@ export default function PolitiqueConfidentialitePage() {
           {
             title: "Responsable et contact",
             body:
-              "Pour toute question relative à la confidentialité, écrivez à bonjour@formeducweb.ca."
+              "Pour toute question relative à la confidentialité, écrivez à info@formeducweb.ca."
           }
         ].map((section) => (
           <Card key={section.title}>

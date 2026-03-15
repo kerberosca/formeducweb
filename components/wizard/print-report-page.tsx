@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect, useSyncExternalStore } from "react";
@@ -51,11 +51,11 @@ export function PrintReportPage() {
             <p className="eyebrow">Impression PDF</p>
             <h1 className="font-heading text-4xl font-semibold tracking-tight">Aucun rapport à imprimer</h1>
             <p className="text-lg leading-8 text-muted-foreground">
-              Retournez à la wizard, générez le rapport puis réessayez le bouton Télécharger PDF.
+              Retournez à l’assistant, générez le rapport puis réessayez le bouton Télécharger PDF.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild>
-                <Link href="/loi-25/wizard">Retour à la wizard</Link>
+                <Link href="/loi-25/wizard">Retour à l’assistant</Link>
               </Button>
             </div>
           </CardContent>
