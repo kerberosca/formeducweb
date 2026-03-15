@@ -1,5 +1,6 @@
-import wizardDataRaw from "@/data/loi25_questions.fr-ca.json";
+﻿import wizardDataRaw from "@/data/loi25_questions.fr-ca.json";
 import type { WizardData, WizardQuestion, WizardSection } from "@/lib/scoring";
+import { deepRepairText } from "@/lib/text";
 
 export type WizardQuestionWithMeta = WizardQuestion & {
   helpText?: string;
@@ -49,10 +50,18 @@ export type WizardFormDraft = {
   consentMarketing: boolean;
 };
 
+type LocalStorageEnvelope<T> = {
+  savedAt: string;
+  data: T;
+};
+
+const WIZARD_STORAGE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
 export const WIZARD_STORAGE_KEY = "formeducweb-loi25-draft";
+export const WIZARD_RESULT_STORAGE_KEY = "formeducweb-loi25-result";
 
 export function getWizardData(): WizardDataset {
-  return wizardDataRaw as unknown as WizardDataset;
+  return deepRepairText(wizardDataRaw as unknown as WizardDataset);
 }
 
 export function getWizardSteps(wizard: WizardDataset): WizardStep[] {
@@ -77,27 +86,76 @@ export function createEmptyDraft(): WizardFormDraft {
   };
 }
 
-export function loadWizardDraft(): WizardFormDraft | null {
+function isEnvelope<T>(value: unknown): value is LocalStorageEnvelope<T> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const maybeEnvelope = value as Partial<LocalStorageEnvelope<T>>;
+  return typeof maybeEnvelope.savedAt === "string" && "data" in maybeEnvelope;
+}
+
+function loadFromStorage<T>(storageKey: string) {
   if (typeof window === "undefined") return null;
 
-  const raw = window.localStorage.getItem(WIZARD_STORAGE_KEY);
+  const raw = window.localStorage.getItem(storageKey);
   if (!raw) return null;
 
   try {
-    return JSON.parse(raw) as WizardFormDraft;
+    const parsed = JSON.parse(raw) as unknown;
+
+    if (isEnvelope<T>(parsed)) {
+      const savedAt = Date.parse(parsed.savedAt);
+      if (Number.isFinite(savedAt) && Date.now() - savedAt > WIZARD_STORAGE_TTL_MS) {
+        window.localStorage.removeItem(storageKey);
+        return null;
+      }
+
+      return parsed.data;
+    }
+
+    return parsed as T;
   } catch {
+    window.localStorage.removeItem(storageKey);
     return null;
   }
 }
 
-export function saveWizardDraft(value: WizardFormDraft) {
+function saveToStorage<T>(storageKey: string, value: T) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(WIZARD_STORAGE_KEY, JSON.stringify(value));
+
+  const envelope: LocalStorageEnvelope<T> = {
+    savedAt: new Date().toISOString(),
+    data: value
+  };
+
+  window.localStorage.setItem(storageKey, JSON.stringify(envelope));
+}
+
+export function loadWizardDraft(): WizardFormDraft | null {
+  return loadFromStorage<WizardFormDraft>(WIZARD_STORAGE_KEY);
+}
+
+export function saveWizardDraft(value: WizardFormDraft) {
+  saveToStorage(WIZARD_STORAGE_KEY, value);
 }
 
 export function clearWizardDraft() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(WIZARD_STORAGE_KEY);
+}
+
+export function loadWizardPersistedResult<T>() {
+  return loadFromStorage<T>(WIZARD_RESULT_STORAGE_KEY);
+}
+
+export function saveWizardPersistedResult<T>(value: T) {
+  saveToStorage(WIZARD_RESULT_STORAGE_KEY, value);
+}
+
+export function clearWizardPersistedResult() {
+  if (typeof window === "undefined") return;
+  window.localStorage.removeItem(WIZARD_RESULT_STORAGE_KEY);
 }
 
 export function getRequiredQuestionIds(wizard: WizardDataset) {

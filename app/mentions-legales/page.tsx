@@ -6,22 +6,27 @@ export default function MentionsLegalesPage() {
       <div className="max-w-4xl space-y-8">
         <div className="space-y-4">
           <p className="eyebrow">Mentions légales</p>
-          <h1 className="font-heading text-5xl font-semibold tracking-tight">Informations générales sur l’éditeur du site</h1>
+          <h1 className="font-heading text-5xl font-semibold tracking-tight">Informations générales sur l&apos;éditeur du site</h1>
         </div>
 
         {[
           {
             title: "Nom utilisé sur le site",
-            body: "FormÉducWeb est la dénomination utilisée pour présenter les services affichés sur ce site."
+            body: "ForméducWeb est la dénomination utilisée pour présenter les services affichés sur ce site."
           },
           {
             title: "Territoire",
             body:
-              "Les services sont présentés principalement pour une clientèle située au Québec, au Canada, tout en pouvant s’adapter à d’autres contextes selon l’entente."
+              "Les services visent principalement une clientèle située au Québec (Canada), avec adaptation possible selon l'entente."
           },
           {
             title: "Coordonnées",
             body: "Courriel: bonjour@formeducweb.ca | Téléphone: (514) 555-0148 | Localisation: Montréal, Québec."
+          },
+          {
+            title: "Responsable confidentialité",
+            body:
+              "Le point de contact pour les demandes liées à la confidentialité est joignable à bonjour@formeducweb.ca."
           },
           {
             title: "Hébergement et exploitation",
@@ -40,4 +45,3 @@ export default function MentionsLegalesPage() {
     </section>
   );
 }
-

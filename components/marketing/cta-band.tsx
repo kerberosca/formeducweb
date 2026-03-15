@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,7 +22,7 @@ export function CtaBand({ title, description }: CtaBandProps) {
               <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
             </Button>
             <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
-              <Link href="/contact">Parler à FormÉducWeb</Link>
+              <Link href="/contact">Parler à ForméducWeb</Link>
             </Button>
           </div>
         </div>

@@ -611,7 +611,7 @@
       ],
       "consent": {
         "id": "consentMarketing",
-        "label": "J’accepte de recevoir des communications de FormÉducWeb (je peux me désabonner en tout temps).",
+        "label": "J’accepte de recevoir des communications de ForméducWeb (je peux me désabonner en tout temps).",
         "defaultChecked": false
       }
     }

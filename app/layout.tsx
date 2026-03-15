@@ -1,6 +1,8 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Space_Grotesk, Source_Sans_3 } from "next/font/google";
 
+import { CookieConsentBanner } from "@/components/cookies/cookie-consent-banner";
+import { OptionalTrackers } from "@/components/cookies/optional-trackers";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { AppToaster } from "@/components/ui/sonner";
@@ -20,17 +22,17 @@ const bodyFont = Source_Sans_3({
   weight: ["400", "600", "700"]
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "FormÉducWeb",
-    template: "%s | FormÉducWeb"
+    default: "ForméducWeb",
+    template: "%s | ForméducWeb"
   },
   description: siteConfig.description,
   openGraph: {
-    title: "FormÉducWeb",
+    title: "ForméducWeb",
     description: siteConfig.description,
     locale: "fr_CA",
     type: "website"
@@ -47,9 +49,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main className="relative z-10 flex-1">{children}</main>
           <SiteFooter />
         </div>
+        <OptionalTrackers />
+        <CookieConsentBanner />
         <AppToaster />
       </body>
     </html>
   );
 }
-

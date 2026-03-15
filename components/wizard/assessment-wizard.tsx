@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { QuestionField } from "@/components/wizard/question-field";
-import { ReportView } from "@/components/wizard/report-view";
+import { LiteResultView } from "@/components/wizard/lite-result-view";
 import { WizardStepper } from "@/components/wizard/stepper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,17 +16,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import type { GeneratedReport } from "@/lib/recommendations";
-import type { ScoreResult } from "@/lib/scoring";
+import type { AssessmentApiResponse, PersistedAssessmentResult } from "@/lib/assessment-types";
 import { assessmentAnswersSchema, leadCaptureSchema, type LeadCaptureInput } from "@/lib/schemas";
 import {
   clearWizardDraft,
+  clearWizardPersistedResult,
   createEmptyDraft,
   getCompletionPercent,
   getRequiredQuestionIds,
   getWizardSteps,
   loadWizardDraft,
+  loadWizardPersistedResult,
   saveWizardDraft,
+  saveWizardPersistedResult,
   type WizardDataset,
   type WizardFormDraft
 } from "@/lib/wizard";
@@ -37,16 +39,7 @@ const wizardClientSchema = leadCaptureSchema.extend({
 
 type WizardFormValues = z.infer<typeof wizardClientSchema>;
 
-type AssessmentApiResponse = {
-  scoreResult: ScoreResult;
-  report: GeneratedReport;
-  pdfUrl?: string | null;
-};
-
-type WizardResultState = AssessmentApiResponse & {
-  leadCapture: LeadCaptureInput;
-  answers: Record<string, string | undefined>;
-};
+type WizardResultState = PersistedAssessmentResult;
 
 function hasDraftContent(draft: WizardFormDraft | null) {
   if (!draft) return false;
@@ -57,13 +50,46 @@ function hasDraftContent(draft: WizardFormDraft | null) {
   return hasAnswers || hasLead;
 }
 
-export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
+function buildDraftFromValues(values: Partial<WizardFormValues>): WizardFormDraft {
+  return {
+    answers: values.answers ?? {},
+    contactName: values.contactName ?? "",
+    companyName: values.companyName ?? "",
+    email: values.email ?? "",
+    phone: values.phone ?? "",
+    consentMarketing: values.consentMarketing ?? false
+  };
+}
+
+function formatLastSaved(isoDate: string) {
+  const savedAt = Date.parse(isoDate);
+  if (!Number.isFinite(savedAt)) return "inconnue";
+
+  const diffMs = Date.now() - savedAt;
+  if (diffMs < 60 * 1000) {
+    return "a l'instant";
+  }
+
+  return new Date(savedAt).toLocaleTimeString("fr-CA", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+export function AssessmentWizard({
+  wizard,
+  reportUnlockPriceLabel
+}: {
+  wizard: WizardDataset;
+  reportUnlockPriceLabel: string;
+}) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [questionErrors, setQuestionErrors] = useState<Record<string, string>>({});
   const [resultState, setResultState] = useState<WizardResultState | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<WizardFormDraft | null>(null);
   const [draftReady, setDraftReady] = useState(false);
+  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
 
   const sectionSteps = useMemo(
     () => getWizardSteps(wizard).map((step) => ({ ...step, kind: "questions" as const })),
@@ -78,7 +104,7 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
         index: sectionSteps.length,
         kind: "lead" as const,
         title: "Coordonnées",
-        description: "Recevez votre rapport et choisissez la suite."
+        description: "Recevez votre résumé gratuit et choisissez la suite au besoin."
       }
     ],
     [sectionSteps]
@@ -93,7 +119,35 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
   const currentStep = steps[currentStepIndex];
   const completionPercent = getCompletionPercent(wizard, answers, currentStepIndex);
 
+  const saveDraftSnapshot = (values?: Partial<WizardFormValues>, updateIndicator = true) => {
+    if (!draftReady || pendingDraft || resultState) return;
+
+    const draft = buildDraftFromValues(values ?? form.getValues());
+    saveWizardDraft(draft);
+
+    if (updateIndicator) {
+      setLastSavedAt(new Date().toISOString());
+    }
+  };
+
   useEffect(() => {
+    const restoredResult = loadWizardPersistedResult<WizardResultState>();
+
+    if (restoredResult) {
+      setResultState(restoredResult);
+      form.reset({
+        answers: restoredResult.answers,
+        contactName: restoredResult.leadCapture.contactName,
+        companyName: restoredResult.leadCapture.companyName,
+        email: restoredResult.leadCapture.email,
+        phone: restoredResult.leadCapture.phone,
+        consentMarketing: restoredResult.leadCapture.consentMarketing
+      });
+      setLastSavedAt(null);
+      setDraftReady(true);
+      return;
+    }
+
     const draft = loadWizardDraft();
 
     if (hasDraftContent(draft)) {
@@ -101,24 +155,47 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
     }
 
     setDraftReady(true);
-  }, []);
+  }, [form]);
 
   useEffect(() => {
-    if (!draftReady || pendingDraft) return;
+    if (!draftReady || pendingDraft || resultState) return;
 
     const subscription = form.watch((values) => {
-      saveWizardDraft({
-        answers: values.answers ?? {},
-        contactName: values.contactName ?? "",
-        companyName: values.companyName ?? "",
-        email: values.email ?? "",
-        phone: values.phone ?? "",
-        consentMarketing: values.consentMarketing ?? false
-      });
+      saveWizardDraft(buildDraftFromValues(values));
     });
 
     return () => subscription.unsubscribe();
-  }, [draftReady, pendingDraft, form]);
+  }, [draftReady, pendingDraft, resultState, form]);
+
+  useEffect(() => {
+    if (!draftReady || pendingDraft || resultState) return;
+
+    const persist = (updateIndicator: boolean) => {
+      const draft = buildDraftFromValues(form.getValues());
+      saveWizardDraft(draft);
+
+      if (updateIndicator) {
+        setLastSavedAt(new Date().toISOString());
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== "hidden") return;
+      persist(true);
+    };
+
+    const handleBeforeUnload = () => {
+      persist(false);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [draftReady, pendingDraft, resultState, form]);
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
@@ -137,15 +214,19 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
       consentMarketing: pendingDraft.consentMarketing
     });
     setPendingDraft(null);
+    setLastSavedAt(new Date().toISOString());
     toast.success("Votre progression a été restaurée.");
   };
 
   const handleDiscardDraft = () => {
     clearWizardDraft();
+    clearWizardPersistedResult();
     form.reset(createEmptyDraft());
     setPendingDraft(null);
     setCurrentStepIndex(0);
     setQuestionErrors({});
+    setResultState(null);
+    setLastSavedAt(null);
     toast.success("La sauvegarde locale a été effacée.");
   };
 
@@ -163,7 +244,7 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
       missing.map((question) => [question.id, "Veuillez sélectionner une réponse pour continuer."])
     );
     setQuestionErrors(nextErrors);
-    toast.error("Il manque quelques réponses avant de passer à l’étape suivante.");
+    toast.error("Il manque quelques réponses avant de passer à l'étape suivante.");
     return false;
   };
 
@@ -189,7 +270,9 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
 
     if (missingRequired.length) {
       const firstMissing = missingRequired[0];
-      const targetStep = sectionSteps.findIndex((step) => step.questions.some((question) => question.id === firstMissing));
+      const targetStep = sectionSteps.findIndex((step) =>
+        step.questions.some((question) => question.id === firstMissing)
+      );
       setQuestionErrors({ [firstMissing]: "Veuillez répondre à cette question." });
       if (targetStep >= 0) {
         goToStep(targetStep);
@@ -226,13 +309,17 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
         throw new Error(payload.error || "Impossible de générer le rapport pour le moment.");
       }
 
-      clearWizardDraft();
-      setResultState({
+      const nextResultState: WizardResultState = {
         ...payload,
         leadCapture,
         answers: values.answers
-      });
-      toast.success("Rapport généré avec succès.");
+      };
+
+      clearWizardDraft();
+      saveWizardPersistedResult(nextResultState);
+      setResultState(nextResultState);
+      setLastSavedAt(null);
+      toast.success("Résumé gratuit généré avec succès.");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Une erreur est survenue.");
@@ -255,23 +342,34 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
 
   const handleRestart = () => {
     clearWizardDraft();
+    clearWizardPersistedResult();
     form.reset(createEmptyDraft());
     setQuestionErrors({});
     setCurrentStepIndex(0);
     setResultState(null);
     setPendingDraft(null);
+    setLastSavedAt(null);
     toast.success("La wizard a été remise à zéro.");
+  };
+
+  const handleEditResult = () => {
+    clearWizardPersistedResult();
+    setResultState(null);
+    setLastSavedAt(null);
+    toast.success("Vous pouvez ajuster vos réponses et régénérer le résumé.");
   };
 
   if (resultState) {
     return (
-      <ReportView
-        wizard={wizard}
+      <LiteResultView
         leadCapture={resultState.leadCapture}
-        answers={resultState.answers}
         scoreResult={resultState.scoreResult}
-        report={resultState.report}
-        onEdit={() => setResultState(null)}
+        liteReport={resultState.liteReport}
+        assessmentId={resultState.assessmentId}
+        accessToken={resultState.accessToken}
+        paymentStatus={resultState.paymentStatus}
+        priceLabel={reportUnlockPriceLabel}
+        onEdit={handleEditResult}
         onRestart={handleRestart}
       />
     );
@@ -329,12 +427,13 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
               <div className="space-y-3">
                 <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h1>
                 <p className="text-lg leading-8 text-muted-foreground">
-                  {currentStep.description || "Répondez avec franchise pour obtenir un plan d’action plus utile."}
+                  {currentStep.description || "Répondez avec franchise pour obtenir un portrait plus utile."}
                 </p>
               </div>
               <div className="rounded-[24px] border border-border/70 bg-muted/30 p-5 text-sm leading-7 text-muted-foreground">
-                Vos réponses sont gardées localement dans ce navigateur pendant votre progression. Aucun tracker n’est
-                installé par défaut.
+                Vos réponses sont gardées localement dans ce navigateur pendant votre progression et expirent
+                automatiquement après 30 jours. Votre brouillon est enregistré sur cet appareil. Si vous effacez les
+                données du site, il sera perdu.
               </div>
             </CardContent>
           </Card>
@@ -378,13 +477,22 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
                   />
                   <Label className="leading-6 text-muted-foreground">{wizard.leadCapture.consent.label}</Label>
                 </div>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  En soumettant, vous confirmez avoir lu la politique de confidentialité et vous pouvez exercer vos
+                  droits via la page Demande confidentialité.
+                </p>
               </CardContent>
             </Card>
           )}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm text-muted-foreground">
-              Étape {currentStepIndex + 1} sur {steps.length}
+            <div className="space-y-1 text-sm text-muted-foreground">
+              <p>
+                Étape {currentStepIndex + 1} sur {steps.length}
+              </p>
+              <p className="text-xs text-muted-foreground/80">
+                Dernière sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
+              </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               {currentStepIndex > 0 ? (
@@ -394,7 +502,14 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
                 </Button>
               ) : null}
 
-              <Button type="button" variant="secondary" onClick={() => toast.success("Brouillon enregistré localement.")}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  saveDraftSnapshot();
+                  toast.success("Brouillon enregistré localement.");
+                }}
+              >
                 <Save className="mr-2 h-4 w-4" />
                 Sauvegarder
               </Button>
@@ -404,7 +519,7 @@ export function AssessmentWizard({ wizard }: { wizard: WizardDataset }) {
                   isSubmitting ? (
                     "Génération..."
                   ) : (
-                    "Générer mon rapport"
+                    "Voir mon résumé gratuit"
                   )
                 ) : (
                   <>

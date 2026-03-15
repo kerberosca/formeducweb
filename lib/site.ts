@@ -1,7 +1,6 @@
 export const siteConfig = {
-  name: "FormÉducWeb",
-  description:
-    "Diagnostic Loi 25, sites web, SEO et cybersécurité légère pour PME et OBNL du Québec.",
+  name: "ForméducWeb",
+  description: "Diagnostic Loi 25, sites web, SEO et cybersécurité légère pour PME et OBNL du Québec.",
   locale: "fr-CA",
   territory: "Basé au Québec",
   email: "bonjour@formeducweb.ca",
@@ -19,6 +18,8 @@ export const mainNavigation = [
 
 export const legalNavigation = [
   { href: "/politique-confidentialite", label: "Politique de confidentialité" },
+  { href: "/politique-cookies", label: "Politique cookies" },
+  { href: "/demande-confidentialite", label: "Demande confidentialité" },
   { href: "/mentions-legales", label: "Mentions légales" },
   { href: "/conditions-utilisation", label: "Conditions d’utilisation" }
 ];

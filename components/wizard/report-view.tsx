@@ -1,102 +1,60 @@
-﻿"use client";
+﻿import Link from "next/link";
+import { Download, FileSpreadsheet, FileText, PhoneCall } from "lucide-react";
 
-import Link from "next/link";
-import { useState } from "react";
-import { Download, PhoneCall, RotateCcw, SquarePen } from "lucide-react";
-import { toast } from "sonner";
-
+import { CopySnippetButton } from "@/components/wizard/copy-snippet-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { filenameFromCompany } from "@/lib/report-pdf-shared";
+import { buildChecklistItems, buildFormSnippet, buildProcedureOnePager } from "@/lib/bonus-assets";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
 import type { LeadCaptureInput } from "@/lib/schemas";
 import { siteConfig } from "@/lib/site";
-import type { WizardDataset } from "@/lib/wizard";
 
 type ReportViewProps = {
-  wizard: WizardDataset;
   leadCapture: LeadCaptureInput;
-  answers: Record<string, string | undefined>;
   scoreResult: ScoreResult;
   report: GeneratedReport;
-  onEdit: () => void;
-  onRestart: () => void;
+  accessToken: string;
 };
 
-export function ReportView({ wizard, leadCapture, answers, scoreResult, report, onEdit, onRestart }: ReportViewProps) {
-  const bookingHref = siteConfig.bookingUrl;
-  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
-
-  const handleDownloadPdf = async () => {
-    setIsDownloadingPdf(true);
-
-    try {
-      const response = await fetch("/api/assessment/pdf", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          leadCapture,
-          answers
-        })
-      });
-
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(payload?.error || "Impossible de générer le PDF pour le moment.");
-      }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = filenameFromCompany(leadCapture.companyName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      toast.success("Le PDF a été téléchargé.");
-    } catch (error) {
-      console.error("PDF download error", error);
-      toast.error(error instanceof Error ? error.message : "Impossible de générer le PDF pour le moment.");
-    } finally {
-      setIsDownloadingPdf(false);
-    }
-  };
+export function ReportView({ leadCapture, scoreResult, report, accessToken }: ReportViewProps) {
+  const checklistItems = buildChecklistItems(report, scoreResult);
+  const procedureText = buildProcedureOnePager(leadCapture.companyName);
+  const formSnippet = buildFormSnippet(leadCapture.companyName);
 
   return (
     <section className="container py-12 md:py-16">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between print-hidden">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="eyebrow">Rapport généré</p>
+          <p className="eyebrow">Rapport complet</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
           <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Rapport préparé pour {leadCapture.companyName}. Ce diagnostic vise l’alignement et la priorisation des
-            prochaines actions.
+            Rapport détaillé préparé pour {leadCapture.companyName}. Vous avez maintenant accès au plan complet, au PDF et
+            aux gabarits de démarrage.
           </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Button type="button" variant="secondary" onClick={handleDownloadPdf} disabled={isDownloadingPdf}>
-            <Download className="mr-2 h-4 w-4" />
-            {isDownloadingPdf ? "Préparation du PDF..." : "Télécharger PDF"}
+          <Button asChild variant="secondary">
+            <a href={`/api/pdf?token=${accessToken}`}>
+              <Download className="mr-2 h-4 w-4" />
+              Télécharger PDF
+            </a>
           </Button>
-          <Button type="button" variant="secondary" onClick={onEdit}>
-            <SquarePen className="mr-2 h-4 w-4" />
-            Modifier mes réponses
+          <Button asChild variant="secondary">
+            <a href={`/api/download/incident-registry?token=${accessToken}`}>
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Télécharger le registre CSV
+            </a>
           </Button>
-          <Button type="button" variant="ghost" onClick={onRestart}>
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Recommencer
+          <Button asChild variant="ghost">
+            <Link href="/contact?source=rapport-loi25">Poser une question</Link>
           </Button>
         </div>
       </div>
 
-      <div id="rapport-loi25" className="space-y-8 print-surface">
+      <div className="space-y-8">
         <Card className="overflow-hidden">
           <CardContent className="grid gap-6 p-8 md:grid-cols-[1fr_auto] md:items-center">
             <div className="space-y-4">
@@ -106,22 +64,19 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
                 <p className="font-heading text-6xl font-semibold text-primary">{scoreResult.overallScore}/100</p>
               </div>
               <p className="max-w-2xl text-lg leading-8 text-muted-foreground">{scoreResult.level.tagline}</p>
-              <p className="text-sm leading-6 text-muted-foreground">{wizard.disclaimer}</p>
+              <p className="text-sm leading-6 text-muted-foreground">{report.disclaimers[0]}</p>
             </div>
 
-            <div className="print-hidden space-y-3 rounded-[28px] border border-border/70 bg-muted/40 p-6">
+            <div className="space-y-3 rounded-[28px] border border-border/70 bg-muted/40 p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Prochaine étape</p>
               <p className="text-sm leading-6 text-muted-foreground">
-                Planifiez un appel de 20 minutes pour passer vos priorités et choisir le bon niveau d’accompagnement.
+                Planifiez un appel de 20 minutes pour revoir vos priorités et décider quoi implanter en premier.
               </p>
               <Button asChild>
-                <a href={bookingHref}>
+                <a href={siteConfig.bookingUrl}>
                   <PhoneCall className="mr-2 h-4 w-4" />
                   Planifier un appel 20 min
                 </a>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/contact?source=rapport-loi25">Poser une question</Link>
               </Button>
             </div>
           </CardContent>
@@ -130,7 +85,7 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <Card>
             <CardHeader>
-              <CardTitle>Notes et lecture rapide</CardTitle>
+              <CardTitle>Lecture rapide</CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               <div>
@@ -188,7 +143,7 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
 
         <Card>
           <CardHeader>
-            <CardTitle>Écarts prioritaires</CardTitle>
+            <CardTitle>Top 5 des écarts prioritaires</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
             {report.topGaps.map((gap) => (
@@ -243,6 +198,52 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
           </Card>
         </div>
 
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle>Checklist de démarrage</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-3 text-sm leading-7 text-muted-foreground">
+                {checklistItems.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Texte de formulaire</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground whitespace-pre-wrap">
+                {formSnippet}
+              </pre>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <CopySnippetButton value={formSnippet} />
+                <Button asChild variant="secondary">
+                  <a href={`/api/download/form-snippet?token=${accessToken}`}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Télécharger le texte
+                  </a>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Procédure 1 page</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground whitespace-pre-wrap">
+              {procedureText}
+            </pre>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Disclaimers</CardTitle>
@@ -257,4 +258,3 @@ export function ReportView({ wizard, leadCapture, answers, scoreResult, report, 
     </section>
   );
 }
-

@@ -13,6 +13,7 @@ const routes = [
   "/a-propos",
   "/contact",
   "/politique-confidentialite",
+  "/demande-confidentialite",
   "/mentions-legales",
   "/conditions-utilisation",
   "/merci"
@@ -24,3 +25,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date()
   }));
 }
+

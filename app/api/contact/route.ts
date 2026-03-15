@@ -1,9 +1,32 @@
 ﻿import { NextResponse } from "next/server";
 
 import { sendContactEmail } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { contactFormSchema } from "@/lib/schemas";
 
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
+  const rateLimit = checkRateLimit(request, {
+    bucket: "contact-post",
+    limit: 10,
+    windowMs: 15 * 60 * 1000
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: "Trop de tentatives. Veuillez patienter avant de renvoyer votre message."
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds)
+        }
+      }
+    );
+  }
+
   try {
     const json = await request.json();
     const parsed = contactFormSchema.safeParse(json);
@@ -27,7 +50,7 @@ export async function POST(request: Request) {
     console.error("Contact route error", error);
     return NextResponse.json(
       {
-        error: "Impossible d’envoyer votre message pour le moment."
+        error: "Impossible d'envoyer votre message pour le moment."
       },
       { status: 500 }
     );

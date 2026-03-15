@@ -8,26 +8,34 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "db:setup": "node scripts/setup-sqlite.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@react-pdf/renderer": "^4.3.1",
+    "@prisma/adapter-better-sqlite3": "^7.5.0",
+    "@prisma/client": "^7.5.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-progress": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
+    "@react-pdf/renderer": "^4.3.1",
+    "better-sqlite3": "^12.8.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.441.0",
     "next": "^16.0.0",
+    "prisma": "^7.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.53.0",
     "resend": "^4.0.0",
     "sonner": "^1.5.0",
+    "stripe": "^20.4.1",
     "tailwind-merge": "^2.5.2",
     "zod": "^3.23.8"
   },
@@ -46,3 +54,5 @@
     "typescript": "^5.6.3"
   }
 }
+
+

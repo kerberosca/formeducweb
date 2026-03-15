@@ -5,18 +5,18 @@ export default function ConditionsUtilisationPage() {
     <section className="container py-16 md:py-24">
       <div className="max-w-4xl space-y-8">
         <div className="space-y-4">
-          <p className="eyebrow">Conditions d’utilisation</p>
-          <h1 className="font-heading text-5xl font-semibold tracking-tight">Utilisation du site et de l’outil d’auto-évaluation</h1>
+          <p className="eyebrow">Conditions d&apos;utilisation</p>
+          <h1 className="font-heading text-5xl font-semibold tracking-tight">Utilisation du site et de l&apos;outil d&apos;auto-évaluation</h1>
           <p className="text-lg leading-8 text-muted-foreground">
-            L’utilisation du site implique l’acceptation générale des présentes conditions.
+            L&apos;utilisation du site implique l&apos;acceptation générale des présentes conditions.
           </p>
         </div>
 
         {[
           {
-            title: "Nature de l’outil",
+            title: "Nature de l&apos;outil",
             body:
-              "La wizard Loi 25 est un outil de diagnostic et d’alignement. Elle sert à faire ressortir des écarts, à orienter un plan d’action et à soutenir une discussion plus approfondie."
+              "La wizard Loi 25 est un outil de diagnostic et d'alignement. Elle sert à faire ressortir des écarts, à orienter un plan d'action et à soutenir une discussion plus approfondie."
           },
           {
             title: "Pas un avis juridique",
@@ -24,9 +24,14 @@ export default function ConditionsUtilisationPage() {
               "Le contenu du site, les rapports générés et les communications associées ne constituent pas un avis juridique et ne doivent pas être interprétés comme une garantie de conformité."
           },
           {
+            title: "Limites du traitement automatisé",
+            body:
+              "Les résultats reposent sur les réponses déclarées. Ils doivent être interprétés avec jugement et, au besoin, complétés par une validation professionnelle adaptée à votre contexte."
+          },
+          {
             title: "Responsabilité",
             body:
-              "Même si un soin raisonnable est apporté au contenu, FormÉducWeb ne peut être tenu responsable d’une décision prise uniquement sur la base d’un résultat automatisé ou d’un résumé simplifié."
+              "Même si un soin raisonnable est apporté au contenu, ForméducWeb ne peut être tenu responsable d'une décision prise uniquement sur la base d'un résultat automatisé ou d'un résumé simplifié."
           },
           {
             title: "Utilisation appropriée",
@@ -45,4 +50,3 @@ export default function ConditionsUtilisationPage() {
     </section>
   );
 }
-

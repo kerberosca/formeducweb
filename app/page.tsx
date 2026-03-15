@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 import { CtaBand } from "@/components/marketing/cta-band";
@@ -22,7 +22,7 @@ export default function HomePage() {
                 Mettez votre entreprise en ordre (Loi 25) — simplement.
               </h1>
               <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
-                FormÉducWeb aide les PME et OBNL à voir clair, prioriser et implanter des actions concrètes sur leur
+                ForméducWeb aide les PME et OBNL à voir clair, prioriser et implanter des actions concrètes sur leur
                 site web, leurs formulaires et leurs pratiques de base.
               </p>
             </div>
@@ -31,7 +31,7 @@ export default function HomePage() {
                 <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/contact">Parler à FormÉducWeb</Link>
+                <Link href="/contact">Parler à ForméducWeb</Link>
               </Button>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">

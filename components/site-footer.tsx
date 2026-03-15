@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import Image from "next/image";
+import Link from "next/link";
 
 import { legalNavigation, mainNavigation, siteConfig } from "@/lib/site";
 
@@ -7,9 +8,17 @@ export function SiteFooter() {
     <footer className="border-t border-border/60 bg-[#0B392E] text-white print:hidden">
       <div className="container grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1fr]">
         <div className="space-y-4">
-          <p className="font-heading text-2xl font-semibold">FormÉducWeb</p>
+          <div className="inline-flex rounded-2xl bg-white/95 p-3">
+            <Image
+              src="/logo-formeducweb.svg"
+              alt="ForméducWeb"
+              width={891}
+              height={206}
+              className="h-auto w-[180px]"
+            />
+          </div>
           <p className="max-w-md text-sm leading-7 text-white/80">
-            Diagnostic, alignement, plan d’action et implantation pour les PME et OBNL qui veulent avancer simplement.
+            Diagnostic, alignement, plan d&apos;action et implantation pour les PME et OBNL qui veulent avancer simplement.
           </p>
           <p className="text-sm text-white/70">{siteConfig.territory}</p>
         </div>
@@ -48,4 +57,3 @@ export function SiteFooter() {
     </footer>
   );
 }
-

@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { mainNavigation } from "@/lib/site";
@@ -9,12 +10,16 @@ export function SiteHeader() {
       <div className="container py-4">
         <div className="flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
-              FÉ
-            </div>
             <div>
-              <p className="font-heading text-lg font-semibold tracking-tight">FormÉducWeb</p>
-              <p className="text-xs text-muted-foreground">Loi 25, web et implantation</p>
+              <Image
+                src="/logo-formeducweb.svg"
+                alt="ForméducWeb"
+                width={891}
+                height={206}
+                priority
+                className="h-auto w-[170px] sm:w-[230px]"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">Loi 25, web et implantation</p>
             </div>
           </Link>
 

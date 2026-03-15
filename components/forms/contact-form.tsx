@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,7 +48,7 @@ export function ContactForm() {
       const payload = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        throw new Error(payload.error || "Impossible d’envoyer votre message pour le moment.");
+        throw new Error(payload.error || "Impossible d'envoyer votre message pour le moment.");
       }
 
       toast.success("Message envoyé. On vous revient rapidement.");
@@ -123,7 +124,7 @@ export function ContactForm() {
             <Label htmlFor="message">Votre besoin</Label>
             <Textarea
               id="message"
-              placeholder="Décrivez brièvement votre contexte, votre site actuel ou votre besoin d’accompagnement."
+              placeholder="Décrivez brièvement votre contexte, votre site actuel ou votre besoin d'accompagnement."
               {...form.register("message")}
             />
             {form.formState.errors.message ? (
@@ -144,14 +145,23 @@ export function ContactForm() {
               )}
             />
             <Label className="leading-6 text-muted-foreground">
-              J’accepte de recevoir des communications de FormÉducWeb. Mon consentement est optionnel et je peux me
+              J&apos;accepte de recevoir des communications de ForméducWeb. Mon consentement est optionnel et je peux me
               désabonner en tout temps.
             </Label>
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-muted-foreground">
-              Aucune promesse de conformité n’est faite ici. On parle de diagnostic, d’alignement et d’implantation.
+              Aucune promesse de conformité n&apos;est faite ici. On parle de diagnostic, d&apos;alignement et d&apos;implantation.
+              Consultez notre{" "}
+              <Link href="/politique-confidentialite" className="underline underline-offset-4">
+                politique de confidentialité
+              </Link>{" "}
+              ou{" "}
+              <Link href="/demande-confidentialite" className="underline underline-offset-4">
+                exercer vos droits
+              </Link>
+              .
             </p>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Envoi..." : "Envoyer ma demande"}
@@ -162,4 +172,3 @@ export function ContactForm() {
     </Card>
   );
 }
-

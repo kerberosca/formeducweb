@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Assessment {
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  contactName         String
+  companyName         String
+  email               String
+  phone               String?
+  consentMarketing    Boolean  @default(false)
+  answers             Json
+  score               Int
+  level               String
+  reportLite          Json
+  reportFull          Json
+  paymentStatus       String   @default("unpaid")
+  stripeSessionId     String?
+  stripePaymentIntent String?
+  accessToken         String   @unique
+  pdfUrl              String?
+
+  @@index([email])
+  @@index([paymentStatus])
+  @@index([stripeSessionId])
+}

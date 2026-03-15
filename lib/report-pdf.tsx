@@ -1,4 +1,4 @@
-﻿import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
@@ -196,7 +196,7 @@ export function AssessmentReportPdfDocument({
   return (
     <Document
       title={`Rapport Loi 25 - ${leadCapture.companyName}`}
-      author="FormÉducWeb"
+      author="ForméducWeb"
       subject="Rapport d’auto-évaluation Loi 25"
       language="fr-CA"
     >
@@ -345,7 +345,7 @@ export function AssessmentReportPdfDocument({
         </View>
 
         <Text style={styles.footer}>
-          Rapport préparé par FormÉducWeb. Ce document vise le diagnostic, l’alignement et la priorisation d’actions.
+          Rapport préparé par ForméducWeb. Ce document vise le diagnostic, l’alignement et la priorisation d’actions.
           Il ne constitue pas un avis juridique.
         </Text>
       </Page>

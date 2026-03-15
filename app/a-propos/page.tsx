@@ -1,4 +1,4 @@
-﻿import { CtaBand } from "@/components/marketing/cta-band";
+import { CtaBand } from "@/components/marketing/cta-band";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { aboutValues } from "@/lib/content";
@@ -14,7 +14,7 @@ export default function AboutPage() {
               Web, conformité opérationnelle et implantation, dans le même langage.
             </h1>
             <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
-              FormÉducWeb existe pour aider les organisations qui veulent avancer sans se perdre entre le juridique, le
+              ForméducWeb existe pour aider les organisations qui veulent avancer sans se perdre entre le juridique, le
               web, la technique et le marketing.
             </p>
           </div>
