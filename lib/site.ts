@@ -17,6 +17,7 @@ export const mainNavigation = [
 ];
 
 export const legalNavigation = [
+  { href: "/loi-25/cest-quoi", label: "C’est quoi la Loi 25 ?" },
   { href: "/politique-confidentialite", label: "Politique de confidentialité" },
   { href: "/politique-cookies", label: "Politique cookies" },
   { href: "/demande-confidentialite", label: "Demande confidentialité" },

@@ -24,6 +24,13 @@ export default function Loi25Page() {
               On transforme un sujet souvent flou en diagnostic utile: collecte, formulaires, consentements,
               sauvegardes, accès, registre, gouvernance et preuves.
             </p>
+            <p className="text-sm text-muted-foreground">
+              Pas certain de ce que couvre exactement la loi&nbsp;?{" "}
+              <Link href="/loi-25/cest-quoi" className="underline underline-offset-4">
+                Voir le résumé «&nbsp;C’est quoi la Loi 25&nbsp;?&nbsp;»
+              </Link>
+              .
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>

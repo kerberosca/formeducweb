@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Link from "next/link";
-import { LockKeyhole, RotateCcw, ShieldCheck, SquarePen } from "lucide-react";
+import { LockKeyhole, MessageCircle, RotateCcw, ShieldCheck, SquarePen } from "lucide-react";
 
 import { UnlockReportButton } from "@/components/wizard/unlock-report-button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -40,7 +40,6 @@ export function LiteResultView({
 }: LiteResultViewProps) {
   const isPaid = paymentStatus === "paid";
   const fullReportHref = `/loi-25/rapport/${accessToken}`;
-  const showActions = Boolean(onEdit || onRestart);
 
   return (
     <section className="container py-12 md:py-16">
@@ -54,22 +53,26 @@ export function LiteResultView({
           </p>
         </div>
 
-        {showActions ? (
-          <div className="flex flex-col gap-3 sm:flex-row">
-            {onEdit ? (
-              <Button type="button" variant="secondary" onClick={onEdit}>
-                <SquarePen className="mr-2 h-4 w-4" />
-                Modifier mes réponses
-              </Button>
-            ) : null}
-            {onRestart ? (
-              <Button type="button" variant="ghost" onClick={onRestart}>
-                <RotateCcw className="mr-2 h-4 w-4" />
-                Recommencer
-              </Button>
-            ) : null}
-          </div>
-        ) : null}
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button asChild variant="secondary">
+            <Link href="/contact?source=diagnostic-loi-25">
+              <MessageCircle className="mr-2 h-4 w-4" />
+              Parler à ForméducWeb
+            </Link>
+          </Button>
+          {onEdit ? (
+            <Button type="button" variant="secondary" onClick={onEdit}>
+              <SquarePen className="mr-2 h-4 w-4" />
+              Modifier mes réponses
+            </Button>
+          ) : null}
+          {onRestart ? (
+            <Button type="button" variant="ghost" onClick={onRestart}>
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Recommencer
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <Tabs defaultValue="lite" className="space-y-6">
@@ -307,3 +310,4 @@ export function LiteResultView({
     </section>
   );
 }
+
