@@ -4,6 +4,7 @@ import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
 import type { LeadCaptureInput } from "@/lib/schemas";
 import type { WizardDataset } from "@/lib/wizard";
+import { getReportUnlockPriceLabel } from "@/lib/payments";
 
 export type AssessmentReportPdfPayload = {
   wizard: WizardDataset;
@@ -346,7 +347,8 @@ export function AssessmentReportPdfDocument({
 
         <Text style={styles.footer}>
           Rapport préparé par ForméducWeb. Ce document vise le diagnostic, l’alignement et la priorisation d’actions.
-          Il ne constitue pas un avis juridique.
+          Il ne constitue pas un avis juridique. Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait
+          d’implantation si vous poursuivez avec nous.
         </Text>
       </Page>
     </Document>

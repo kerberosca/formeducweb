@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Download, FileSpreadsheet, FileText, PhoneCall } from "lucide-react";
 
 import { CopySnippetButton } from "@/components/wizard/copy-snippet-button";
@@ -9,6 +9,7 @@ import { buildChecklistItems, buildFormSnippet, buildProcedureOnePager } from "@
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
 import type { LeadCaptureInput } from "@/lib/schemas";
+import { getReportUnlockPriceLabel } from "@/lib/payments";
 import { siteConfig } from "@/lib/site";
 
 type ReportViewProps = {
@@ -237,10 +238,26 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
           <CardHeader>
             <CardTitle>Procédure 1 page</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground whitespace-pre-wrap">
               {procedureText}
             </pre>
+            <Button asChild variant="secondary">
+              <a href={`/api/download/procedure?token=${accessToken}`}>
+                <FileText className="mr-2 h-4 w-4" />
+                Télécharger la procédure
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
+            <p className="font-medium text-foreground">Valeur ajoutée</p>
+            <p>
+              Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait d’implantation si vous poursuivez avec
+              nous. Mentionnez votre achat du rapport complet lors de votre prise de contact.
+            </p>
           </CardContent>
         </Card>
 

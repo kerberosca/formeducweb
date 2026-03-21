@@ -1,0 +1,21 @@
+# FormÉducWeb — VPS (port hôte 3010 → Next.js 3000 dans le conteneur)
+#
+# 1. cp .env.production.example .env.production && éditer
+# 2. docker compose --env-file .env.production up -d --build
+#
+services:
+  formeducweb:
+    build: .
+    container_name: formeducweb
+    restart: unless-stopped
+    ports:
+      - "3010:3000"
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: file:/data/production.db
+    volumes:
+      - formeducweb_sqlite:/data
+
+volumes:
+  formeducweb_sqlite:
