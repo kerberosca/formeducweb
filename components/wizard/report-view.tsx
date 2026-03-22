@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, FileSpreadsheet, FileText, PhoneCall } from "lucide-react";
+import { Download, FileText, PhoneCall } from "lucide-react";
 
 import { CopySnippetButton } from "@/components/wizard/copy-snippet-button";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +32,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
           <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
           <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
             Rapport détaillé préparé pour {leadCapture.companyName}. Vous avez maintenant accès au plan complet, au PDF et
-            aux gabarits de démarrage.
+            aux gabarits texte (procédure, formulaire).
           </p>
         </div>
 
@@ -41,12 +41,6 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
             <a href={`/api/pdf?token=${accessToken}`}>
               <Download className="mr-2 h-4 w-4" />
               Télécharger PDF
-            </a>
-          </Button>
-          <Button asChild variant="secondary">
-            <a href={`/api/download/incident-registry?token=${accessToken}`}>
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Télécharger le registre CSV
             </a>
           </Button>
           <Button asChild variant="ghost">

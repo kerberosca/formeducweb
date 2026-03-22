@@ -178,6 +178,23 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#60746d"
   },
+  anchorItem: {
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eef3f0"
+  },
+  anchorQuestion: {
+    fontSize: 11,
+    fontFamily: "Helvetica-Bold",
+    color: "#12382f"
+  },
+  anchorSection: {
+    marginTop: 2,
+    marginBottom: 4,
+    fontSize: 9,
+    color: "#60746d"
+  },
   footer: {
     marginTop: 12,
     paddingTop: 10,
@@ -194,6 +211,8 @@ export function AssessmentReportPdfDocument({
   scoreResult,
   report
 }: AssessmentReportPdfPayload) {
+  const diagnosticAnchors = report.diagnosticAnchors ?? [];
+
   return (
     <Document
       title={`Rapport Loi 25 - ${leadCapture.companyName}`}
@@ -287,6 +306,21 @@ export function AssessmentReportPdfDocument({
       </Page>
 
       <Page size="A4" style={styles.page}>
+        {diagnosticAnchors.length ? (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Lien avec votre questionnaire</Text>
+            <View style={styles.card}>
+              {diagnosticAnchors.map((anchor) => (
+                <View key={`${anchor.questionId}-${anchor.action}`} style={styles.anchorItem}>
+                  <Text style={styles.anchorQuestion}>{anchor.questionLabel}</Text>
+                  <Text style={styles.anchorSection}>{anchor.section}</Text>
+                  <Text style={styles.bodyText}>{anchor.action}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : null}
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Plan 30 jours</Text>
           <View style={styles.card}>

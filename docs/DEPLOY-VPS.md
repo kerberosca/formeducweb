@@ -59,3 +59,7 @@ SQLite persistante dans le volume Docker `formeducweb_sqlite` (`/data/production
 git pull
 docker compose --env-file .env.production up -d --build
 ```
+
+## Revenir à l’ancien hébergement (Plesk / WordPress)
+
+Si le domaine était hébergé ailleurs (ex. WordPress sur Plesk) et que vous devez **rétablir le DNS** ou comprendre ce qui a changé : voir **[ROLLBACK-PLESK.md](./ROLLBACK-PLESK.md)**.

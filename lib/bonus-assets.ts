@@ -1,27 +1,5 @@
-﻿import type { GeneratedReport } from "@/lib/recommendations";
+import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
-
-function csvEscape(value: string) {
-  return `"${value.replace(/"/g, '""')}"`;
-}
-
-export function buildIncidentRegistryCsv(companyName: string) {
-  const rows = [
-    ["date", "système", "type", "description", "impact", "mesures", "statut", "leçons"],
-    [
-      new Date().toISOString().slice(0, 10),
-      `${companyName} - site web`,
-      "Incident potentiel",
-      "Décrire brièvement l'événement, la source du signalement et le contexte.",
-      "Impact à confirmer",
-      "Isolation du système concerné, collecte des journaux, validation des accès.",
-      "Ouvert",
-      "À compléter après le retour d'expérience."
-    ]
-  ];
-
-  return rows.map((row) => row.map((cell) => csvEscape(cell)).join(",")).join("\n");
-}
 
 export function buildProcedureOnePager(companyName: string) {
   return [

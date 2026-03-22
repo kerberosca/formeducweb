@@ -1,5 +1,11 @@
 function looksMojibake(value: string) {
-  return /Ã|Â|â€™|â€“|â€œ|â€/.test(value);
+  // Markers seen in single and double UTF-8 mis-decoding.
+  return /(?:\u00C3|\u00C2|\uFFFD|\u00E2\u20AC)/.test(value);
+}
+
+function decodeLatin1AsUtf8(value: string) {
+  const bytes = Uint8Array.from(Array.from(value).map((character) => character.charCodeAt(0)));
+  return new TextDecoder("utf-8").decode(bytes);
 }
 
 export function repairText(value: string) {
@@ -8,8 +14,17 @@ export function repairText(value: string) {
   }
 
   try {
-    const bytes = Uint8Array.from(Array.from(value).map((character) => character.charCodeAt(0)));
-    return new TextDecoder("utf-8").decode(bytes);
+    let current = value;
+
+    // Multi-pass decode for double-encoded content.
+    for (let pass = 0; pass < 5; pass += 1) {
+      if (!looksMojibake(current)) break;
+      const decoded = decodeLatin1AsUtf8(current);
+      if (decoded === current) break;
+      current = decoded;
+    }
+
+    return current;
   } catch {
     return value;
   }

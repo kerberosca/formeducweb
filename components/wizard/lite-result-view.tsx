@@ -223,7 +223,7 @@ export function LiteResultView({
                   <li>• Rapport complet PDF brandé</li>
                   <li>• Top 5 écarts prioritaires détaillés</li>
                   <li>• Plan 30 + 90 jours</li>
-                  <li>• Checklist de démarrage + 3 gabarits téléchargeables : registre d’incidents (CSV), procédure 1 page, texte pour formulaire</li>
+                  <li>• Checklist de démarrage + gabarits texte téléchargeables : procédure 1 page, texte pour formulaire</li>
                   <li>• Crédit de {priceLabel} applicable sur un forfait d’implantation, si vous poursuivez avec nous</li>
                 </ul>
               </div>

@@ -181,7 +181,6 @@ Le webhook:
 Accessibles seulement si `paymentStatus = paid`:
 
 - `GET /api/pdf?token=...`
-- `GET /api/download/incident-registry?token=...`
 - `GET /api/download/form-snippet?token=...`
 
 ## Renforcement conformite (operationnel)
@@ -206,7 +205,6 @@ app/
     privacy-request/route.ts
     download/
       form-snippet/route.ts
-      incident-registry/route.ts
     pdf/route.ts
     stripe/
       create-checkout-session/route.ts
