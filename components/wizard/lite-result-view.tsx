@@ -25,6 +25,8 @@ type LiteResultViewProps = {
   priceLabel: string;
   onEdit?: () => void;
   onRestart?: () => void;
+  /** h2 quand la page a déjà un h1 (ex. assistant sur /loi-25/wizard) */
+  mainHeadingLevel?: "h1" | "h2";
 };
 
 export function LiteResultView({
@@ -36,17 +38,19 @@ export function LiteResultView({
   paymentStatus,
   priceLabel,
   onEdit,
-  onRestart
+  onRestart,
+  mainHeadingLevel = "h1"
 }: LiteResultViewProps) {
   const isPaid = paymentStatus === "paid";
   const fullReportHref = `/loi-25/rapport/${accessToken}`;
+  const MainHeading = mainHeadingLevel;
 
   return (
     <section className="container py-12 md:py-16">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="eyebrow">Résultat gratuit</p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
+          <MainHeading className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</MainHeading>
           <p className="mt-3 max-w-3xl text-lg leading-8 text-muted-foreground">
             Résumé préparé pour {leadCapture.companyName}. Vous obtenez ici un portrait rapide, vos 3 priorités et un
             plan d’action 30 jours pour amorcer la suite.

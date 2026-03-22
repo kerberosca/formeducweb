@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +12,15 @@ type MerciPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Merci",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true
+  }
+};
 
 export default async function MerciPage({ searchParams }: MerciPageProps) {
   const resolved = checkoutSearchParamsSchema.parse((await searchParams) ?? {});

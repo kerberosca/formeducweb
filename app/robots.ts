@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 
 import { getSiteUrl } from "@/lib/seo";
 
@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/loi-25/rapport/", "/merci"]
+        disallow: ["/api/", "/loi-25/rapport/", "/loi-25/wizard/impression", "/merci"]
       }
     ],
     host: siteUrl,

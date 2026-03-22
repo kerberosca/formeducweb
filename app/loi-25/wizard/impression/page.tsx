@@ -1,7 +1,14 @@
-﻿import { PrintReportPage } from "@/components/wizard/print-report-page";
+﻿import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Impression du rapport Loi 25"
+import { PrintReportPage } from "@/components/wizard/print-report-page";
+
+export const metadata: Metadata = {
+  title: "Impression du rapport Loi 25",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true
+  }
 };
 
 export default function WizardPrintPage() {

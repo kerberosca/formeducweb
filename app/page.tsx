@@ -1,3 +1,4 @@
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
@@ -5,14 +6,46 @@ import { CtaBand } from "@/components/marketing/cta-band";
 import { FaqList } from "@/components/marketing/faq-list";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { ServiceCard } from "@/components/marketing/service-card";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { homeFaq, homeHighlights, homeHowItWorks, trustSignals } from "@/lib/content";
+import { getAbsoluteUrl } from "@/lib/seo";
+
+const pageDescription =
+  "ForméducWeb aide les PME et OBNL du Québec à diagnostiquer, prioriser et implanter des actions concrètes pour la Loi 25, le web et le SEO.";
+
+export const metadata: Metadata = {
+  title: "Diagnostic Loi 25, web et SEO pour PME au Québec",
+  description: pageDescription,
+  alternates: {
+    canonical: getAbsoluteUrl("/")
+  },
+  openGraph: {
+    title: "Diagnostic Loi 25, web et SEO pour PME au Québec | ForméducWeb",
+    description: pageDescription,
+    url: getAbsoluteUrl("/")
+  }
+};
 
 export default function HomePage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: homeFaq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer
+      }
+    }))
+  };
+
   return (
     <>
+      <JsonLd id="home-faq-schema" value={faqSchema} />
       <section className="container py-16 md:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-7">
@@ -132,4 +165,3 @@ export default function HomePage() {
     </>
   );
 }
-

@@ -2,6 +2,8 @@
 
 Document de travail opérationnel (sans code) pour exécuter la stratégie SEO pas à pas.
 
+**Implémentation technique (métadonnées + H1) :** les pages `/loi-25`, `/loi-25/wizard`, `/contact`, `/services` et `/services/*` exposent `metadata` Next.js (`title`, `description`, `openGraph`) et une structure de titres cohérente (un seul `h1` par page publique ; étapes du wizard en `h2`).
+
 ## 1) Objectif business et cadre
 
 ### Objectif principal (90 jours)

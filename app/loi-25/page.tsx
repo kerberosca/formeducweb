@@ -1,24 +1,57 @@
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { FileText, Layers3, ShieldCheck } from "lucide-react";
 
 import { CtaBand } from "@/components/marketing/cta-band";
 import { FaqList } from "@/components/marketing/faq-list";
 import { SectionHeading } from "@/components/marketing/section-heading";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { legalDisclaimers, loi25Faq, loi25Packages } from "@/lib/content";
+import { getAbsoluteUrl } from "@/lib/seo";
+
+const pageDescription =
+  "Évaluez votre niveau de préparation Loi 25 et obtenez un plan d’action concret 30/90 jours. Approche claire: diagnostic, alignement, implantation.";
+
+export const metadata: Metadata = {
+  title: "Loi 25 pour PME au Québec | Diagnostic et plan d’action",
+  description: pageDescription,
+  alternates: {
+    canonical: getAbsoluteUrl("/loi-25")
+  },
+  openGraph: {
+    title: "Loi 25 pour PME au Québec | Diagnostic et plan d’action | ForméducWeb",
+    description: pageDescription,
+    url: getAbsoluteUrl("/loi-25")
+  }
+};
 
 export default function Loi25Page() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: loi25Faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer
+      }
+    }))
+  };
+
   return (
     <>
+      <JsonLd id="loi25-faq-schema" value={faqSchema} />
       <section className="container py-16 md:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-6">
             <Badge>Loi 25</Badge>
             <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">
-              Une démarche simple pour voir clair, prioriser et implanter.
+              Une démarche simple pour voir clair, prioriser et implanter
             </h1>
             <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
               On transforme un sujet souvent flou en diagnostic utile: collecte, formulaires, consentements,
@@ -158,4 +191,3 @@ export default function Loi25Page() {
     </>
   );
 }
-

@@ -1,11 +1,13 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Space_Grotesk, Source_Sans_3 } from "next/font/google";
 
 import { CookieConsentBanner } from "@/components/cookies/cookie-consent-banner";
 import { OptionalTrackers } from "@/components/cookies/optional-trackers";
+import { JsonLd } from "@/components/seo/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { AppToaster } from "@/components/ui/sonner";
+import { getAbsoluteUrl, getSiteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 import "./globals.css";
@@ -22,20 +24,64 @@ const bodyFont = Source_Sans_3({
   weight: ["400", "600", "700"]
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = getSiteUrl();
+const siteName = "ForméducWeb";
+const logoUrl = getAbsoluteUrl("/logo-formeducweb.svg");
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteName,
+  url: siteUrl,
+  logo: logoUrl,
+  email: siteConfig.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "101-5121 av. Chauveau Ouest",
+    addressLocality: "Québec",
+    addressRegion: "QC",
+    postalCode: "G2E 5A6",
+    addressCountry: "CA"
+  }
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteName,
+  url: siteUrl,
+  inLanguage: "fr-CA"
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "ForméducWeb",
-    template: "%s | ForméducWeb"
+    default: siteName,
+    template: `%s | ${siteName}`
   },
   description: siteConfig.description,
+  alternates: {
+    canonical: getAbsoluteUrl("/")
+  },
   openGraph: {
-    title: "ForméducWeb",
+    title: siteName,
     description: siteConfig.description,
+    url: getAbsoluteUrl("/"),
+    siteName,
     locale: "fr_CA",
-    type: "website"
+    type: "website",
+    images: [
+      {
+        url: logoUrl,
+        alt: siteName
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteConfig.description,
+    images: [logoUrl]
   }
 };
 
@@ -52,6 +98,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <OptionalTrackers />
         <CookieConsentBanner />
         <AppToaster />
+        <JsonLd id="organization-schema" value={organizationSchema} />
+        <JsonLd id="website-schema" value={websiteSchema} />
       </body>
     </html>
   );

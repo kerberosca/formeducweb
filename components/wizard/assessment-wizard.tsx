@@ -371,6 +371,7 @@ export function AssessmentWizard({
         priceLabel={reportUnlockPriceLabel}
         onEdit={handleEditResult}
         onRestart={handleRestart}
+        mainHeadingLevel="h2"
       />
     );
   }
@@ -425,7 +426,7 @@ export function AssessmentWizard({
                 </div>
               </div>
               <div className="space-y-3">
-                <h1 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h1>
+                <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h2>
                 <p className="text-lg leading-8 text-muted-foreground">
                   {currentStep.description || "Répondez avec franchise pour obtenir un portrait plus utile."}
                 </p>

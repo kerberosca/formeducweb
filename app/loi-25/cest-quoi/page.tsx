@@ -1,8 +1,23 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { SectionHeading } from "@/components/marketing/section-heading";
+﻿import type { Metadata } from "next";
 
-export const metadata = {
-  title: "C’est quoi la Loi 25 ?"
+import { SectionHeading } from "@/components/marketing/section-heading";
+import { Card, CardContent } from "@/components/ui/card";
+import { getAbsoluteUrl } from "@/lib/seo";
+
+const pageDescription =
+  "Comprenez simplement la Loi 25 pour PME: obligations clés, formulaires, consentement, incidents et bonnes pratiques concrètes.";
+
+export const metadata: Metadata = {
+  title: "C’est quoi la Loi 25?",
+  description: pageDescription,
+  alternates: {
+    canonical: getAbsoluteUrl("/loi-25/cest-quoi")
+  },
+  openGraph: {
+    title: "C’est quoi la Loi 25? | ForméducWeb",
+    description: pageDescription,
+    url: getAbsoluteUrl("/loi-25/cest-quoi")
+  }
 };
 
 export default function Loi25ExplainerPage() {
@@ -104,4 +119,3 @@ export default function Loi25ExplainerPage() {
     </section>
   );
 }
-

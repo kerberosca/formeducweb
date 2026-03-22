@@ -1,10 +1,30 @@
-﻿import Link from "next/link";
+﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 import { ContactForm } from "@/components/forms/contact-form";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getAbsoluteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
+
+const pageDescription =
+  "Parlez-nous de votre projet. Diagnostic Loi 25, refonte web, SEO ou audit cyber pour PME au Québec. Réponse rapide.";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "Contact ForméducWeb | Loi 25, site web, SEO et cyber"
+  },
+  description: pageDescription,
+  alternates: {
+    canonical: getAbsoluteUrl("/contact")
+  },
+  openGraph: {
+    title: "Contact ForméducWeb | Loi 25, site web, SEO et cyber",
+    description: pageDescription,
+    url: getAbsoluteUrl("/contact")
+  }
+};
 
 export default function ContactPage() {
   return (
@@ -15,6 +35,7 @@ export default function ContactPage() {
             eyebrow="Contact"
             title="Expliquez-nous votre besoin"
             description="Si vous hésitez entre diagnostic, refonte web ou accompagnement, on vous aidera à choisir la bonne prochaine étape."
+            titleLevel="h1"
           />
           <Card>
             <CardContent className="space-y-4 p-8 text-sm leading-7 text-muted-foreground">
