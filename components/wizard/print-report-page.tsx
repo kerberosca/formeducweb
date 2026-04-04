@@ -195,6 +195,11 @@ export function PrintReportPage() {
                 <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/70">{gap.section}</p>
               </div>
             ))}
+            {report.topGapsContext ? (
+              <div className="md:col-span-2 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
+                <p className="text-sm leading-6 text-muted-foreground">{report.topGapsContext}</p>
+              </div>
+            ) : null}
           </CardContent>
         </Card>
 

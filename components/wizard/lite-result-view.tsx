@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LockKeyhole, MessageCircle, RotateCcw, ShieldCheck, SquarePen } from "lucide-react";
+import { useState } from "react";
+import { FileText, LockKeyhole, MessageCircle, RotateCcw, ShieldCheck, SquarePen } from "lucide-react";
 
 import { UnlockReportButton } from "@/components/wizard/unlock-report-button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -41,9 +42,20 @@ export function LiteResultView({
   onRestart,
   mainHeadingLevel = "h1"
 }: LiteResultViewProps) {
+  const [activeTab, setActiveTab] = useState("lite");
   const isPaid = paymentStatus === "paid";
   const fullReportHref = `/loi-25/rapport/${accessToken}`;
   const MainHeading = mainHeadingLevel;
+
+  const fullReportIncludes = (
+    <ul className="space-y-2.5 text-sm leading-6 text-muted-foreground">
+      <li>• Top 5 des écarts prioritaires, avec le pourquoi et quoi faire</li>
+      <li>• Plan d’action 30 jours + 90 jours adapté à votre profil</li>
+      <li>• Rapport PDF téléchargeable (présentation soignée)</li>
+      <li>• Checklist de démarrage et gabarits : procédure 1 page, texte type pour formulaire</li>
+      <li>• Crédit de {priceLabel} sur un forfait d’implantation si vous poursuivez avec nous</li>
+    </ul>
+  );
 
   return (
     <section className="container py-12 md:py-16">
@@ -79,7 +91,7 @@ export function LiteResultView({
         </div>
       </div>
 
-      <Tabs defaultValue="lite" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
           <TabsTrigger value="lite">Résumé (gratuit)</TabsTrigger>
           <TabsTrigger value="full">Rapport complet {isPaid ? "" : "(verrouillé)"}</TabsTrigger>
@@ -151,6 +163,11 @@ export function LiteResultView({
                     <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/70">{gap.section}</p>
                   </div>
                 ))}
+                {liteReport.prioritiesContext ? (
+                  <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
+                    <p className="text-sm leading-6 text-muted-foreground">{liteReport.prioritiesContext}</p>
+                  </div>
+                ) : null}
               </CardContent>
             </Card>
           </div>
@@ -187,6 +204,19 @@ export function LiteResultView({
                   <p className="font-medium text-foreground">Conseil rapide</p>
                   <p>{liteReport.upsellTeaser}</p>
                 </div>
+                {!isPaid ? (
+                  <div className="flex flex-col gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                    <p className="text-sm font-medium text-foreground">Besoin du détail et des gabarits ?</p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      Le rapport complet ({priceLabel}) ajoute le Top 5 détaillé, le plan 90 jours, le PDF et les modèles
+                      prêts à réutiliser.
+                    </p>
+                    <Button type="button" variant="secondary" className="w-full sm:w-fit" onClick={() => setActiveTab("full")}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Voir ce que comprend le rapport complet
+                    </Button>
+                  </div>
+                ) : null}
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   Auto-évaluation et recommandations générales seulement
@@ -205,6 +235,49 @@ export function LiteResultView({
               ))}
             </CardContent>
           </Card>
+
+          {!isPaid ? (
+            <Card className="overflow-hidden border-primary/25 bg-gradient-to-br from-primary/5 via-background to-background">
+              <CardHeader>
+                <CardTitle className="flex flex-wrap items-center gap-2 text-2xl">
+                  <LockKeyhole className="h-6 w-6 shrink-0 text-primary" aria-hidden />
+                  Rapport complet ({priceLabel})
+                </CardTitle>
+                <p className="text-base font-normal leading-7 text-muted-foreground">
+                  Paiement unique, accès immédiat après Stripe. Voici ce que vous obtenez en plus du résumé gratuit :
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {fullReportIncludes}
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                  <UnlockReportButton
+                    assessmentId={assessmentId}
+                    accessToken={accessToken}
+                    label={`Débloquer mon rapport complet (${priceLabel})`}
+                    className="w-full sm:w-auto sm:min-w-[240px]"
+                  />
+                  <Button type="button" variant="ghost" className="w-full sm:w-auto" onClick={() => setActiveTab("full")}>
+                    FAQ et conditions
+                  </Button>
+                </div>
+                <p className="text-xs leading-5 text-muted-foreground">
+                  Pas un avis juridique — outil de diagnostic et de priorisation, comme l’auto-évaluation gratuite.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="border-primary/20">
+              <CardContent className="flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-medium">Votre rapport complet est déjà débloqué</p>
+                  <p className="text-sm text-muted-foreground">Ouvrez l’onglet « Rapport complet » ou accédez directement au rapport détaillé.</p>
+                </div>
+                <Button asChild>
+                  <Link href={fullReportHref}>Voir mon rapport complet</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="full" className="space-y-6">
@@ -223,13 +296,7 @@ export function LiteResultView({
                     Paiement unique, accès immédiat et lien sécurisé pour revenir plus tard sur votre rapport complet.
                   </p>
                 </div>
-                <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
-                  <li>• Rapport complet PDF brandé</li>
-                  <li>• Top 5 écarts prioritaires détaillés</li>
-                  <li>• Plan 30 + 90 jours</li>
-                  <li>• Checklist de démarrage + gabarits texte téléchargeables : procédure 1 page, texte pour formulaire</li>
-                  <li>• Crédit de {priceLabel} applicable sur un forfait d’implantation, si vous poursuivez avec nous</li>
-                </ul>
+                {fullReportIncludes}
               </div>
 
               <div className="space-y-4 rounded-[28px] border border-border/70 bg-background p-6">

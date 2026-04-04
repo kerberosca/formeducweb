@@ -21,17 +21,17 @@
       {
         "id": "A",
         "title": "Profil de l’entreprise",
-        "description": "Contexte général pour adapter les recommandations."
+        "description": "Quelques questions simples sur votre organisation."
       },
       {
         "id": "B",
-        "title": "Données personnelles & collecte",
-        "description": "Comprendre quelles données vous collectez et pourquoi."
+        "title": "Renseignements personnels et collecte",
+        "description": "Ce que vous recueillez, où c’est gardé et pourquoi."
       },
       {
         "id": "C",
-        "title": "Site web, formulaires & consentements",
-        "description": "Évaluer votre présence web et les mécanismes de consentement."
+        "title": "Site web, formulaires et consentement",
+        "description": "Votre site, vos formulaires et le consentement des visiteurs."
       },
       {
         "id": "D",
@@ -40,13 +40,13 @@
       },
       {
         "id": "E",
-        "title": "Incidents & gestion (registre, procédure)",
-        "description": "Capacité à réagir, documenter et améliorer."
+        "title": "Incidents et gestion",
+        "description": "Procédures, registre et réaction en cas d’incident."
       },
       {
         "id": "F",
-        "title": "Gouvernance & documentation",
-        "description": "Rôles, politiques, pratiques et preuves."
+        "title": "Gouvernance et documentation",
+        "description": "Responsables, formation, demandes des personnes et preuves."
       }
     ],
     "questions": [
@@ -70,7 +70,7 @@
       {
         "id": "A2",
         "sectionId": "A",
-        "title": "Nombre d’employés (approx.)",
+        "title": "Combien de personnes travaillent dans votre organisation?",
         "type": "single_select",
         "required": true,
         "weight": 0,
@@ -88,7 +88,7 @@
       {
         "id": "A3",
         "sectionId": "A",
-        "title": "Votre secteur principal",
+        "title": "Dans quel secteur êtes-vous principalement?",
         "type": "single_select",
         "required": true,
         "weight": 0,
@@ -117,7 +117,7 @@
       {
         "id": "B1",
         "sectionId": "B",
-        "title": "Collectez-vous des renseignements personnels (clients, prospects, employés ou fournisseurs) ?",
+        "title": "Recueillez-vous des renseignements personnels sur vos clients, prospects, employés ou fournisseurs?",
         "type": "yes_no",
         "required": true,
         "weight": 5,
@@ -136,7 +136,7 @@
       {
         "id": "B2",
         "sectionId": "B",
-        "title": "Avez-vous une liste des endroits où les données sont stockées ?",
+        "title": "Savez-vous dans quels outils, dossiers ou plateformes vous gardez les renseignements personnels?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -155,7 +155,7 @@
       {
         "id": "B3",
         "sectionId": "B",
-        "title": "Collectez-vous des données dites sensibles ? (ex. santé, NAS, infos bancaires, biométrie)",
+        "title": "Recueillez-vous des renseignements personnels sensibles, comme des infos de santé, un NAS, des infos bancaires ou des données biométriques?",
         "type": "single_select",
         "required": true,
         "weight": 5,
@@ -174,7 +174,7 @@
       {
         "id": "B4",
         "sectionId": "B",
-        "title": "Avez-vous défini la finalité (le “pourquoi”) pour chaque type de donnée collectée ?",
+        "title": "Avez-vous défini pourquoi vous recueillez chaque type de renseignement personnel?",
         "type": "single_select",
         "required": true,
         "weight": 4,
@@ -193,7 +193,7 @@
       {
         "id": "B5",
         "sectionId": "B",
-        "title": "Avez-vous des règles de conservation/suppression (durée) pour vos données ?",
+        "title": "Avez-vous des règles claires pour conserver, supprimer ou archiver vos renseignements personnels?",
         "type": "single_select",
         "required": true,
         "weight": 5,
@@ -213,7 +213,7 @@
       {
         "id": "C1",
         "sectionId": "C",
-        "title": "Avez-vous une politique de confidentialité accessible sur votre site web ?",
+        "title": "Avez-vous une politique de confidentialité accessible sur votre site web?",
         "type": "single_select",
         "required": true,
         "weight": 8,
@@ -232,7 +232,7 @@
       {
         "id": "C2",
         "sectionId": "C",
-        "title": "Avez-vous des formulaires (contact, soumission, inscription, emploi) qui collectent des données ?",
+        "title": "Avez-vous des formulaires sur votre site ou dans vos outils qui recueillent des renseignements personnels?",
         "type": "single_select",
         "required": true,
         "weight": 5,
@@ -251,7 +251,7 @@
       {
         "id": "C3",
         "sectionId": "C",
-        "title": "Vos formulaires affichent-ils un message clair sur l’usage des données ?",
+        "title": "Vos formulaires expliquent-ils clairement comment les renseignements seront utilisés?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -270,7 +270,7 @@
       {
         "id": "C4",
         "sectionId": "C",
-        "title": "Utilisez-vous des outils de suivi/analytics ou pixels publicitaires (GA, Meta Pixel, etc.) ?",
+        "title": "Utilisez-vous des outils comme Google Analytics, Meta Pixel ou d’autres outils qui suivent les visiteurs de votre site?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -289,7 +289,7 @@
       {
         "id": "C5",
         "sectionId": "C",
-        "title": "Avez-vous une bannière/gestion du consentement (cookies) configurée de façon contrôlée ?",
+        "title": "Avez-vous une bannière de consentement pour les cookies, et est-elle bien configurée?",
         "type": "single_select",
         "required": true,
         "weight": 7,
@@ -310,7 +310,7 @@
       {
         "id": "D1",
         "sectionId": "D",
-        "title": "Utilisez-vous l’authentification multifacteur (MFA) sur vos comptes importants (email, admin site, cloud) ?",
+        "title": "Utilisez-vous l’authentification multifacteur sur vos comptes importants?",
         "type": "single_select",
         "required": true,
         "weight": 9,
@@ -329,7 +329,7 @@
       {
         "id": "D2",
         "sectionId": "D",
-        "title": "Les accès aux données sont-ils limités au “besoin de savoir” (droits par rôle) ?",
+        "title": "L’accès aux renseignements personnels est-il limité selon le rôle de chaque personne?",
         "type": "single_select",
         "required": true,
         "weight": 7,
@@ -348,7 +348,7 @@
       {
         "id": "D3",
         "sectionId": "D",
-        "title": "Avez-vous des sauvegardes régulières (site web + données critiques) et testez-vous la restauration ?",
+        "title": "Avez-vous des sauvegardes régulières de votre site et de vos données importantes, et avez-vous déjà testé la restauration?",
         "type": "single_select",
         "required": true,
         "weight": 8,
@@ -367,7 +367,7 @@
       {
         "id": "D4",
         "sectionId": "D",
-        "title": "Mises à jour : vos systèmes (WP/plugins, OS, apps) sont-ils maintenus à jour ?",
+        "title": "Est-ce que vos systèmes et outils sont mis à jour régulièrement?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -386,7 +386,7 @@
       {
         "id": "D5",
         "sectionId": "D",
-        "title": "Journalisez-vous les accès/admin actions (au moins sur les systèmes critiques) ?",
+        "title": "Gardez-vous des traces des accès et des actions d’administration sur vos systèmes importants?",
         "type": "single_select",
         "required": true,
         "weight": 5,
@@ -406,7 +406,7 @@
       {
         "id": "E1",
         "sectionId": "E",
-        "title": "Avez-vous un processus écrit pour gérer un incident (quoi faire, qui appeler) ?",
+        "title": "Avez-vous une procédure écrite en cas d’incident, avec les étapes à suivre et les personnes à contacter?",
         "type": "single_select",
         "required": true,
         "weight": 8,
@@ -425,7 +425,7 @@
       {
         "id": "E2",
         "sectionId": "E",
-        "title": "Tenez-vous un registre des incidents (même mineurs) ?",
+        "title": "Tenez-vous un registre des incidents, même mineurs?",
         "type": "single_select",
         "required": true,
         "weight": 7,
@@ -444,7 +444,7 @@
       {
         "id": "E3",
         "sectionId": "E",
-        "title": "Avez-vous déjà simulé un incident (ex. perte d’accès, rançongiciel, fuite) ?",
+        "title": "Avez-vous déjà fait un test ou un exercice pour voir comment vous réagiriez en cas d’incident?",
         "type": "single_select",
         "required": true,
         "weight": 4,
@@ -463,7 +463,7 @@
       {
         "id": "E4",
         "sectionId": "E",
-        "title": "En cas d’incident, savez-vous quelles données seraient touchées et où elles se trouvent ?",
+        "title": "En cas d’incident, savez-vous quelles données seraient touchées et où elles se trouvent?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -483,7 +483,7 @@
       {
         "id": "F1",
         "sectionId": "F",
-        "title": "Avez-vous désigné un responsable interne (personne de référence) pour la protection des renseignements ?",
+        "title": "Avez-vous nommé une personne responsable à l’interne pour coordonner la protection des renseignements personnels?",
         "type": "single_select",
         "required": true,
         "weight": 7,
@@ -502,7 +502,7 @@
       {
         "id": "F2",
         "sectionId": "F",
-        "title": "Votre équipe a-t-elle reçu une formation/sensibilisation sur les bonnes pratiques (phishing, données, accès) ?",
+        "title": "Votre équipe a-t-elle reçu une formation ou une sensibilisation sur les bonnes pratiques liées aux données, aux accès et au phishing?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -521,7 +521,7 @@
       {
         "id": "F3",
         "sectionId": "F",
-        "title": "Avez-vous une procédure pour gérer les demandes liées aux données (ex. accès, correction, retrait) ?",
+        "title": "Avez-vous une procédure pour répondre aux demandes de personnes qui veulent accéder à leurs renseignements, les corriger ou les retirer?",
         "type": "single_select",
         "required": true,
         "weight": 5,
@@ -540,7 +540,7 @@
       {
         "id": "F4",
         "sectionId": "F",
-        "title": "Avez-vous des ententes/clauses avec vos fournisseurs (hébergement, CRM, marketing) sur la protection des données ?",
+        "title": "Avez-vous vérifié ce que prévoient vos fournisseurs au sujet de la protection des renseignements personnels?",
         "type": "single_select",
         "required": true,
         "weight": 6,
@@ -551,16 +551,16 @@
           { "value": "na", "label": "Non applicable (aucun fournisseur externe significatif)" }
         ],
         "scoreMap": { "yes": 4, "partial": 2, "no": 0, "na": 4 },
-        "helpText": "Vos sous-traitants ont souvent accès aux données (ou à l’infrastructure).",
+        "helpText": "Contrats, politiques des fournisseurs ou annexes sur la protection des renseignements.",
         "recommendation": {
-          "title": "Revoir les fournisseurs et les clauses",
-          "text": "Listez vos fournisseurs et vérifiez les clauses : sécurité, accès, incidents, localisation, sous-traitance, suppression."
+          "title": "Vérifier les engagements de vos fournisseurs",
+          "text": "Listez vos fournisseurs (hébergement, CRM, marketing, etc.) et vérifiez ce qu’ils prévoient : sécurité, accès, incidents, localisation, sous-traitance, suppression."
         }
       },
       {
         "id": "F5",
         "sectionId": "F",
-        "title": "Avez-vous un “dossier de preuves” (documents, captures, procédures) qui démontre vos pratiques ?",
+        "title": "Gardez-vous vos documents et preuves au même endroit pour montrer vos pratiques?",
         "type": "single_select",
         "required": true,
         "weight": 7,
@@ -579,11 +579,11 @@
     ],
     "report": {
       "sectionsScoring": [
-        { "sectionId": "B", "label": "Données & collecte" },
-        { "sectionId": "C", "label": "Web & consentements" },
-        { "sectionId": "D", "label": "Sécurité & accès" },
-        { "sectionId": "E", "label": "Incidents & registre" },
-        { "sectionId": "F", "label": "Gouvernance & preuves" }
+        { "sectionId": "B", "label": "Renseignements personnels et collecte" },
+        { "sectionId": "C", "label": "Site web, formulaires et consentement" },
+        { "sectionId": "D", "label": "Sécurité, accès et sauvegardes" },
+        { "sectionId": "E", "label": "Incidents et gestion" },
+        { "sectionId": "F", "label": "Gouvernance et documentation" }
       ],
       "planTemplates": {
         "days30": [

@@ -178,6 +178,14 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#60746d"
   },
+  topGapsContextCard: {
+    marginTop: 4,
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d8e1dc",
+    backgroundColor: "#f4faf7"
+  },
   anchorItem: {
     marginBottom: 8,
     paddingBottom: 8,
@@ -302,6 +310,11 @@ export function AssessmentReportPdfDocument({
               <Text style={styles.priority}>Priorité: {gap.priority}</Text>
             </View>
           ))}
+          {report.topGapsContext ? (
+            <View style={styles.topGapsContextCard}>
+              <Text style={styles.bodyText}>{report.topGapsContext}</Text>
+            </View>
+          ) : null}
         </View>
       </Page>
 

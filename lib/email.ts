@@ -72,6 +72,7 @@ export async function sendAssessmentReceivedEmails(payload: {
       <p>${payload.scoreResult.level.tagline}</p>
       <h2>Vos 3 priorités</h2>
       <ul>${payload.liteReport.topGaps.map((gap) => `<li><strong>${gap.title}</strong> — ${gap.action}</li>`).join("")}</ul>
+      ${payload.liteReport.prioritiesContext ? `<p>${payload.liteReport.prioritiesContext}</p>` : ""}
       <p>${payload.liteReport.upsellTeaser}</p>
       <p>${payload.liteReport.disclaimers.join(" ")}</p>
     `

@@ -7,9 +7,25 @@ import { findAssessmentById, findAssessmentByStripeSessionId, markAssessmentPaid
 import { checkoutSearchParamsSchema } from "@/lib/schemas";
 import { getStripeClient } from "@/lib/stripe";
 
-type MerciPageProps = {
-  searchParams?: Promise<{ session_id?: string; source?: string }>;
+type MerciSearchParamsInput = {
+  session_id?: string | string[];
+  source?: string | string[];
 };
+
+type MerciPageProps = {
+  /** Next peut fournir un objet ou une Promise selon la version / le mode. */
+  searchParams?: Promise<MerciSearchParamsInput> | MerciSearchParamsInput;
+};
+
+function normalizeMerciSearchParams(raw: MerciSearchParamsInput | undefined) {
+  const pick = (value: string | string[] | undefined) =>
+    Array.isArray(value) ? value[0] : value;
+
+  return {
+    session_id: pick(raw?.session_id),
+    source: pick(raw?.source)
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +39,9 @@ export const metadata: Metadata = {
 };
 
 export default async function MerciPage({ searchParams }: MerciPageProps) {
-  const resolved = checkoutSearchParamsSchema.parse((await searchParams) ?? {});
+  const raw = await Promise.resolve(searchParams ?? {});
+  const parsed = checkoutSearchParamsSchema.safeParse(normalizeMerciSearchParams(raw));
+  const resolved = parsed.success ? parsed.data : {};
   const isContact = resolved.source === "contact";
 
   if (isContact) {

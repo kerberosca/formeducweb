@@ -24,10 +24,16 @@ export type GeneratedReport = {
     section: string;
     priority: ReportPriority;
   }>;
+  topGapsContext?: string;
+  criticalTopGapsCount?: number;
   diagnosticAnchors: DiagnosticAnchor[];
   plan30Days: string[];
   plan90Days: string[];
   disclaimers: string[];
+};
+
+type ReportGap = GeneratedReport["topGaps"][number] & {
+  sectionId: string;
 };
 
 function priorityFromWeight(weight: number): ReportPriority {
@@ -61,6 +67,137 @@ function defaultActionText(gap: GapItem): string {
   return "Mettre en place une mesure simple et documentée pour combler cet écart.";
 }
 
+function consolidationActionBySection(sectionId: string) {
+  if (sectionId === "B") {
+    return "Reviser la cartographie des donnees et confirmer les regles de conservation et suppression avec les responsables.";
+  }
+  if (sectionId === "C") {
+    return "Verifier les formulaires, la transparence et les mecanismes de consentement sur le site avec un controle mensuel.";
+  }
+  if (sectionId === "D") {
+    return "Planifier une revue technique trimestrielle (MFA, acces, sauvegardes, mises a jour) avec preuve datee.";
+  }
+  if (sectionId === "E") {
+    return "Tester la procedure d'incident avec un scenario simple et consigner les ajustements a faire.";
+  }
+  if (sectionId === "F") {
+    return "Centraliser les preuves de gouvernance (politiques, registres, revues) et fixer un rythme de mise a jour.";
+  }
+
+  return "Maintenir une revue periodique des pratiques et documenter les actions pour garder un niveau stable.";
+}
+
+function priorityFromSectionPercent(percent: number): ReportPriority {
+  if (percent < 55) return "Élevée";
+  if (percent < 80) return "Moyenne";
+  return "Faible";
+}
+
+function buildConsolidationGap(section: ScoreResult["sectionScores"][number]): ReportGap {
+  const sectionLabel = section.sectionTitle ?? `Section ${section.sectionId}`;
+  const fakeGap: GapItem = {
+    questionId: `consolidation-${section.sectionId}`,
+    sectionId: section.sectionId,
+    sectionTitle: section.sectionTitle,
+    title: sectionLabel,
+    weight: 0,
+    answerValue: null,
+    answerScore: 4,
+    recommendation: null,
+    severity: 0
+  };
+
+  return {
+    title: `Consolider ${sectionLabel}`,
+    whyItMatters: defaultWhyItMatters(fakeGap),
+    action: consolidationActionBySection(section.sectionId),
+    section: sectionLabel,
+    priority: priorityFromSectionPercent(section.percent),
+    sectionId: section.sectionId
+  };
+}
+
+const GENERIC_CONSOLIDATION_GAPS: ReportGap[] = [
+  {
+    title: "Consolider les pratiques deja en place",
+    whyItMatters: "Un bon niveau doit etre entretenu pour rester fiable dans le temps.",
+    action: "Planifier une revue mensuelle courte des mesures deja implantees et corriger rapidement les ecarts.",
+    section: "Consolidation",
+    priority: "Moyenne",
+    sectionId: "CONSOLIDATION_1"
+  },
+  {
+    title: "Centraliser les preuves de conformite",
+    whyItMatters: "Des preuves simples et datees facilitent la gouvernance et la prise de decision.",
+    action: "Regrouper politiques, journaux, captures et decisions dans un espace unique maintenu a jour.",
+    section: "Consolidation",
+    priority: "Moyenne",
+    sectionId: "CONSOLIDATION_2"
+  },
+  {
+    title: "Valider les mecanismes critiques",
+    whyItMatters: "Les controles non verifies peuvent se degrader sans etre visibles.",
+    action: "Faire un mini test trimestriel sur les acces, sauvegardes et formulaires puis noter les resultats.",
+    section: "Consolidation",
+    priority: "Moyenne",
+    sectionId: "CONSOLIDATION_3"
+  }
+];
+
+function buildTopGapsContext(criticalCount: number) {
+  if (criticalCount >= 5) return undefined;
+  if (criticalCount === 4) {
+    return "4 écarts critiques ont été détectés sous le seuil. La 5e priorité est une action de consolidation pour protéger vos acquis.";
+  }
+  if (criticalCount === 3) {
+    return "3 écarts critiques ont été détectés sous le seuil. Les priorités 4 et 5 sont des actions de consolidation pour maintenir votre niveau.";
+  }
+  if (criticalCount === 2) {
+    return "2 écarts critiques ont été détectés sous le seuil. Les priorités 3 à 5 sont des actions de consolidation pour maintenir votre niveau.";
+  }
+  if (criticalCount === 1) {
+    return "1 écart critique a été détecté sous le seuil. Les priorités 2 à 5 sont des actions de consolidation pour renforcer la stabilité.";
+  }
+  return "Aucun écart critique n'a été détecté sous le seuil. Les 5 priorités proposées sont des actions de consolidation pour garder vos pratiques solides.";
+}
+
+function ensureFiveTopGaps(criticalTopGaps: ReportGap[], score: ScoreResult) {
+  const selected = criticalTopGaps.slice(0, 5);
+  const criticalCount = selected.length;
+  const seenTitles = new Set(selected.map((gap) => `${gap.section}|${gap.title}`.toLowerCase()));
+  const seenSectionIds = new Set(selected.map((gap) => gap.sectionId));
+
+  const sortedSections = [...score.sectionScores].sort((a, b) => a.percent - b.percent);
+
+  for (const section of sortedSections) {
+    if (selected.length >= 5) break;
+    if (seenSectionIds.has(section.sectionId)) continue;
+
+    const consolidationGap = buildConsolidationGap(section);
+    const key = `${consolidationGap.section}|${consolidationGap.title}`.toLowerCase();
+    if (seenTitles.has(key)) continue;
+
+    selected.push(consolidationGap);
+    seenTitles.add(key);
+    seenSectionIds.add(section.sectionId);
+  }
+
+  for (const fallback of GENERIC_CONSOLIDATION_GAPS) {
+    if (selected.length >= 5) break;
+
+    const key = `${fallback.section}|${fallback.title}`.toLowerCase();
+    if (seenTitles.has(key)) continue;
+
+    selected.push(fallback);
+    seenTitles.add(key);
+  }
+
+  return {
+    topGaps: selected.map(({ sectionId, ...gap }) => gap),
+    criticalCount,
+    topGapsContext: buildTopGapsContext(criticalCount)
+  };
+}
 function computeHighlights(result: ScoreResult): string[] {
   const highlights: string[] = [];
   const best = [...result.sectionScores].sort((a, b) => b.percent - a.percent).slice(0, 2);
@@ -287,13 +424,16 @@ export function generateReport(
   const cautions = computeCautions(score);
   const wizardQuestionsById = new Map<string, WizardQuestion>(wizard.questions.map((question) => [question.id, question]));
 
-  const topGaps = score.gaps.map((gap) => ({
+  const criticalTopGaps: ReportGap[] = score.gaps.map((gap) => ({
     title: gap.recommendation?.title ?? gap.title,
     whyItMatters: defaultWhyItMatters(gap),
     action: defaultActionText(gap),
     section: gap.sectionTitle ?? gap.sectionId,
-    priority: priorityFromWeight(gap.weight)
+    priority: priorityFromWeight(gap.weight),
+    sectionId: gap.sectionId
   }));
+  const topGapsBundle = ensureFiveTopGaps(criticalTopGaps, score);
+  const topGaps = topGapsBundle.topGaps;
 
   const days30Template = (wizard as { report?: { planTemplates?: { days30?: string[] } } }).report?.planTemplates?.days30;
   const days90Template = (wizard as { report?: { planTemplates?: { days90?: string[] } } }).report?.planTemplates?.days90;
@@ -311,6 +451,8 @@ export function generateReport(
       cautions
     },
     topGaps,
+    topGapsContext: topGapsBundle.topGapsContext,
+    criticalTopGapsCount: topGapsBundle.criticalCount,
     diagnosticAnchors,
     plan30Days,
     plan90Days,
