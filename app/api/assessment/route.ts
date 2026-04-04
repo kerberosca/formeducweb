@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 
 import { cleanupAssessmentRetention, createAssessmentRecord } from "@/lib/assessment-store";
 import { sendAssessmentReceivedEmails } from "@/lib/email";
@@ -77,6 +77,7 @@ export async function POST(request: Request) {
 
     sendAssessmentReceivedEmails({
       assessmentId: assessment.id,
+      accessToken: assessment.accessToken,
       leadCapture: parsed.data.leadCapture,
       scoreResult,
       liteReport
@@ -101,4 +102,5 @@ export async function POST(request: Request) {
     );
   }
 }
+
 

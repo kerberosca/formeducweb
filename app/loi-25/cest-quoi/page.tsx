@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 import { SectionHeading } from "@/components/marketing/section-heading";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAbsoluteUrl } from "@/lib/seo";
 
@@ -79,8 +81,8 @@ export default function Loi25ExplainerPage() {
                 (accès, sauvegardes, mises à jour, journalisation, etc.) pour réduire les risques.
               </li>
               <li>
-                <span className="font-medium">Droits des personnes.</span> Faciliter l’accès à leurs renseignements,
-                la correction, le retrait du consentement et, à terme, la portabilité.
+                <span className="font-medium">Droits des personnes.</span> Faciliter l’accès à leurs renseignements, la
+                correction, le retrait du consentement et, à terme, la portabilité.
               </li>
             </ul>
           </CardContent>
@@ -115,7 +117,31 @@ export default function Loi25ExplainerPage() {
             </p>
           </CardContent>
         </Card>
+
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="space-y-5 p-8">
+            <div className="space-y-2">
+              <p className="font-medium text-foreground">Passer de comprendre à agir</p>
+              <p className="text-sm leading-7 text-muted-foreground">
+                Commencez par l’auto-évaluation pour obtenir vos priorités, puis revenez avec vos questions si vous
+                voulez valider vos prochaines actions avec nous.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild>
+                <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href="/contact?source=loi25-cest-quoi">Parler à notre équipe</Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link href="/loi-25">Voir la page principale Loi 25</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );
 }
+

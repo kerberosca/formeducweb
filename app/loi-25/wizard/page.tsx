@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AssessmentWizard } from "@/components/wizard/assessment-wizard";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
 import { getAbsoluteUrl } from "@/lib/seo";
@@ -44,7 +46,26 @@ export default function WizardPage() {
           </CardContent>
         </Card>
       </section>
+      <section className="container pt-6">
+        <Card>
+          <CardContent className="space-y-4 p-6 text-sm leading-7 text-muted-foreground">
+            <p>
+              Besoin d’un rappel avant de répondre ou d’un échange avec notre équipe sur votre contexte? Vous pouvez consulter le
+              résumé Loi 25 ou nous écrire directement.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild variant="secondary">
+                <Link href="/loi-25/cest-quoi">Comprendre la Loi 25 simplement</Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link href="/contact?source=loi25-wizard">Parler à ForméducWeb</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
       <AssessmentWizard wizard={wizard} reportUnlockPriceLabel={getReportUnlockPriceLabel()} />
     </>
   );
 }
+

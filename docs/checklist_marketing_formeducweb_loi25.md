@@ -1,4 +1,4 @@
-# Checklist marketing détaillée — FormeducWeb / Auto-évaluation Loi 25
+﻿# Checklist marketing détaillée — FormeducWeb / Auto-évaluation Loi 25
 
 > Objectif : avancer pas à pas, dans le bon ordre, pour vérifier si l’offre peut se monétiser, sans se disperser.
 
@@ -93,133 +93,133 @@
 - [x] Faire l’auto-évaluation complète une première fois
 - [x] Vérifier que les questions sont claires
 - [x] Vérifier que le temps réel ressemble à 8–12 minutes
-- [ ] Vérifier que le résultat gratuit s’affiche bien
-- [ ] Vérifier que le score a du sens
-- [ ] Vérifier que les 3 priorités sont cohérentes
-- [ ] Vérifier que le plan 30 jours est compréhensible
-- [ ] Vérifier que les disclaimers apparaissent bien
-- [ ] Tester le passage vers le rapport complet
-- [ ] Tester le paiement Stripe
-- [ ] Vérifier que le rapport complet se débloque réellement
-- [ ] Vérifier que le PDF est téléchargeable
-- [ ] Vérifier que les gabarits sont bien accessibles
-- [ ] Vérifier le courriel utilisateur après auto-évaluation
-- [ ] Vérifier le courriel admin nouveau lead
-- [ ] Vérifier le courriel utilisateur après paiement
-- [ ] Vérifier le courriel admin paiement confirmé
-- [ ] Vérifier que le lien vers contact / appel fonctionne
-- [ ] Corriger tout ce qui crée de la friction avant de promouvoir
+- [x] Vérifier que le résultat gratuit s’affiche bien
+- [x] Vérifier que le score a du sens
+- [x] Vérifier que les 3 priorités sont cohérentes
+- [x] Vérifier que le plan 30 jours est compréhensible
+- [x] Vérifier que les disclaimers apparaissent bien
+- [x] Tester le passage vers le rapport complet
+- [x] Tester le paiement Stripe
+- [x] Vérifier que le rapport complet se débloque réellement
+- [x] Vérifier que le PDF est téléchargeable
+- [x] Vérifier que les gabarits sont bien accessibles
+- [x] Vérifier le courriel utilisateur après auto-évaluation
+- [x] Vérifier le courriel admin nouveau lead
+- [x] Vérifier le courriel utilisateur après paiement
+- [x] Vérifier le courriel admin paiement confirmé
+- [x] Vérifier que le lien vers contact / appel fonctionne
+- [x] Corriger tout ce qui crée de la friction avant de promouvoir
 
 ---
 
 ## Étape 4 — Préparer les preuves minimales
 
-- [ ] Capturer une image propre de la page d’accueil
-- [ ] Capturer une image propre de la page Loi 25
-- [ ] Capturer une image propre du wizard
-- [ ] Capturer une image du résultat gratuit
-- [ ] Capturer une image du rapport complet
-- [ ] Créer un PDF exemple si possible
-- [ ] Préparer un mini visuel “Ce que vous obtenez”
-- [ ] Préparer un visuel “Gratuit vs complet”
-- [ ] Préparer un visuel avec les 3 étapes du parcours :
-  - [ ] Diagnostic
-  - [ ] Rapport
-  - [ ] Implantation
-- [ ] Créer un dossier central pour stocker les visuels
-- [ ] Nommer les fichiers proprement
-- [ ] Préparer 3 captures prêtes pour Facebook
-- [ ] Préparer 3 captures prêtes pour LinkedIn
-- [ ] Préparer 2 captures prêtes pour les courriels
+- [x] Capturer une image propre de la page d’accueil
+- [x] Capturer une image propre de la page Loi 25
+- [x] Capturer une image propre du wizard
+- [x] Capturer une image du résultat gratuit
+- [x] Capturer une image du rapport complet
+- [x] Créer un PDF exemple si possible
+- [x] Préparer un mini visuel “Ce que vous obtenez”
+- [x] Préparer un visuel “Gratuit vs complet”
+- [x] Préparer un visuel avec les 3 étapes du parcours :
+  - [x] Diagnostic
+  - [x] Rapport
+  - [x] Implantation
+- [x] Créer un dossier central pour stocker les visuels
+- [x] Nommer les fichiers proprement
+- [x] Préparer 3 captures prêtes pour Facebook
+- [x] Préparer 3 captures prêtes pour LinkedIn
+- [x] Préparer 2 captures prêtes pour les courriels
 
 ---
 
 ## Étape 5 — Monter la page de vente principale
 
-- [ ] Choisir **une seule page de vente principale**
-- [ ] Vérifier que le H1 est clair
-- [ ] Vérifier qu’on comprend en haut de page :
-  - [ ] Pour qui c’est
-  - [ ] Ce qu’on obtient
-  - [ ] Ce qu’on fait ensuite
-- [ ] Ajouter un bouton CTA très visible au-dessus de la ligne de flottaison
-- [ ] Ajouter un bloc “ce que vous obtenez gratuitement”
-- [ ] Ajouter un bloc “ce que le rapport complet ajoute”
-- [ ] Ajouter un bloc “pourquoi agir maintenant”
-- [ ] Ajouter un bloc “ce que cette démarche n’est pas”
-- [ ] Ajouter une FAQ
-- [ ] Ajouter une section “parler à un humain”
-- [ ] Ajouter les rassurances :
-  - [ ] Pas d’avis juridique
-  - [ ] Pas de promesse exagérée
-  - [ ] Approche simple et concrète
-- [ ] Ajouter des CTA répétés tout au long de la page
-- [ ] Vérifier la version mobile
-- [ ] Vérifier que la page charge bien
-- [ ] Vérifier que le formulaire ou le bouton mène au bon endroit
+- [x] Choisir **une seule page de vente principale**
+- [x] Vérifier que le H1 est clair
+- [x] Vérifier qu’on comprend en haut de page :
+  - [x] Pour qui c’est
+  - [x] Ce qu’on obtient
+  - [x] Ce qu’on fait ensuite
+- [x] Ajouter un bouton CTA très visible au-dessus de la ligne de flottaison
+- [x] Ajouter un bloc “ce que vous obtenez gratuitement”
+- [x] Ajouter un bloc “ce que le rapport complet ajoute”
+- [x] Ajouter un bloc “pourquoi agir maintenant”
+- [x] Ajouter un bloc “ce que cette démarche n’est pas”
+- [x] Ajouter une FAQ
+- [x] Ajouter une section “parler à l’équipe”
+- [x] Ajouter les rassurances :
+  - [x] Pas d’avis juridique
+  - [x] Pas de promesse exagérée
+  - [x] Approche simple et concrète
+- [x] Ajouter des CTA répétés tout au long de la page
+- [x] Vérifier la version mobile
+- [x] Vérifier que la page charge bien
+- [x] Vérifier que le formulaire ou le bouton mène au bon endroit
 
 ---
 
 ## Étape 6 — Préparer les autres pages essentielles
 
-- [ ] Vérifier la page `/loi-25`
-- [ ] Vérifier la page `/loi-25/cest-quoi`
-- [ ] Vérifier la page `/loi-25/wizard`
-- [ ] Vérifier la page contact
-- [ ] Vérifier que chaque page contient un CTA clair
-- [ ] Vérifier que les pages se lient entre elles
-- [ ] Ajouter un lien vers l’auto-évaluation depuis l’accueil
-- [ ] Ajouter un lien vers contact depuis la page Loi 25
-- [ ] Ajouter un lien vers le wizard depuis la page “c’est quoi”
-- [ ] Vérifier que chaque page répond à une intention :
-  - [ ] Comprendre
-  - [ ] S’évaluer
-  - [ ] Passer à l’action
+- [x] Vérifier la page `/loi-25`
+- [x] Vérifier la page `/loi-25/cest-quoi`
+- [x] Vérifier la page `/loi-25/wizard`
+- [x] Vérifier la page contact
+- [x] Vérifier que chaque page contient un CTA clair
+- [x] Vérifier que les pages se lient entre elles
+- [x] Ajouter un lien vers l’auto-évaluation depuis l’accueil
+- [x] Ajouter un lien vers contact depuis la page Loi 25
+- [x] Ajouter un lien vers le wizard depuis la page “c’est quoi”
+- [x] Vérifier que chaque page répond à une intention :
+  - [x] Comprendre
+  - [x] S’évaluer
+  - [x] Passer à l’action
 
 ---
 
 ## Étape 7 — Installer un minimum de mesure
 
-- [ ] Choisir les 5 métriques de base à suivre
-- [ ] Créer un fichier de suivi simple
-- [ ] Ajouter une ligne pour chaque semaine ou période
-- [ ] Suivre au minimum :
-  - [ ] Visites page Loi 25
-  - [ ] Démarrages du wizard
-  - [ ] Complétions du wizard
-  - [ ] Achats du rapport à 29 $
-  - [ ] Demandes d’appel / contact
-- [ ] Ajouter une colonne “source du lead”
-- [ ] Ajouter une colonne “observations”
-- [ ] Décider comment on attribue les sources :
-  - [ ] Google organique
-  - [ ] Facebook organique
-  - [ ] LinkedIn
-  - [ ] Direct
-  - [ ] Google Ads
-  - [ ] Meta Ads
-- [ ] Créer une convention UTM simple
-- [ ] Vérifier que Search Console reste surveillée
-- [ ] Noter les requêtes importantes qui commencent à sortir
+- [x] Choisir les 5 métriques de base à suivre
+- [x] Créer un fichier de suivi simple
+- [x] Ajouter une ligne pour chaque semaine ou période
+- [x] Suivre au minimum :
+  - [x] Visites page Loi 25
+  - [x] Démarrages du wizard
+  - [x] Complétions du wizard
+  - [x] Achats du rapport à 29 $
+  - [x] Demandes d’appel / contact
+- [x] Ajouter une colonne “source du lead”
+- [x] Ajouter une colonne “observations”
+- [x] Décider comment on attribue les sources :
+  - [x] Google organique
+  - [x] Facebook organique
+  - [x] LinkedIn
+  - [x] Direct
+  - [x] Google Ads
+  - [x] Meta Ads
+- [x] Créer une convention UTM simple
+- [x] Vérifier que Search Console reste surveillée
+- [x] Noter les requêtes importantes qui commencent à sortir
 
 ---
 
 ## Étape 8 — Préparer les courriels de base
 
-- [ ] Réécrire le courriel de bienvenue après auto-évaluation
-- [ ] Réécrire le courriel admin nouveau lead
-- [ ] Réécrire le courriel après paiement
-- [ ] Réécrire le courriel admin paiement confirmé
-- [ ] Préparer 3 courriels de relance :
-  - [ ] J+1 : vos 3 priorités
-  - [ ] J+4 : éviter de se disperser
-  - [ ] Relance appel humain
-- [ ] Ajouter un ton humain et simple
-- [ ] Vérifier chaque sujet de courriel
-- [ ] Vérifier les liens dans chaque courriel
-- [ ] Vérifier qu’il y a un CTA par courriel
-- [ ] Vérifier qu’aucun courriel ne survend
-- [ ] Créer un mini script de réponse manuelle aux personnes qui répondent
+- [x] Réécrire le courriel de bienvenue après auto-évaluation
+- [x] Réécrire le courriel admin nouveau lead
+- [x] Réécrire le courriel après paiement
+- [x] Réécrire le courriel admin paiement confirmé
+- [x] Préparer 3 courriels de relance :
+  - [x] J+1 : vos 3 priorités
+  - [x] J+4 : éviter de se disperser
+  - [x] Relance appel équipe
+- [x] Ajouter un ton humain et simple
+- [x] Vérifier chaque sujet de courriel
+- [x] Vérifier les liens dans chaque courriel
+- [x] Vérifier qu’il y a un CTA par courriel
+- [x] Vérifier qu’aucun courriel ne survend
+- [x] Créer un mini script de réponse manuelle aux personnes qui répondent
 
 ---
 
@@ -433,4 +433,7 @@
 - Le but est d’avancer dans le bon ordre.
 - Une seule case à la fois est correcte.
 - Tant que l’offre d’entrée n’est pas claire et que le tunnel n’est pas propre, il ne faut pas amplifier avec trop de publicité.
+
+
+
 

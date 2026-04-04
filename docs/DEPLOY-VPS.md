@@ -14,7 +14,7 @@ L’application écoute sur le **port 3000 dans le conteneur** ; sur l’hôte e
 git clone <votre-repo> formeducweb
 cd formeducweb
 cp .env.production.example .env.production
-nano .env.production   # URLs HTTPS, Stripe, Resend, emails
+nano .env.production   # URLs HTTPS (incl. EMAIL_PUBLIC_BASE_URL), Stripe, Resend, emails
 docker compose --env-file .env.production up -d --build
 ```
 

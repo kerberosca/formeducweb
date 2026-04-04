@@ -59,7 +59,7 @@ Comprendre rapidement son niveau de préparation, voir ses priorités, éviter l
 - Résultat concret immédiat.
 - Score + niveau + priorités + plan 30 jours.
 - Rapport complet abordable à 29 $.
-- Possibilité de parler à un humain ensuite.
+- Possibilité de parler à l’équipe ensuite.
 - Ton non alarmiste.
 - Aucune promesse exagérée.
 - Positionnement clair: diagnostic, alignement, priorisation, implantation.
@@ -83,3 +83,4 @@ FormeducWeb aide les PME du Québec à voir clair sur leur situation Loi 25, à 
 - Statut: Terminée.
 - Dernière mise à jour: 2026-03-29.
 - Prochaine action: démarrer l’étape 02 (offre vendable et compréhensible).
+

@@ -1,0 +1,44 @@
+﻿<svg viewBox="0 0 1600 900" fill="none" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="60" x2="1460" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B132B" />
+      <stop offset="1" stop-color="#143A5A" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)" />
+  <text x="140" y="170" fill="#BAE6FD" font-size="26" font-family="Arial, sans-serif" letter-spacing="2">
+    PARCOURS CLIENT
+  </text>
+  <text x="140" y="245" fill="#FFFFFF" font-size="58" font-weight="700" font-family="Arial, sans-serif">
+    3 etapes simples pour avancer
+  </text>
+
+  <rect x="130" y="320" width="400" height="350" rx="28" fill="#082F49" stroke="#38BDF8" />
+  <rect x="600" y="320" width="400" height="350" rx="28" fill="#134E4A" stroke="#2DD4BF" />
+  <rect x="1070" y="320" width="400" height="350" rx="28" fill="#4C1D95" stroke="#A78BFA" />
+
+  <text x="175" y="390" fill="#E0F2FE" font-size="28" font-family="Arial, sans-serif">ETAPE 1</text>
+  <text x="175" y="445" fill="#FFFFFF" font-size="44" font-weight="700" font-family="Arial, sans-serif">Diagnostic</text>
+  <text x="175" y="500" fill="#BAE6FD" font-size="24" font-family="Arial, sans-serif">
+    <tspan x="175" dy="0">Auto-evaluation</tspan>
+    <tspan x="175" dy="34">rapide</tspan>
+  </text>
+
+  <text x="645" y="390" fill="#CCFBF1" font-size="28" font-family="Arial, sans-serif">ETAPE 2</text>
+  <text x="645" y="445" fill="#FFFFFF" font-size="44" font-weight="700" font-family="Arial, sans-serif">Rapport</text>
+  <text x="645" y="500" fill="#99F6E4" font-size="24" font-family="Arial, sans-serif">
+    <tspan x="645" dy="0">Priorites + plan</tspan>
+    <tspan x="645" dy="34">d'action</tspan>
+  </text>
+
+  <text x="1115" y="390" fill="#EDE9FE" font-size="28" font-family="Arial, sans-serif">ETAPE 3</text>
+  <text x="1115" y="445" fill="#FFFFFF" font-size="44" font-weight="700" font-family="Arial, sans-serif">Implantation</text>
+  <text x="1115" y="500" fill="#DDD6FE" font-size="22" font-family="Arial, sans-serif">
+    <tspan x="1115" dy="0">Mise en oeuvre</tspan>
+    <tspan x="1115" dy="32">accompagnee</tspan>
+  </text>
+
+  <path d="M530 495 L585 495" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round" />
+  <path d="M1000 495 L1055 495" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round" />
+</svg>

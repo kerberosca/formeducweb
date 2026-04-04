@@ -1,0 +1,21 @@
+﻿{
+    "generatedAt":  "2026-04-04T15:35:56",
+    "baseUrl":  "http://127.0.0.1:3050",
+    "reportToken":  "6da7906707ea57df1c3994f83ed348340165ce66ee760c9e",
+    "files":  [
+                  "public/marketing/etape-4/captures/web/2026-04-04_web_home_desktop.png",
+                  "public/marketing/etape-4/captures/web/2026-04-04_web_loi25_desktop.png",
+                  "public/marketing/etape-4/captures/web/2026-04-04_web_wizard_desktop.png",
+                  "public/marketing/etape-4/captures/resultats/2026-04-04_resultat-gratuit_desktop.png",
+                  "public/marketing/etape-4/captures/resultats/2026-04-04_rapport-complet_desktop.png",
+                  "public/marketing/etape-4/captures/pdf/2026-04-04_rapport-exemple.pdf",
+                  "public/marketing/etape-4/social/facebook/2026-04-04_facebook_ce-que-vous-obtenez_1200x630.png",
+                  "public/marketing/etape-4/social/facebook/2026-04-04_facebook_gratuit-vs-complet_1200x630.png",
+                  "public/marketing/etape-4/social/facebook/2026-04-04_facebook_parcours-3-etapes_1200x630.png",
+                  "public/marketing/etape-4/social/linkedin/2026-04-04_linkedin_page-loi25_1200x627.png",
+                  "public/marketing/etape-4/social/linkedin/2026-04-04_linkedin_rapport-complet_1200x627.png",
+                  "public/marketing/etape-4/social/linkedin/2026-04-04_linkedin_gratuit-vs-complet_1200x627.png",
+                  "public/marketing/etape-4/email/2026-04-04_email_resultat-gratuit_1200x900.png",
+                  "public/marketing/etape-4/email/2026-04-04_email_ce-que-vous-obtenez_1200x900.png"
+              ]
+}
