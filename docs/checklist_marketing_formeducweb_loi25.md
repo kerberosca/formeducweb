@@ -225,75 +225,75 @@
 
 ## Étape 9 — Monter la présence minimale sur Facebook et LinkedIn
 
-- [ ] Mettre le logo propre partout
-- [ ] Ajouter une bannière claire
-- [ ] Ajouter une description courte
-- [ ] Ajouter une description longue
-- [ ] Ajouter le lien vers la page principale Loi 25
-- [ ] Ajouter le lien de contact
-- [ ] Ajouter le bon bouton CTA
-- [ ] Préparer un premier post épinglé
-- [ ] Préparer 5 publications de base :
-  - [ ] Qui nous sommes
-  - [ ] Ce qu’est l’auto-évaluation
-  - [ ] À qui ça s’adresse
-  - [ ] Ce qu’on obtient
-  - [ ] Invitation à commencer
-- [ ] Préparer 5 visuels simples
-- [ ] Vérifier que les pages sont complètes avant de faire de la pub
+- [x] Mettre le logo propre partout
+- [x] Ajouter une bannière claire
+- [x] Ajouter une description courte
+- [x] Ajouter une description longue
+- [x] Ajouter le lien vers la page principale Loi 25
+- [x] Ajouter le lien de contact
+- [x] Ajouter le bon bouton CTA
+- [x] Préparer un premier post épinglé
+- [x] Préparer 5 publications de base :
+  - [x] Qui nous sommes
+  - [x] Ce qu’est l’auto-évaluation
+  - [x] À qui ça s’adresse
+  - [x] Ce qu’on obtient
+  - [x] Invitation à commencer
+- [x] Préparer 5 visuels simples
+- [x] Vérifier que les pages sont complètes avant de faire de la pub
 
 ---
 
 ## Étape 10 — Préparer le contenu minimum avant promotion
 
-- [ ] Rédiger 1 article “Loi 25 : c’est quoi, simplement?”
-- [ ] Rédiger 1 article “Résumé Loi 25 pour PME”
-- [ ] Rédiger 1 article “Loi 25 et site web : quoi vérifier”
-- [ ] Rédiger 1 FAQ de 10 questions
-- [ ] Rédiger 5 mini publications LinkedIn
-- [ ] Rédiger 5 mini publications Facebook
-- [ ] Préparer 3 courts extraits de courriel réutilisables
-- [ ] Lier chaque contenu vers la page principale ou le wizard
-- [ ] Vérifier que le ton reste clair, concret et non alarmiste
+- [x] Rédiger 1 article “Loi 25 : c’est quoi, simplement?”
+- [x] Rédiger 1 article “Résumé Loi 25 pour PME”
+- [x] Rédiger 1 article “Loi 25 et site web : quoi vérifier”
+- [x] Rédiger 1 FAQ de 10 questions
+- [x] Rédiger 5 mini publications LinkedIn
+- [x] Rédiger 5 mini publications Facebook
+- [x] Préparer 3 courts extraits de courriel réutilisables
+- [x] Lier chaque contenu vers la page principale ou le wizard
+- [x] Vérifier que le ton reste clair, concret et non alarmiste
 
 ---
 
 ## Étape 11 — Préparer le référencement de base
 
-- [ ] Vérifier le titre SEO de la page Loi 25
-- [ ] Vérifier sa meta description
-- [ ] Vérifier le titre SEO de la page “c’est quoi”
-- [ ] Vérifier la meta de la page “c’est quoi”
-- [ ] Vérifier le titre SEO du wizard
-- [ ] Vérifier la meta du wizard
-- [ ] Vérifier les H1 / H2 / H3
-- [ ] Vérifier les liens internes
-- [ ] Vérifier que les pages importantes sont bien indexables
-- [ ] Vérifier le sitemap
-- [ ] Vérifier que les contenus utilisent les vrais mots-clés de recherche
-- [ ] Surveiller Search Console après chaque amélioration importante
+- [x] Vérifier le titre SEO de la page Loi 25
+- [x] Vérifier sa meta description
+- [x] Vérifier le titre SEO de la page “c’est quoi”
+- [x] Vérifier la meta de la page “c’est quoi”
+- [x] Vérifier le titre SEO du wizard
+- [x] Vérifier la meta du wizard
+- [x] Vérifier les H1 / H2 / H3
+- [x] Vérifier les liens internes
+- [x] Vérifier que les pages importantes sont bien indexables
+- [x] Vérifier le sitemap
+- [x] Vérifier que les contenus utilisent les vrais mots-clés de recherche
+- [x] Surveiller Search Console après chaque amélioration importante
 
 ---
 
 ## Étape 12 — Organiser le suivi des leads
 
-- [ ] Choisir où seront stockés les leads
-- [ ] Créer un petit pipeline simple :
-  - [ ] Nouveau lead
-  - [ ] Rapport acheté
-  - [ ] Appel réservé
-  - [ ] Proposition envoyée
-  - [ ] Gagné
-  - [ ] Perdu
-- [ ] Préparer une fiche client simple
-- [ ] Noter le score si disponible
-- [ ] Noter la provenance
-- [ ] Noter le besoin principal
-- [ ] Noter la prochaine action
-- [ ] Préparer un script d’appel de 20 minutes
-- [ ] Préparer un script de relance après appel
-- [ ] Préparer un gabarit de proposition Starter
-- [ ] Préparer un gabarit de proposition Pro
+- [x] Choisir où seront stockés les leads
+- [x] Créer un petit pipeline simple :
+  - [x] Nouveau lead
+  - [x] Rapport acheté
+  - [x] Appel réservé
+  - [x] Proposition envoyée
+  - [x] Gagné
+  - [x] Perdu
+- [x] Préparer une fiche client simple
+- [x] Noter le score si disponible
+- [x] Noter la provenance
+- [x] Noter le besoin principal
+- [x] Noter la prochaine action
+- [x] Préparer un script d’appel de 20 minutes
+- [x] Préparer un script de relance après appel
+- [x] Préparer un gabarit de proposition Starter
+- [x] Préparer un gabarit de proposition Pro
 
 ---
 
@@ -316,16 +316,16 @@
 ## Étape 14 — Préparer Google Ads après les fondations
 
 - [ ] Créer ou vérifier le compte Google Ads
-- [ ] Définir un petit budget test
+- [x] Définir un petit budget test
 - [ ] Créer la campagne de marque
 - [ ] Créer la campagne intention forte Loi 25
-- [ ] Choisir des mots-clés orientés diagnostic / auto-évaluation
-- [ ] Écrire 10 à 15 titres RSA
-- [ ] Écrire 4 descriptions
+- [x] Choisir des mots-clés orientés diagnostic / auto-évaluation
+- [x] Écrire 10 à 15 titres RSA
+- [x] Écrire 4 descriptions
 - [ ] Ajouter les extensions nécessaires
-- [ ] Vérifier l’URL finale
+- [x] Vérifier l’URL finale
 - [ ] Vérifier la conversion suivie
-- [ ] Ajouter des mots-clés négatifs de base
+- [x] Ajouter des mots-clés négatifs de base
 - [ ] Lancer la campagne
 - [ ] Surveiller les premières requêtes de recherche
 - [ ] Couper ce qui attire des clics non qualifiés
@@ -335,6 +335,9 @@
 
 ## Étape 15 — Lancer Meta Ads quand la base tient debout
 
+- [x] Démarrer la configuration Pixel Meta (Events Manager)
+- [x] Confirmer le mode "Pixel Meta uniquement" + "Configurer manuellement"
+- [ ] Activer l’ID Pixel en production (`NEXT_PUBLIC_META_PIXEL_ID`) et valider Test Events
 - [ ] Vérifier que la page Facebook est crédible
 - [ ] Vérifier que les visuels sont prêts
 - [ ] Vérifier que la page de destination convertit
