@@ -34,10 +34,17 @@ export function hasOptionalTrackersConfigured() {
   return Boolean(trackerConfig.gaMeasurementId || trackerConfig.metaPixelId || trackerConfig.googleAdsId);
 }
 
-export function readCookieConsent() {
+export function readCookieConsentRaw() {
   if (typeof window === "undefined") return null;
 
-  const raw = window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY);
+  try {
+    return window.localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function parseCookieConsent(raw: string | null) {
   if (!raw) return null;
 
   try {
@@ -52,6 +59,10 @@ export function readCookieConsent() {
   }
 }
 
+export function readCookieConsent() {
+  return parseCookieConsent(readCookieConsentRaw());
+}
+
 export function saveCookieConsent(state: Omit<CookieConsentState, "updatedAt" | "version">) {
   if (typeof window === "undefined") return;
 
@@ -61,6 +72,11 @@ export function saveCookieConsent(state: Omit<CookieConsentState, "updatedAt" | 
     version: 1
   };
 
-  window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, JSON.stringify(payload));
+  try {
+    window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, JSON.stringify(payload));
+  } catch {
+    return;
+  }
+
   window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_EVENT, { detail: payload }));
 }

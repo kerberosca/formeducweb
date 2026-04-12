@@ -12,13 +12,14 @@ import {
   COOKIE_CONSENT_EVENT,
   getTrackerConfig,
   hasOptionalTrackersConfigured,
-  readCookieConsent,
+  parseCookieConsent,
+  readCookieConsentRaw,
   saveCookieConsent,
   type CookieConsentState
 } from "@/lib/cookie-consent";
 
 type ConsentMode = "simple" | "customize";
-type ConsentSnapshot = CookieConsentState | null | "server";
+type ConsentSnapshot = string | null | "server";
 
 function subscribeConsent(onChange: () => void) {
   if (typeof window === "undefined") {
@@ -35,7 +36,7 @@ function subscribeConsent(onChange: () => void) {
 }
 
 function getConsentSnapshot(): ConsentSnapshot {
-  return readCookieConsent();
+  return readCookieConsentRaw();
 }
 
 function getConsentServerSnapshot(): ConsentSnapshot {
@@ -48,12 +49,16 @@ export function CookieConsentBanner() {
   const hasMarketingTracker = Boolean(trackerConfig.metaPixelId || trackerConfig.googleAdsId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
   const consentSnapshot = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
+  const consentState = useMemo(() => {
+    if (consentSnapshot === "server") return null;
+    return parseCookieConsent(consentSnapshot);
+  }, [consentSnapshot]);
 
   const [mode, setMode] = useState<ConsentMode>("simple");
   const [allowAnalytics, setAllowAnalytics] = useState(false);
   const [allowMarketing, setAllowMarketing] = useState(false);
 
-  const isVisible = trackerConfigured && consentSnapshot === null;
+  const isVisible = trackerConfigured && consentState === null;
 
   if (!isVisible) {
     return null;
