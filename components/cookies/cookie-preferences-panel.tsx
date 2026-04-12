@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,11 @@ import {
 } from "@/lib/cookie-consent";
 
 type ConsentSnapshot = string | null | "server";
+
+type DraftConsentState = {
+  analytics: boolean;
+  marketing: boolean;
+};
 
 function subscribeConsent(onChange: () => void) {
   if (typeof window === "undefined") {
@@ -52,22 +57,23 @@ export function CookiePreferencesPanel() {
     return parseCookieConsent(consentSnapshot);
   }, [consentSnapshot]);
 
-  const [allowAnalytics, setAllowAnalytics] = useState(false);
-  const [allowMarketing, setAllowMarketing] = useState(false);
+  const [draftConsent, setDraftConsent] = useState<DraftConsentState | null>(null);
 
-  useEffect(() => {
-    setAllowAnalytics(Boolean(consentState?.analytics));
-    setAllowMarketing(Boolean(consentState?.marketing));
-  }, [consentState]);
+  const resolvedAnalytics = hasAnalyticsTracker
+    ? (draftConsent?.analytics ?? Boolean(consentState?.analytics))
+    : false;
+  const resolvedMarketing = hasMarketingTracker
+    ? (draftConsent?.marketing ?? Boolean(consentState?.marketing))
+    : false;
 
   if (!trackerConfigured) {
     return (
       <Card>
         <CardContent className="space-y-3 p-8">
-          <h2 className="font-heading text-2xl font-semibold">Préférences cookies</h2>
+          <h2 className="font-heading text-2xl font-semibold">Preferences cookies</h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Aucun tracker optionnel n&apos;est configuré pour le moment. La bannière de consentement ne s&apos;affiche donc
-            pas, et aucun cookie non essentiel n&apos;est chargé.
+            Aucun tracker optionnel n&apos;est configure pour le moment. La banniere de consentement ne s&apos;affiche donc pas,
+            et aucun cookie non essentiel n&apos;est charge.
           </p>
         </CardContent>
       </Card>
@@ -79,80 +85,80 @@ export function CookiePreferencesPanel() {
       analytics: hasAnalyticsTracker ? analytics : false,
       marketing: hasMarketingTracker ? marketing : false
     });
+    setDraftConsent(null);
     toast.success(message);
   };
 
   return (
-    <Card className="border-primary/20">
+    <Card id="preferences-cookies" className="border-primary/20">
       <CardContent className="space-y-5 p-8">
         <div className="space-y-2">
-          <h2 className="font-heading text-2xl font-semibold">Préférences cookies</h2>
+          <h2 className="font-heading text-2xl font-semibold">Preferences cookies</h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Vous pouvez modifier vos choix de consentement ici à tout moment.
+            Vous pouvez modifier vos choix de consentement ici a tout moment.
           </p>
           <Label className="block text-xs leading-6 text-muted-foreground">
-            {consentState ? "Vos préférences sont actuellement enregistrées." : "Aucune préférence enregistrée pour le moment."}
+            {consentState ? "Vos preferences sont actuellement enregistrees." : "Aucune preference enregistree pour le moment."}
           </Label>
         </div>
 
         <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/30 p-4 md:grid-cols-2">
           <label className="flex items-start gap-3">
             <Checkbox
-              checked={hasAnalyticsTracker ? allowAnalytics : false}
-              onCheckedChange={(checked) => setAllowAnalytics(Boolean(checked))}
+              checked={resolvedAnalytics}
+              onCheckedChange={(checked) =>
+                setDraftConsent((current) => ({
+                  analytics: Boolean(checked),
+                  marketing: current?.marketing ?? Boolean(consentState?.marketing)
+                }))
+              }
               disabled={!hasAnalyticsTracker}
               aria-label="Activer analytics"
             />
             <span className="space-y-1">
               <span className="block text-sm font-medium">Analytics</span>
               <span className="block text-xs leading-6 text-muted-foreground">
-                {hasAnalyticsTracker ? "Mesure de fréquentation (si configuré)." : "Non configuré sur cet environnement."}
+                {hasAnalyticsTracker ? "Mesure de frequentation (si configure)." : "Non configure sur cet environnement."}
               </span>
             </span>
           </label>
 
           <label className="flex items-start gap-3">
             <Checkbox
-              checked={hasMarketingTracker ? allowMarketing : false}
-              onCheckedChange={(checked) => setAllowMarketing(Boolean(checked))}
+              checked={resolvedMarketing}
+              onCheckedChange={(checked) =>
+                setDraftConsent((current) => ({
+                  analytics: current?.analytics ?? Boolean(consentState?.analytics),
+                  marketing: Boolean(checked)
+                }))
+              }
               disabled={!hasMarketingTracker}
               aria-label="Activer marketing"
             />
             <span className="space-y-1">
               <span className="block text-sm font-medium">Marketing</span>
               <span className="block text-xs leading-6 text-muted-foreground">
-                {hasMarketingTracker ? "Pixels publicitaires (si configuré)." : "Non configuré sur cet environnement."}
+                {hasMarketingTracker
+                  ? "Google Ads et pixels publicitaires (si configures)."
+                  : "Non configure sur cet environnement."}
               </span>
             </span>
           </label>
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => {
-              setAllowAnalytics(hasAnalyticsTracker);
-              setAllowMarketing(hasMarketingTracker);
-              handleSave(true, true, "Préférences enregistrées (acceptation).");
-            }}
-          >
+          <Button type="button" variant="secondary" onClick={() => handleSave(true, true, "Preferences enregistrees (acceptation).") }>
             Tout accepter
           </Button>
 
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => {
-              setAllowAnalytics(false);
-              setAllowMarketing(false);
-              handleSave(false, false, "Préférences enregistrées (refus).");
-            }}
-          >
+          <Button type="button" variant="ghost" onClick={() => handleSave(false, false, "Preferences enregistrees (refus).") }>
             Tout refuser
           </Button>
 
-          <Button type="button" onClick={() => handleSave(allowAnalytics, allowMarketing, "Préférences cookies enregistrées.")}>
+          <Button
+            type="button"
+            onClick={() => handleSave(resolvedAnalytics, resolvedMarketing, "Preferences cookies enregistrees.")}
+          >
             Enregistrer mes choix
           </Button>
 
@@ -161,10 +167,11 @@ export function CookiePreferencesPanel() {
             variant="secondary"
             onClick={() => {
               clearCookieConsent();
-              toast.success("Préférences réinitialisées. La bannière sera de nouveau affichée.");
+              setDraftConsent(null);
+              toast.success("Preferences reinitialisees. La banniere sera de nouveau affichee.");
             }}
           >
-            Réinitialiser
+            Reinitialiser
           </Button>
         </div>
       </CardContent>

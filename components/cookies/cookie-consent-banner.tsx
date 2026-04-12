@@ -113,7 +113,7 @@ export function CookieConsentBanner() {
                   <span className="space-y-1">
                     <span className="block text-sm font-medium">Marketing</span>
                     <span className="block text-xs leading-6 text-muted-foreground">
-                      Pixels publicitaires (si configuré).
+                      Google Ads et pixels publicitaires (si configures).
                     </span>
                   </span>
                 </label>

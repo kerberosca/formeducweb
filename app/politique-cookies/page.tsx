@@ -29,12 +29,22 @@ export default function PolitiqueCookiesPage() {
           {
             title: "Cookies non essentiels",
             body:
-              "Aucun cookie publicitaire ou analytics n'est active par defaut dans ce projet. Si cela change, une gestion de consentement explicite devra etre mise en place selon le contexte."
+              "Les cookies non essentiels sont desactives par defaut. Ils ne sont charges qu'apres un consentement explicite (analytics et/ou marketing), puis peuvent etre retires en tout temps."
+          },
+          {
+            title: "Google Ads et mesure de conversion",
+            body:
+              "Si la categorie Marketing est acceptee, le site peut charger la balise Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-evaluation). Selon la configuration, Meta Pixel peut aussi etre actif."
           },
           {
             title: "Banniere conditionnelle",
             body:
-              "La banniere de consentement s'affiche seulement si un tracker optionnel (analytics ou marketing) est configure. Sans tracker optionnel, aucun script de suivi n'est charge."
+              "La banniere de consentement s'affiche seulement si au moins un tracker optionnel (analytics ou marketing) est configure. Sans tracker optionnel, aucun script de suivi non essentiel n'est charge."
+          },
+          {
+            title: "Fournisseurs et transferts",
+            body:
+              "Certains fournisseurs de mesure publicitaire ou analytics peuvent traiter des donnees en dehors du Quebec ou du Canada, selon leur infrastructure. Ces traitements restent soumis a vos choix de consentement."
           },
           {
             title: "Comment gerer vos preferences",
