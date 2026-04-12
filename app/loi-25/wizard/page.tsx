@@ -9,16 +9,16 @@ import { getAbsoluteUrl } from "@/lib/seo";
 import { getWizardData } from "@/lib/wizard";
 
 const pageDescription =
-  "Faites votre auto-évaluation Loi 25 en quelques minutes. Score, priorités et plan 30 jours. Rapport complet disponible après déblocage.";
+  "Auto-évaluation Loi 25 gratuite pour PME au Québec: score, priorités et plan d’action 30 jours en quelques minutes.";
 
 export const metadata: Metadata = {
-  title: "Auto-évaluation Loi 25 pour PME",
+  title: "Auto-évaluation Loi 25 gratuite pour PME",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/loi-25/wizard")
   },
   openGraph: {
-    title: "Auto-évaluation Loi 25 pour PME | ForméducWeb",
+    title: "Auto-évaluation Loi 25 gratuite pour PME | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/loi-25/wizard")
   }
@@ -68,4 +68,5 @@ export default function WizardPage() {
     </>
   );
 }
+
 

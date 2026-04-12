@@ -7,16 +7,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getAbsoluteUrl } from "@/lib/seo";
 
 const pageDescription =
-  "Comprenez simplement la Loi 25 pour PME: obligations clés, formulaires, consentement, incidents et bonnes pratiques concrètes.";
+  "Résumé simple de la Loi 25 pour PME au Québec: obligations clés, consentement, formulaires, incidents et actions concrètes.";
 
 export const metadata: Metadata = {
-  title: "C’est quoi la Loi 25?",
+  title: "C’est quoi la Loi 25 pour PME? Résumé simple",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/loi-25/cest-quoi")
   },
   openGraph: {
-    title: "C’est quoi la Loi 25? | ForméducWeb",
+    title: "C’est quoi la Loi 25 pour PME? Résumé simple | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/loi-25/cest-quoi")
   }
@@ -30,6 +30,7 @@ export default function Loi25ExplainerPage() {
           eyebrow="Comprendre le contexte"
           title="En bref, c’est quoi la Loi 25&nbsp;?"
           description="Un résumé simple pour savoir de quoi on parle avant de plonger dans les détails juridiques."
+          titleLevel="h1"
         />
 
         <Card>

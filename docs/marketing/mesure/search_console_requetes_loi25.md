@@ -33,3 +33,14 @@
 | 2026-03-30 au 2026-04-05 | c'est quoi la loi 25 | 0 | 2 | 0% | 62.5 | Intention informative |
 | 2026-03-30 au 2026-04-05 | loi c25 | 0 | 1 | 0% | 92 | Variante orthographique |
 | 2026-03-30 au 2026-04-05 | qu est ce que la loi 25 | 0 | 1 | 0% | 99 | Variante longue traine |
+
+## Amelioration SEO appliquee (2026-04-04)
+- Pages ajustees:
+  - `/loi-25/cest-quoi` (title, meta description, H1)
+  - `/loi-25/wizard` (title, meta description)
+- Hypothese attendue:
+  - meilleure pertinence sur "c'est quoi la loi 25" et "loi 25 resume"
+  - progression CTR sur `/loi-25/cest-quoi`
+- Verification planifiee:
+  - relire Search Console 7 a 14 jours apres mise en ligne
+  - comparer CTR/position vs baseline du 2026-04-04

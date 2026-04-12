@@ -1,7 +1,8 @@
 ﻿"use client";
 
+import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   COOKIE_CONSENT_EVENT,
@@ -10,10 +11,20 @@ import {
   type CookieConsentState
 } from "@/lib/cookie-consent";
 
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 export function OptionalTrackers() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
-  const hasTrackers = Boolean(trackerConfig.gaMeasurementId || trackerConfig.metaPixelId);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const hasTrackers = Boolean(trackerConfig.gaMeasurementId || trackerConfig.metaPixelId || trackerConfig.googleAdsId);
   const [consent, setConsent] = useState<CookieConsentState | null>(null);
+  const hasRouteTrackedInitialView = useRef(false);
 
   useEffect(() => {
     if (!hasTrackers) return;
@@ -32,27 +43,77 @@ export function OptionalTrackers() {
     };
   }, [hasTrackers]);
 
+  const shouldLoadGa = Boolean(trackerConfig.gaMeasurementId) && consent?.analytics === true;
+  const shouldLoadGoogleAds = Boolean(trackerConfig.googleAdsId) && consent?.marketing === true;
+  const shouldLoadGtag = shouldLoadGa || shouldLoadGoogleAds;
+  const shouldLoadMeta = Boolean(trackerConfig.metaPixelId) && consent?.marketing === true;
+  const queryString = searchParams.toString();
+  const pagePath = queryString ? `${pathname}?${queryString}` : pathname;
+
+  useEffect(() => {
+    if (!consent) return;
+    if (!trackerConfig.metaPixelId) return;
+    if (typeof window.fbq !== "function") return;
+
+    window.fbq("consent", shouldLoadMeta ? "grant" : "revoke");
+  }, [consent, shouldLoadMeta, trackerConfig.metaPixelId]);
+
+  useEffect(() => {
+    if (!consent) return;
+
+    if (!shouldLoadGtag && !shouldLoadMeta) {
+      hasRouteTrackedInitialView.current = false;
+      return;
+    }
+
+    if (!hasRouteTrackedInitialView.current) {
+      hasRouteTrackedInitialView.current = true;
+      return;
+    }
+
+    if (typeof window.gtag === "function") {
+      if (shouldLoadGa && trackerConfig.gaMeasurementId) {
+        window.gtag("config", trackerConfig.gaMeasurementId, { page_path: pagePath });
+      }
+
+      if (shouldLoadGoogleAds && trackerConfig.googleAdsId) {
+        window.gtag("config", trackerConfig.googleAdsId, { page_path: pagePath });
+      }
+    }
+
+    if (shouldLoadMeta && typeof window.fbq === "function") {
+      window.fbq("track", "PageView");
+    }
+  }, [
+    consent,
+    pagePath,
+    shouldLoadGa,
+    shouldLoadGoogleAds,
+    shouldLoadGtag,
+    shouldLoadMeta,
+    trackerConfig.gaMeasurementId,
+    trackerConfig.googleAdsId
+  ]);
+
   if (!hasTrackers || !consent) {
     return null;
   }
 
-  const shouldLoadGa = Boolean(trackerConfig.gaMeasurementId) && consent.analytics;
-  const shouldLoadMeta = Boolean(trackerConfig.metaPixelId) && consent.marketing;
-
   return (
     <>
-      {shouldLoadGa ? (
+      {shouldLoadGtag ? (
         <>
           <Script
             id="ga-loader"
             strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${trackerConfig.gaMeasurementId}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${trackerConfig.gaMeasurementId || trackerConfig.googleAdsId}`}
           />
           <Script id="ga-init" strategy="afterInteractive">
             {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag("js", new Date());
-gtag("config", "${trackerConfig.gaMeasurementId}", { anonymize_ip: true });`}
+${shouldLoadGa && trackerConfig.gaMeasurementId ? `gtag("config", "${trackerConfig.gaMeasurementId}", { anonymize_ip: true });` : ""}
+${shouldLoadGoogleAds && trackerConfig.googleAdsId ? `gtag("config", "${trackerConfig.googleAdsId}");` : ""}`}
           </Script>
         </>
       ) : null}

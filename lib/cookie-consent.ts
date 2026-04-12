@@ -8,16 +8,30 @@ export type CookieConsentState = {
   version: 1;
 };
 
+function normalizeGoogleAdsId(raw: string | undefined) {
+  const trimmed = raw?.trim() || "";
+  if (!trimmed) return "";
+  if (/^AW-\d+$/i.test(trimmed)) {
+    return `AW-${trimmed.slice(3)}`;
+  }
+  if (/^\d+$/.test(trimmed)) {
+    return `AW-${trimmed}`;
+  }
+  return trimmed;
+}
+
 export function getTrackerConfig() {
   return {
     gaMeasurementId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "",
-    metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || ""
+    metaPixelId: process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || "",
+    googleAdsId: normalizeGoogleAdsId(process.env.NEXT_PUBLIC_GOOGLE_ADS_ID),
+    googleAdsLeadLabel: process.env.NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL?.trim() || ""
   };
 }
 
 export function hasOptionalTrackersConfigured() {
   const trackerConfig = getTrackerConfig();
-  return Boolean(trackerConfig.gaMeasurementId || trackerConfig.metaPixelId);
+  return Boolean(trackerConfig.gaMeasurementId || trackerConfig.metaPixelId || trackerConfig.googleAdsId);
 }
 
 export function readCookieConsent() {

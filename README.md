@@ -94,6 +94,8 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_BOOKING_URL=
 NEXT_PUBLIC_GA_MEASUREMENT_ID=
 NEXT_PUBLIC_META_PIXEL_ID=
+NEXT_PUBLIC_GOOGLE_ADS_ID=
+NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL=
 STRIPE_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
 STRIPE_PRICE_CENTS=2900
@@ -113,6 +115,8 @@ RESEND_FROM=ForméducWeb <noreply@example.com>
 
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` active le chargement GA seulement apres consentement analytics.
 - `NEXT_PUBLIC_META_PIXEL_ID` active le Pixel Meta seulement apres consentement marketing.
+- `NEXT_PUBLIC_GOOGLE_ADS_ID` active la balise Google Ads (format recommande: `AW-XXXXXXXXXX`) apres consentement marketing.
+- `NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL` configure le label de conversion Google Ads pour l'evenement lead du wizard.
 - Si ces variables sont vides, aucun tracker optionnel n'est charge et la banniere ne s'affiche pas.
 
 ## Prisma et base de donnees

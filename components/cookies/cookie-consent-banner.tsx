@@ -45,7 +45,7 @@ function getConsentServerSnapshot(): ConsentSnapshot {
 export function CookieConsentBanner() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const hasAnalyticsTracker = Boolean(trackerConfig.gaMeasurementId);
-  const hasMarketingTracker = Boolean(trackerConfig.metaPixelId);
+  const hasMarketingTracker = Boolean(trackerConfig.metaPixelId || trackerConfig.googleAdsId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
   const consentSnapshot = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
 

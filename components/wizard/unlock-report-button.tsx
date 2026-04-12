@@ -5,6 +5,7 @@ import { CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { trackMetaInitiateCheckout } from "@/lib/meta-pixel";
 
 type UnlockReportButtonProps = {
   assessmentId?: string;
@@ -52,6 +53,11 @@ export function UnlockReportButton({
         throw new Error("Aucun lien de paiement n’a été retourné.");
       }
 
+      trackMetaInitiateCheckout({
+        content_name: "Rapport complet Loi 25",
+        content_category: "Diagnostic Loi 25",
+        num_items: 1
+      });
       window.location.assign(nextUrl);
     } catch (error) {
       console.error("Stripe checkout error", error);
