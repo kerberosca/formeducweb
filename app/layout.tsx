@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Source_Sans_3 } from "next/font/google";
+import { Suspense } from "react";
 
 import { CookieConsentBanner } from "@/components/cookies/cookie-consent-banner";
 import { OptionalTrackers } from "@/components/cookies/optional-trackers";
@@ -95,7 +96,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main className="relative z-10 flex-1">{children}</main>
           <SiteFooter />
         </div>
-        <OptionalTrackers />
+        <Suspense fallback={null}>
+          <OptionalTrackers />
+        </Suspense>
         <CookieConsentBanner />
         <AppToaster />
         <JsonLd id="organization-schema" value={organizationSchema} />
