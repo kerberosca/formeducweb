@@ -80,3 +80,15 @@ export function saveCookieConsent(state: Omit<CookieConsentState, "updatedAt" | 
 
   window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_EVENT, { detail: payload }));
 }
+
+export function clearCookieConsent() {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.removeItem(COOKIE_CONSENT_STORAGE_KEY);
+  } catch {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_EVENT));
+}
