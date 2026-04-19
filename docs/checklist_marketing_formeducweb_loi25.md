@@ -337,7 +337,7 @@
 
 - [x] Démarrer la configuration Pixel Meta (Events Manager)
 - [x] Confirmer le mode "Pixel Meta uniquement" + "Configurer manuellement"
-- [ ] Activer l’ID Pixel en production (`NEXT_PUBLIC_META_PIXEL_ID`) et valider Test Events
+- [x] Activer l’ID Pixel en production (`NEXT_PUBLIC_META_PIXEL_ID`) et valider Test Events
 - [ ] Vérifier que la page Facebook est crédible
 - [ ] Vérifier que les visuels sont prêts
 - [ ] Vérifier que la page de destination convertit

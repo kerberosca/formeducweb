@@ -68,7 +68,8 @@ export async function POST(request: Request) {
       answers: parsed.data.answers,
       scoreResult,
       liteReport,
-      fullReport
+      fullReport,
+      attribution: parsed.data.attribution
     });
 
     cleanupAssessmentRetention().catch((error) => {

@@ -12,6 +12,7 @@ Ce dossier sert a executer la semaine 1 du lancement organique Loi 25 et a suivr
 ## Routine simple
 1. Publier selon le calendrier.
 2. Mettre a jour le journal le jour meme.
-3. Noter questions/commentaires dans le backlog.
-4. Noter chaque friction et sa correction dans le registre.
-5. Faire une revue rapide en fin de semaine pour ajuster Etape 14/15.
+3. Completer le suivi post-publication a 24h puis a 72h.
+4. Noter questions/commentaires dans le backlog.
+5. Noter chaque friction et sa correction dans le registre.
+6. Faire une revue rapide en fin de semaine pour ajuster Etape 14/15.

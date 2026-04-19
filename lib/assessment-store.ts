@@ -3,9 +3,10 @@
 import type { Assessment, Prisma } from "@prisma/client";
 
 import { db } from "@/lib/db";
+import { mapAttributionToDb } from "@/lib/attribution-server";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LiteReport } from "@/lib/reportFilters";
-import type { LeadCaptureInput } from "@/lib/schemas";
+import type { AttributionInput, LeadCaptureInput } from "@/lib/schemas";
 import type { AssessmentAnswers, ScoreResult } from "@/lib/scoring";
 import { computeScore } from "@/lib/scoring";
 import { deepRepairText } from "@/lib/text";
@@ -33,8 +34,10 @@ export async function createAssessmentRecord(input: {
   scoreResult: ScoreResult;
   liteReport: LiteReport;
   fullReport: GeneratedReport;
+  attribution?: AttributionInput;
 }) {
   const answers = cleanAnswers(input.answers);
+  const attribution = mapAttributionToDb(input.attribution);
 
   return db.assessment.create({
     data: {
@@ -49,7 +52,15 @@ export async function createAssessmentRecord(input: {
       reportLite: input.liteReport as Prisma.InputJsonValue,
       reportFull: input.fullReport as Prisma.InputJsonValue,
       paymentStatus: "unpaid",
-      accessToken: createAccessToken()
+      accessToken: createAccessToken(),
+      utmSource: attribution.utmSource,
+      utmMedium: attribution.utmMedium,
+      utmCampaign: attribution.utmCampaign,
+      utmContent: attribution.utmContent,
+      utmTerm: attribution.utmTerm,
+      landingPath: attribution.landingPath,
+      referrerHost: attribution.referrerHost,
+      firstSeenAt: attribution.firstSeenAt
     }
   });
 }

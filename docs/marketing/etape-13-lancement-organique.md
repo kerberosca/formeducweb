@@ -39,6 +39,8 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
   - `docs/marketing/organique/registre-frictions-loi25.md`
 - Creation du guide d'execution:
   - `docs/marketing/organique/README.md`
+- Replanification de la semaine 1 sur la fenetre active:
+  - 2026-04-20 au 2026-04-26
 
 ## Execution manuelle a faire (reseaux sociaux)
 - [ ] Publier le post epingle
@@ -69,6 +71,6 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
 - `docs/marketing/organique/registre-frictions-loi25.md`
 
 ## Statut
-- Statut: En cours (pret au lancement).
-- Derniere mise a jour: 2026-04-05.
-- Prochaine action: executer les publications semaine 1 et completer le journal.
+- Statut: En cours (execution manuelle en attente).
+- Derniere mise a jour: 2026-04-19.
+- Prochaine action: publier semaine 1 et completer le journal le jour meme + a 24h/72h.

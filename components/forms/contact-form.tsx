@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getFirstTouchAttribution } from "@/lib/attribution";
 import { contactReasons } from "@/lib/content";
 import { trackMetaContact } from "@/lib/meta-pixel";
 import { contactFormSchema, type ContactFormInput } from "@/lib/schemas";
@@ -43,7 +44,10 @@ export function ContactForm() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(values)
+        body: JSON.stringify({
+          ...values,
+          attribution: getFirstTouchAttribution()
+        })
       });
 
       const payload = (await response.json()) as { error?: string };

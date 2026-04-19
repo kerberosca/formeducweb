@@ -7,6 +7,7 @@ import { OptionalTrackers } from "@/components/cookies/optional-trackers";
 import { JsonLd } from "@/components/seo/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { AttributionBootstrap } from "@/components/analytics/attribution-bootstrap";
 import { AppToaster } from "@/components/ui/sonner";
 import { getAbsoluteUrl, getSiteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
@@ -99,6 +100,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Suspense fallback={null}>
           <OptionalTrackers />
         </Suspense>
+        <AttributionBootstrap />
         <CookieConsentBanner />
         <AppToaster />
         <JsonLd id="organization-schema" value={organizationSchema} />

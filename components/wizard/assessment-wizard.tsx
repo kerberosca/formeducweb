@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { getFirstTouchAttribution } from "@/lib/attribution";
 import type { AssessmentApiResponse, PersistedAssessmentResult } from "@/lib/assessment-types";
 import { trackGoogleAdsLead } from "@/lib/google-ads";
 import { trackMetaLead } from "@/lib/meta-pixel";
@@ -301,7 +302,8 @@ export function AssessmentWizard({
         },
         body: JSON.stringify({
           leadCapture,
-          answers: values.answers
+          answers: values.answers,
+          attribution: getFirstTouchAttribution()
         })
       });
 

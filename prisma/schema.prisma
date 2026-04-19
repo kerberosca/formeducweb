@@ -25,8 +25,41 @@ model Assessment {
   stripePaymentIntent String?
   accessToken         String   @unique
   pdfUrl              String?
+  utmSource           String?
+  utmMedium           String?
+  utmCampaign         String?
+  utmContent          String?
+  utmTerm             String?
+  landingPath         String?
+  referrerHost        String?
+  firstSeenAt         DateTime?
 
   @@index([email])
   @@index([paymentStatus])
   @@index([stripeSessionId])
+}
+
+model ContactRequest {
+  id               String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  name             String
+  company          String
+  email            String
+  phone            String?
+  reason           String
+  message          String
+  consentMarketing Boolean  @default(false)
+  utmSource        String?
+  utmMedium        String?
+  utmCampaign      String?
+  utmContent       String?
+  utmTerm          String?
+  landingPath      String?
+  referrerHost     String?
+  firstSeenAt      DateTime?
+
+  @@index([email])
+  @@index([createdAt])
+  @@index([utmSource])
 }

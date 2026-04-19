@@ -1,6 +1,6 @@
 # Calendrier lancement organique - Semaine 1
 
-Periode recommandee: du 2026-04-06 au 2026-04-12.
+Periode recommandee: du 2026-04-20 au 2026-04-26.
 
 ## Jour 1 (lundi)
 - Publier le post epingle (Facebook + LinkedIn).

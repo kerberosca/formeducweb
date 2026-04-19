@@ -1,8 +1,8 @@
-﻿periode_debut,periode_fin,source_lead,visites_page_loi25,demarrages_wizard,completions_wizard,achats_rapport_29,demandes_appel_contact,observations
-2026-03-30,2026-04-05,Toutes sources,0,0,8,5,0,Completions/achats issus de la base Assessment (script step7-kpi-assessment.mjs)
-2026-03-30,2026-04-05,Google organique,0,0,0,0,0,A ventiler selon analytics/UTM
-2026-03-30,2026-04-05,Facebook organique,0,0,0,0,0,A ventiler selon analytics/UTM
-2026-03-30,2026-04-05,LinkedIn,0,0,0,0,0,A ventiler selon analytics/UTM
-2026-03-30,2026-04-05,Direct,0,0,0,0,0,A ventiler selon analytics/UTM
-2026-03-30,2026-04-05,Google Ads,0,0,0,0,0,A ventiler selon analytics/UTM
-2026-03-30,2026-04-05,Meta Ads,0,0,0,0,0,A ventiler selon analytics/UTM
+periode_debut,periode_fin,source_lead,visites_page_loi25,demarrages_wizard,completions_wizard,achats_rapport_29,demandes_appel_contact,observations
+2026-03-30,2026-04-05,Toutes sources,0,0,11,5,0,Completions/achats issus de la base via step7-kpi-assessment.mjs (version attribution)
+2026-03-30,2026-04-05,Google organique,0,0,0,0,0,En attente de volumetrie
+2026-03-30,2026-04-05,Facebook organique,0,0,0,0,0,En attente de volumetrie
+2026-03-30,2026-04-05,LinkedIn,0,0,0,0,0,En attente de volumetrie
+2026-03-30,2026-04-05,Direct,0,0,11,5,0,Historique avant attribution fine
+2026-03-30,2026-04-05,Google Ads,0,0,0,0,0,Pas encore lance
+2026-03-30,2026-04-05,Meta Ads,0,0,0,0,0,Pas encore lance

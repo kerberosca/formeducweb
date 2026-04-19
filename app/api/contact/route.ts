@@ -1,5 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 
+import { createContactRequestRecord } from "@/lib/contact-request-store";
 import { sendContactEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { contactFormSchema } from "@/lib/schemas";
@@ -41,6 +42,7 @@ export async function POST(request: Request) {
       );
     }
 
+    await createContactRequestRecord(parsed.data);
     await sendContactEmail(parsed.data);
 
     return NextResponse.json({

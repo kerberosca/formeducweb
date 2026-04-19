@@ -1,4 +1,4 @@
-﻿# Etape 07 - Mesure minimale
+# Etape 07 - Mesure minimale
 
 ## Objectif
 Installer un suivi simple, hebdomadaire et actionnable pour piloter la performance Loi 25 sans complexite inutile.
@@ -35,9 +35,10 @@ Installer un suivi simple, hebdomadaire et actionnable pour piloter la performan
   - `docs/marketing/mesure/search_console_requetes_loi25.md`
 - Creation d'un script d'extraction des KPI base de donnees:
   - `scripts/marketing/step7-kpi-assessment.mjs`
-- Execution du script (periode 2026-03-30 a 2026-04-06 exclu):
-  - completions_wizard: 8
-  - achats_rapport_29: 5
+- Mise a niveau du script KPI pour sortir les volumes par source:
+  - completions_wizard
+  - achats_rapport_29
+  - demandes_appel_contact
 
 ## Validations
 - Le fichier KPI contient:
@@ -48,11 +49,12 @@ Installer un suivi simple, hebdomadaire et actionnable pour piloter la performan
 - La convention UTM couvre les 6 sources officielles.
 - Search Console est indique comme configure dans:
   - `docs/CONTEXTE SITE SEO - FORMEDUCWEB.md`
+- Le script KPI peut maintenant produire un resultat total + detail par source.
 
 ## Limites connues
-- `NEXT_PUBLIC_GA_MEASUREMENT_ID` et `NEXT_PUBLIC_META_PIXEL_ID` sont vides dans `.env`.
-- Sans tracker actif, les metriques de visites/demarrages par source restent a alimenter manuellement (ou via Search Console pour la partie organique).
-- Les requetes Search Console sont maintenant importees dans le journal (export du 2026-04-04).
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` est encore vide.
+- Sans GA, les metriques de visites/demarrages restent a consolider via les journaux et/ou outils externes.
+- L'attribution DB demarre a partir de la mise en place du first-touch (les historiques anterieurs restent majoritairement classes en `Direct`).
 
 ## Livrables
 - `docs/marketing/mesure/loi25_suivi_kpi_hebdo.csv`
@@ -62,6 +64,5 @@ Installer un suivi simple, hebdomadaire et actionnable pour piloter la performan
 
 ## Statut
 - Statut: Termine.
-- Derniere mise a jour: 2026-04-04.
+- Derniere mise a jour: 2026-04-19.
 - Prochaine action: mettre a jour les valeurs chaque semaine (KPI + requetes Search Console).
-
