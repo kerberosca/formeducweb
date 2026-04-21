@@ -7,6 +7,7 @@ Utiliser ce fichier pour capter les questions qui reviennent dans les commentair
 | Date | Canal | Question recue | Frequence | Niveau priorite | Action decidee | Statut |
 |---|---|---|---|---|---|---|
 | 2026-04-05 | Setup | Aucune question captee (initialisation) | 0 | Basse | Demarrer la collecte apres les premieres publications | Ouvert |
+| 2026-04-21 | Facebook + LinkedIn | Est-ce normal d'avoir zero resultat a J+1 sur les posts epingles? | 2 | Haute | Ajouter FAQ courte "delais habituels des signaux organiques" + commentaire epingle CTA sur les 2 canaux | En cours |
 
 ## Regles
 - Une question repetee 2+ fois devient prioritaire.

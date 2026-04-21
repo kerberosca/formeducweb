@@ -33,6 +33,8 @@ Installer un suivi simple, hebdomadaire et actionnable pour piloter la performan
   - `docs/marketing/mesure/utm_convention_loi25.md`
 - Creation du journal Search Console:
   - `docs/marketing/mesure/search_console_requetes_loi25.md`
+- Creation du plan SEO court terme (Google Search):
+  - `docs/marketing/mesure/plan-actions-google-search-semaine-2026-04-21.md`
 - Creation d'un script d'extraction des KPI base de donnees:
   - `scripts/marketing/step7-kpi-assessment.mjs`
 - Mise a niveau du script KPI pour sortir les volumes par source:
@@ -64,5 +66,5 @@ Installer un suivi simple, hebdomadaire et actionnable pour piloter la performan
 
 ## Statut
 - Statut: Termine.
-- Derniere mise a jour: 2026-04-19.
-- Prochaine action: mettre a jour les valeurs chaque semaine (KPI + requetes Search Console).
+- Derniere mise a jour: 2026-04-21.
+- Prochaine action: executer le plan Google Search de la semaine et mettre a jour les valeurs au point de controle du 2026-04-28.

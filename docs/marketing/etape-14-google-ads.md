@@ -61,5 +61,5 @@ Preparer un lancement Google Ads controle, centre sur l'intention forte Loi 25, 
 
 ## Statut
 - Statut: En cours (pret a lancer).
-- Derniere mise a jour: 2026-04-07.
-- Prochaine action: creer les campagnes dans Google Ads puis lancer le test 14 jours.
+- Derniere mise a jour: 2026-04-21.
+- Prochaine action: terminer la semaine d'optimisation Google Search (SEO/CTR) puis lancer Google Ads apres verification du signal qualifie.

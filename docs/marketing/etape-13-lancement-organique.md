@@ -41,10 +41,15 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
   - `docs/marketing/organique/README.md`
 - Replanification de la semaine 1 sur la fenetre active:
   - 2026-04-20 au 2026-04-26
+- Mise a jour du journal de publication avec l'execution reelle:
+  - Post epingle Facebook publie (2026-04-20)
+  - Post epingle LinkedIn publie (2026-04-20)
+  - Facebook post-01 publie (2026-04-21)
+  - Constat J+1 des posts epingles: aucun signal lead a ce stade
 
 ## Execution manuelle a faire (reseaux sociaux)
-- [ ] Publier le post epingle
-- [ ] Publier 3 premieres publications Facebook
+- [x] Publier le post epingle
+- [ ] Publier 3 premieres publications Facebook (1/3 fait)
 - [ ] Publier 3 premieres publications LinkedIn
 - [ ] Partager le lien dans le reseau personnel/professionnel
 - [ ] Demander des retours a quelques contacts
@@ -60,6 +65,7 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
 - Les liens UTM sont prets dans les contenus deja rediges (Etapes 09 et 10).
 - Le systeme de suivi (journal + backlog + friction) est en place.
 - Les actions manuelles restantes sont explicites et tracees.
+- Le lancement est actif (posts publies), mais le volume organique est encore faible en debut de cycle.
 
 ## Livrables
 - `docs/marketing/etape-13-lancement-organique.md`
@@ -71,6 +77,6 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
 - `docs/marketing/organique/registre-frictions-loi25.md`
 
 ## Statut
-- Statut: En cours (execution manuelle en attente).
-- Derniere mise a jour: 2026-04-19.
-- Prochaine action: publier semaine 1 et completer le journal le jour meme + a 24h/72h.
+- Statut: En cours (execution en continu, semaine 1 active).
+- Derniere mise a jour: 2026-04-21.
+- Prochaine action: publier LinkedIn post-01 (2026-04-22), completer les suivis 24h/72h, puis ajuster accroche + CTA si aucun signal d'ici 2026-04-23.

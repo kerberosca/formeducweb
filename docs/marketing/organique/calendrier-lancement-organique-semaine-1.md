@@ -2,6 +2,11 @@
 
 Periode recommandee: du 2026-04-20 au 2026-04-26.
 
+Etat d'avancement (mise a jour 2026-04-21):
+- Lundi: fait (posts epingles Facebook + LinkedIn)
+- Mardi: fait (Facebook post-01)
+- Mercredi a dimanche: a executer
+
 ## Jour 1 (lundi)
 - Publier le post epingle (Facebook + LinkedIn).
 - Mettre a jour `journal-publications-organiques.csv`.

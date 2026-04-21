@@ -299,7 +299,7 @@
 
 ## Étape 13 — Lancer l’organique avant la publicité
 
-- [ ] Publier le post épinglé
+- [x] Publier le post épinglé
 - [ ] Publier 3 premières publications Facebook
 - [ ] Publier 3 premières publications LinkedIn
 - [ ] Partager le lien dans le réseau personnel / professionnel approprié
@@ -310,6 +310,7 @@
 - [ ] Vérifier s’il y a des clics vers le wizard
 - [ ] Vérifier s’il y a des débuts de formulaire
 - [ ] Vérifier s’il y a au moins un premier lead naturel
+- [ ] Etat semaine 1 (au 2026-04-21): 1/3 Facebook publie, 0/3 LinkedIn, pas encore de signal lead
 
 ---
 

@@ -15,7 +15,7 @@ import { getAbsoluteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 const pageDescription =
-  "Évaluez votre niveau de préparation Loi 25 et obtenez un plan d’action concret 30/90 jours. Approche claire: diagnostic, alignement, implantation.";
+  "Loi 25 résumé pour PME du Québec: obligations clés, score de préparation et auto-évaluation gratuite pour prioriser vos actions en 30 jours.";
 
 const freeDeliverables = [
   "Score global et niveau de préparation.",
@@ -38,14 +38,34 @@ const notThis = [
   "Ce n’est pas un projet lourd avant d’avoir validé vos priorités."
 ];
 
+const searchIntentFaq = [
+  {
+    question: "Qu’est-ce que la Loi 25 au Québec?",
+    answer:
+      "La Loi 25 encadre la collecte, l’utilisation et la protection des renseignements personnels. Pour une PME, cela touche notamment les formulaires web, les outils marketing, les accès et la documentation interne."
+  },
+  {
+    question: "C’est quoi la Loi 25 pour une PME, concrètement?",
+    answer:
+      "Concrètement: désigner un responsable, clarifier les consentements, sécuriser les accès, tenir un registre d’incidents et rendre les pratiques plus transparentes pour les clients, employés et partenaires."
+  },
+  {
+    question: "La Loi 25 couvre-t-elle les renseignements personnels du site web?",
+    answer:
+      "Oui. Les formulaires, pixels, outils d’analytics, CRM et pages légales font partie des zones à vérifier en priorité, parce qu’elles traitent des renseignements personnels au quotidien."
+  }
+];
+
+const faqItems = [...searchIntentFaq, ...loi25Faq];
+
 export const metadata: Metadata = {
-  title: "Loi 25 pour PME au Québec | Diagnostic et plan d’action",
+  title: "Loi 25 résumé pour PME du Québec | Auto-évaluation gratuite",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/loi-25")
   },
   openGraph: {
-    title: "Loi 25 pour PME au Québec | Diagnostic et plan d’action | ForméducWeb",
+    title: "Loi 25 résumé pour PME du Québec | Auto-évaluation gratuite | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/loi-25")
   }
@@ -55,7 +75,7 @@ export default function Loi25Page() {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: loi25Faq.map((item) => ({
+    mainEntity: faqItems.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: {
@@ -74,24 +94,41 @@ export default function Loi25Page() {
           <div className="space-y-6">
             <Badge>Loi 25</Badge>
             <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">
-              Diagnostic Loi 25 clair pour PME et OBNL du Québec
+              Loi 25 résumé et diagnostic clair pour PME et OBNL du Québec
             </h1>
             <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
-              Vous obtenez un portrait concret en quelques minutes: score, priorités, plan d’action, puis une suite
-              claire si vous voulez aller plus loin.
+              Si vous cherchez un résumé Loi 25 clair et actionnable, vous êtes au bon endroit: score, priorités et
+              plan d’action, puis une suite simple si vous voulez aller plus loin.
             </p>
             <ul className="space-y-2 text-sm leading-7 text-muted-foreground">
               <li>• Pour qui: direction, marketing, opérations sans équipe conformité dédiée.</li>
               <li>• Ce qu’on obtient: gratuit d’abord, puis rapport complet à 29 $ si pertinent.</li>
               <li>• Ce qu’on fait ensuite: prioriser, implémenter, valider avec notre équipe au besoin.</li>
             </ul>
-            <p className="text-sm text-muted-foreground">
-              Besoin d’un rappel simple des obligations?{" "}
-              <Link href="/loi-25/cest-quoi" className="underline underline-offset-4">
-                Voir le résumé « C’est quoi la Loi 25 ? »
-              </Link>
-              .
-            </p>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>
+                Besoin d’un rappel simple des obligations?{" "}
+                <Link href="/loi-25/cest-quoi" className="underline underline-offset-4">
+                  Voir le résumé « C’est quoi la Loi 25 ? »
+                </Link>
+                .
+              </p>
+              <p>
+                Liens utiles:{" "}
+                <Link href="/loi-25/wizard" className="underline underline-offset-4">
+                  évaluation Loi 25
+                </Link>{" "}
+                •{" "}
+                <Link href="/contact" className="underline underline-offset-4">
+                  parler à l’équipe
+                </Link>{" "}
+                •{" "}
+                <Link href="/services/site-web" className="underline underline-offset-4">
+                  mise à niveau formulaires et pages légales
+                </Link>
+                .
+              </p>
+            </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
@@ -275,9 +312,9 @@ export default function Loi25Page() {
       </section>
 
       <section className="container py-12 md:py-18">
-        <SectionHeading eyebrow="FAQ" title="Questions fréquentes" />
+        <SectionHeading eyebrow="FAQ" title="Questions fréquentes sur la Loi 25" />
         <div className="mt-8 rounded-[32px] border border-border/70 bg-white/80 p-6 md:p-8">
-          <FaqList items={loi25Faq} />
+          <FaqList items={faqItems} />
         </div>
       </section>
 

@@ -27,3 +27,6 @@ Ce dossier contient un fichier Markdown par etape de la checklist marketing.
 - [Etape 16 - Lead vers revenu](./etape-16-lead-vers-revenu.md)
 - [Etape 17 - Criteres de validation](./etape-17-criteres-validation.md)
 - [Etape 18 - Elargissement](./etape-18-elargissement.md)
+
+## Revues transversales
+- [Revue documentation 2026-04-21](./revue-docs-2026-04-21.md)

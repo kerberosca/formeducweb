@@ -7,16 +7,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getAbsoluteUrl } from "@/lib/seo";
 
 const pageDescription =
-  "Résumé simple de la Loi 25 pour PME au Québec: obligations clés, consentement, formulaires, incidents et actions concrètes.";
+  "C’est quoi la Loi 25? Résumé simple pour PME du Québec: obligations clés, renseignements personnels, consentement, incidents et premières actions.";
 
 export const metadata: Metadata = {
-  title: "C’est quoi la Loi 25 pour PME? Résumé simple",
+  title: "C’est quoi la Loi 25? Résumé simple pour PME du Québec",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/loi-25/cest-quoi")
   },
   openGraph: {
-    title: "C’est quoi la Loi 25 pour PME? Résumé simple | ForméducWeb",
+    title: "C’est quoi la Loi 25? Résumé simple pour PME du Québec | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/loi-25/cest-quoi")
   }
@@ -28,10 +28,32 @@ export default function Loi25ExplainerPage() {
       <div className="max-w-4xl space-y-10">
         <SectionHeading
           eyebrow="Comprendre le contexte"
-          title="En bref, c’est quoi la Loi 25&nbsp;?"
-          description="Un résumé simple pour savoir de quoi on parle avant de plonger dans les détails juridiques."
+          title="En bref, c’est quoi la Loi 25 au Québec&nbsp;?"
+          description="Un résumé simple de la Loi 25 pour PME et OBNL avant de plonger dans les détails juridiques."
           titleLevel="h1"
         />
+
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="space-y-4 p-8 text-sm leading-7 text-muted-foreground">
+            <p className="font-medium text-foreground">Résumé express Loi 25 (en 30 secondes)</p>
+            <ul className="list-disc space-y-2 pl-5">
+              <li>La Loi 25 encadre mieux les renseignements personnels et la transparence.</li>
+              <li>Même une PME est concernée si elle collecte des données via son site ou ses outils.</li>
+              <li>Le plus simple est de commencer par un diagnostic pour prioriser les actions.</li>
+            </ul>
+            <p>
+              Pour passer à l’action:{" "}
+              <Link href="/loi-25/wizard" className="underline underline-offset-4">
+                faire l’évaluation Loi 25
+              </Link>{" "}
+              ou revenir à la{" "}
+              <Link href="/loi-25" className="underline underline-offset-4">
+                page principale Loi 25 résumé
+              </Link>
+              .
+            </p>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardContent className="space-y-4 p-8 text-sm leading-7 text-muted-foreground">
@@ -104,6 +126,13 @@ export default function Loi25ExplainerPage() {
             <p>
               C’est souvent là que l’on commence à voir clairement ce qui est collecté, où ça va, qui y a accès et
               comment tout ça est expliqué aux personnes concernées.
+            </p>
+            <p>
+              Besoin d’une version actionnable plutôt qu’un rappel théorique?{" "}
+              <Link href="/loi-25" className="underline underline-offset-4">
+                Voir le diagnostic Loi 25 résumé
+              </Link>
+              .
             </p>
           </CardContent>
         </Card>

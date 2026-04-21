@@ -1,10 +1,10 @@
 # Template - Revue Hebdo SEO
 
-Semaine du:  
-Responsable:  
+Semaine du:
+Responsable:
 Date de revue:
 
-## 1) KPI globaux (28j vs 28j précédents)
+## 1) KPI globaux (28j vs 28j precedents)
 
 - Impressions:
 - Clics:
@@ -19,7 +19,7 @@ Date de revue:
 - Taux wizard -> contact:
 - Taux wizard -> achat:
 
-## 3) Pages à surveiller
+## 3) Pages a surveiller
 
 | Page | Impressions | Clics | CTR | Position | Note |
 |---|---:|---:|---:|---:|---|
@@ -30,45 +30,45 @@ Date de revue:
 | /services/seo |  |  |  |  |  |
 | /services/cybersecurite |  |  |  |  |  |
 
-## 4) Requêtes clés (Top 20)
+## 4) Requetes cles (Top 20)
 
-- Requête #1:
-- Requête #2:
-- Requête #3:
-- Requête #4:
-- Requête #5:
+- Requete #1:
+- Requete #2:
+- Requete #3:
+- Requete #4:
+- Requete #5:
 
-## 5) Décisions de la semaine (obligatoire)
+## 5) Decisions de la semaine (obligatoire)
 
-1. Page CTR à optimiser:
+1. Page CTR a optimiser:
    - Pourquoi:
-   - Action prévue:
+   - Action prevue:
    - Responsable:
-   - Échéance:
+   - Echeance:
 
-2. Page conversion à optimiser:
+2. Page conversion a optimiser:
    - Pourquoi:
-   - Action prévue:
+   - Action prevue:
    - Responsable:
-   - Échéance:
+   - Echeance:
 
-3. Contenu à produire:
+3. Contenu a produire:
    - Sujet:
    - Intention:
    - CTA principal:
    - Responsable:
-   - Échéance:
+   - Echeance:
 
-## 6) Vérifications techniques rapides
+## 6) Verifications techniques rapides
 
 - Sitemap:
 - robots/noindex:
 - Indexation:
 - Erreurs critiques:
 
-## 7) Suivi avant / après (semaine suivante)
+## 7) Suivi avant / apres (semaine suivante)
 
-- Résultat action CTR:
-- Résultat action conversion:
-- Résultat contenu:
-- Ajustements à faire:
+- Resultat action CTR:
+- Resultat action conversion:
+- Resultat contenu:
+- Ajustements a faire:

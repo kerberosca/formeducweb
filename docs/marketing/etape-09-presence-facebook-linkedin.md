@@ -46,8 +46,11 @@ Monter une presence minimale credible sur Facebook et LinkedIn avec un kit de pr
 ## Note d'execution
 - La mise en ligne est manuelle (copier-coller dans Facebook/LinkedIn).
 - Le kit livre ici est pret a publier et sert de source unique pour l'equipe.
+- Execution confirmee:
+  - posts epingles publies le 2026-04-20 (Facebook + LinkedIn)
+  - lancement des mini publications commence le 2026-04-21
 
 ## Statut
-- Statut: Termine (pret a publier).
-- Derniere mise a jour: 2026-04-04.
-- Prochaine action: Etape 10 (contenu minimum avant promotion).
+- Statut: Termine (kit) + execution en cours.
+- Derniere mise a jour: 2026-04-21.
+- Prochaine action: poursuivre la cadence organique semaine 1 et renseigner le journal a 24h/72h.
