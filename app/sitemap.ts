@@ -10,6 +10,7 @@ const indexableRoutes: Array<{
   { route: "", priority: 1, changeFrequency: "weekly" },
   { route: "/loi-25", priority: 0.95, changeFrequency: "weekly" },
   { route: "/loi-25/cest-quoi", priority: 0.88, changeFrequency: "monthly" },
+  { route: "/loi-25/occasion-menage-donnees-cybersecurite", priority: 0.84, changeFrequency: "monthly" },
   { route: "/loi-25/wizard", priority: 0.9, changeFrequency: "weekly" },
   { route: "/services", priority: 0.82, changeFrequency: "monthly" },
   { route: "/services/site-web", priority: 0.78, changeFrequency: "monthly" },
