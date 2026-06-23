@@ -266,9 +266,10 @@ export const legalDisclaimers = [
 
 export const contactReasons = [
   "Diagnostic Loi 25",
-  "Création ou refonte de site web",
-  "SEO",
-  "Audit cyber / réseau",
+  "Diagnostic cybersécurité",
+  "Diagnostic IA en entreprise",
+  "Accompagnement / implantation",
+  "Creation ou refonte de site web",
   "Autre besoin"
 ];
 

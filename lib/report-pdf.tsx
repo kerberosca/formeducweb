@@ -4,9 +4,11 @@ import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
 import type { LeadCaptureInput } from "@/lib/schemas";
 import type { WizardDataset } from "@/lib/wizard";
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
 
 export type AssessmentReportPdfPayload = {
+  assessmentType: AssessmentType;
   wizard: WizardDataset;
   leadCapture: LeadCaptureInput;
   scoreResult: ScoreResult;
@@ -214,24 +216,26 @@ const styles = StyleSheet.create({
 });
 
 export function AssessmentReportPdfDocument({
+  assessmentType,
   wizard,
   leadCapture,
   scoreResult,
   report
 }: AssessmentReportPdfPayload) {
+  const diagnostic = getDiagnosticConfig(assessmentType);
   const diagnosticAnchors = report.diagnosticAnchors ?? [];
 
   return (
     <Document
-      title={`Rapport Loi 25 - ${leadCapture.companyName}`}
+      title={`${diagnostic.pdfTitle} - ${leadCapture.companyName}`}
       author="ForméducWeb"
-      subject="Rapport d’auto-évaluation Loi 25"
+      subject={diagnostic.pdfSubject}
       language="fr-CA"
     >
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.eyebrow}>Rapport d’auto-évaluation Loi 25</Text>
-          <Text style={styles.title}>Votre diagnostic Loi 25</Text>
+          <Text style={styles.eyebrow}>{diagnostic.pdfSubject}</Text>
+          <Text style={styles.title}>{diagnostic.reportTitle}</Text>
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>Entreprise: {leadCapture.companyName}</Text>
             <Text style={styles.metaText}>Contact: {leadCapture.contactName}</Text>
@@ -394,8 +398,8 @@ export function AssessmentReportPdfDocument({
 
         <Text style={styles.footer}>
           Rapport préparé par ForméducWeb. Ce document vise le diagnostic, l’alignement et la priorisation d’actions.
-          Il ne constitue pas un avis juridique. Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait
-          d’implantation si vous poursuivez avec nous.
+          Il ne constitue pas un avis professionnel personnalisé. Crédit de {getReportUnlockPriceLabel()} applicable sur
+          un forfait d’implantation si vous poursuivez avec nous.
         </Text>
       </Page>
     </Document>

@@ -4,16 +4,16 @@ type TopGap = GeneratedReport["topGaps"][number];
 
 const CONSOLIDATION_PRIORITY_TEMPLATES: TopGap[] = [
   {
-    title: "Consolider les pratiques deja en place",
+    title: "Consolider les pratiques déjà en place",
     whyItMatters: "Une bonne posture reste fragile si elle n'est pas revue regulierement.",
-    action: "Planifiez une revue mensuelle rapide des mesures deja implantees et corrigez les ecarts detectes.",
+    action: "Planifiez une revue mensuelle rapide des mesures déjà implantées et corrigez les écarts détectés.",
     section: "Consolidation",
     priority: "Moyenne"
   },
   {
-    title: "Centraliser les preuves de conformite",
+    title: "Centraliser les preuves de conformité",
     whyItMatters: "Des preuves simples et datees facilitent le suivi et evitent les oublis.",
-    action: "Regroupez politiques, captures, journaux et decisions dans un dossier unique maintenu a jour.",
+    action: "Regroupez politiques, captures, journaux et décisions dans un dossier unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne"
   },
@@ -98,8 +98,8 @@ export function toLiteReport(fullReport: GeneratedReport): LiteReport {
     topGaps: guaranteedPriorities.topGaps,
     prioritiesContext: buildPrioritiesContext(guaranteedPriorities.criticalCount),
     plan30Days: fullReport.plan30Days.slice(0, 5),
-    plan90DaysTeaser: "Debloquez le rapport complet pour obtenir le plan 90 jours adapte a votre contexte.",
+    plan90DaysTeaser: "Débloquez le rapport complet pour obtenir le plan 90 jours adapté à votre contexte.",
     disclaimers: fullReport.disclaimers,
-    upsellTeaser: "Passez du diagnostic a l'implantation avec un rapport complet pret a utiliser."
+    upsellTeaser: "Passez du diagnostic à l'implantation avec un rapport complet prêt à utiliser."
   };
 }

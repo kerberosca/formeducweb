@@ -1,6 +1,10 @@
 import { z } from "zod";
 
+import { assessmentTypes } from "@/lib/diagnostics";
+
 const optionalAttributionText = (maxLength: number) => z.string().trim().min(1).max(maxLength).optional();
+
+export const assessmentTypeSchema = z.enum(assessmentTypes);
 
 export const attributionSchema = z.object({
   utm_source: optionalAttributionText(120),
@@ -27,6 +31,7 @@ export const leadCaptureSchema = z.object({
 export const assessmentAnswersSchema = z.record(z.string(), z.string().optional());
 
 export const assessmentPayloadSchema = z.object({
+  assessmentType: assessmentTypeSchema.default("loi25"),
   leadCapture: leadCaptureSchema,
   answers: assessmentAnswersSchema,
   attribution: attributionSchema.optional()
@@ -79,6 +84,7 @@ export const privacyRequestSchema = z.object({
 
 export type LeadCaptureInput = z.infer<typeof leadCaptureSchema>;
 export type AttributionInput = z.infer<typeof attributionSchema>;
+export type AssessmentTypeInput = z.infer<typeof assessmentTypeSchema>;
 export type AssessmentPayloadInput = z.infer<typeof assessmentPayloadSchema>;
 export type CheckoutSessionPayloadInput = z.infer<typeof checkoutSessionPayloadSchema>;
 export type ContactFormInput = z.infer<typeof contactFormSchema>;

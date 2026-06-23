@@ -6,46 +6,46 @@ const sections = [
   {
     title: "Collecte",
     body:
-      "Nous recueillons uniquement les informations necessaires a nos services: nom, entreprise, courriel, telephone optionnel, consentement marketing optionnel, reponses au questionnaire et informations de paiement gerees par Stripe."
+      "Nous recueillons uniquement les informations nécessaires à nos services: nom, entreprise, courriel, téléphone optionnel, consentement marketing optionnel, réponses au questionnaire et informations de paiement gérées par Stripe."
   },
   {
     title: "Finalites",
     body:
-      "Ces informations servent a produire votre diagnostic, gerer votre acces au rapport, assurer le support client et, si vous y consentez, envoyer des communications utiles sur nos services."
+      "Ces informations servent ? produire votre diagnostic, gérer votre accès au rapport, assurer le support client et, si vous y consentez, envoyer des communications utiles sur nos services."
   },
   {
     title: "Cookies et technologies similaires",
     body:
-      "Le site utilise des cookies techniques necessaires au fonctionnement et a la securite. Les cookies non essentiels (analytics, Google Ads, pixels publicitaires) restent bloques tant que vous n'avez pas donne un consentement explicite."
+      "Le site utilise des cookies techniques nécessaires au fonctionnement et à la sécurité. Les cookies non essentiels (analytics, Google Ads, pixels publicitaires) restent bloqués tant que vous n'avez pas donné un consentement explicite."
   },
   {
     title: "Publicite et mesure",
     body:
-      "Si vous acceptez la categorie Marketing, le site peut activer Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-evaluation). Selon la configuration, Meta Pixel peut aussi etre active."
+      "Si vous acceptez la catégorie Marketing, le site peut activer Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-évaluation). Selon la configuration, Meta Pixel peut aussi être active."
   },
   {
     title: "Conservation",
     body:
-      "Les brouillons locaux de l'assistant expirent automatiquement. Cote serveur, les donnees sont conservees selon une duree raisonnable liee aux finalites d'affaires, a la securite et aux obligations applicables."
+      "Les brouillons locaux de l'assistant expirent automatiquement. Côté serveur, les données sont conservees selon une durée raisonnable liée aux finalités d'affaires, à la sécurité et aux obligations applicables."
   },
   {
     title: "Securite",
     body:
-      "Le site applique des controles techniques raisonnables (validation, limitation d'abus, tokens d'acces non devinables, protections d'en-tetes HTTP, pages sensibles non indexees, cache desactive sur les routes sensibles)."
+      "Le site applique des contrôles techniques raisonnables (validation, limitation d'abus, tokens d'accès non devinables, protections d'en-têtes HTTP, pages sensibles non indexées, cache désactivé sur les routes sensibles)."
   },
   {
     title: "Fournisseurs et transferts",
     body:
-      "Certains fournisseurs techniques peuvent traiter des donnees en dehors du Quebec ou du Canada, selon leur infrastructure. Ces traitements restent encadres par vos choix de consentement et les obligations applicables."
+      "Certains fournisseurs techniques peuvent traiter des données en dehors du Québec ou du Canada, selon leur infrastructure. Ces traitements restent encadrés par vos choix de consentement et les obligations applicables."
   },
   {
     title: "Vos droits",
     body:
-      "Vous pouvez demander un acces, une rectification, un retrait de consentement, ou discuter d'une suppression selon les obligations applicables et les exceptions legales."
+      "Vous pouvez demander un accès, une rectification, un retrait de consentement, ou discuter d'une suppression selon les obligations applicables et les exceptions légales."
   },
   {
     title: "Responsable et contact",
-    body: "Pour toute question relative a la confidentialite, ecrivez a info@formeducweb.ca."
+    body: "Pour toute question relative à la confidentialité, écrivez à info@formeducweb.ca."
   }
 ];
 
@@ -54,10 +54,10 @@ export default function PolitiqueConfidentialitePage() {
     <section className="container py-16 md:py-24">
       <div className="max-w-4xl space-y-8">
         <div className="space-y-4">
-          <p className="eyebrow">Politique de confidentialite</p>
-          <h1 className="font-heading text-5xl font-semibold tracking-tight">Comment FormeducWeb traite les renseignements transmis</h1>
+          <p className="eyebrow">Politique de confidentialité</p>
+          <h1 className="font-heading text-5xl font-semibold tracking-tight">Comment ForméducWeb traite les renseignements transmis</h1>
           <p className="text-lg leading-8 text-muted-foreground">
-            Cette page decrit la collecte, l utilisation, la conservation et les droits associes aux donnees recueillies
+            Cette page décrit la collecte, l'utilisation, la conservation et les droits associés aux données recueillies
             via le contact, l assistant Loi 25 et les paiements Stripe.
           </p>
         </div>
@@ -81,16 +81,16 @@ export default function PolitiqueConfidentialitePage() {
               .
             </p>
             <p>
-              Pour gerer ou retirer vos choix cookies, ouvrez{" "}
+              Pour gérer ou retirer vos choix cookies, ouvrez{" "}
               <Link href="/politique-cookies#preferences-cookies" className="underline underline-offset-4">
-                Gerer mes cookies
+                Gérer mes cookies
               </Link>
               .
             </p>
             <p>
               Pour exercer vos droits, utilisez la page{" "}
               <Link href="/demande-confidentialite" className="underline underline-offset-4">
-                Demande confidentialite
+                Demande confidentialité
               </Link>
               .
             </p>

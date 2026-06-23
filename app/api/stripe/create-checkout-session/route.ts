@@ -1,6 +1,7 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 import { attachCheckoutSession, findAssessmentById, findAssessmentByToken } from "@/lib/assessment-store";
+import { getDiagnosticConfig, normalizeAssessmentType } from "@/lib/diagnostics";
 import { getBaseUrl, getReportUnlockPriceCents, getStripeCurrency, getStripeProductName, isStripeConfigured } from "@/lib/payments";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { checkoutSessionPayloadSchema } from "@/lib/schemas";
@@ -56,9 +57,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const assessmentType = normalizeAssessmentType(assessment.assessmentType);
+    const diagnostic = getDiagnosticConfig(assessmentType);
+
     if (assessment.paymentStatus === "paid") {
       return NextResponse.json({
-        reportUrl: `${getBaseUrl()}/loi-25/rapport/${assessment.accessToken}`
+        reportUrl: `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}`
       });
     }
 
@@ -73,10 +77,11 @@ export async function POST(request: Request) {
 
     const stripe = getStripeClient();
     const successUrl = `${getBaseUrl()}/merci?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${getBaseUrl()}/loi-25/rapport/${assessment.accessToken}?cancel=1`;
+    const cancelUrl = `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}?cancel=1`;
     const metadata = {
       assessmentId: assessment.id,
-      accessToken: assessment.accessToken
+      accessToken: assessment.accessToken,
+      assessmentType
     };
 
     const session = await stripe.checkout.sessions.create({
@@ -93,8 +98,8 @@ export async function POST(request: Request) {
             currency: getStripeCurrency(),
             unit_amount: getReportUnlockPriceCents(),
             product_data: {
-              name: getStripeProductName(),
-              description: "Rapport complet PDF, Top 5 detaille, plan 30 + 90 jours et gabarits."
+              name: getStripeProductName(assessmentType),
+              description: diagnostic.stripeDescription
             }
           }
         }
@@ -120,4 +125,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

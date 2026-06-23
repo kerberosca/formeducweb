@@ -1,4 +1,7 @@
-﻿import wizardDataRaw from "@/data/loi25_questions.fr-ca.json";
+import aiWizardDataRaw from "@/data/ai_questions.fr-ca.json";
+import cyberWizardDataRaw from "@/data/cybersecurity_questions.fr-ca.json";
+import loi25WizardDataRaw from "@/data/loi25_questions.fr-ca.json";
+import { getDiagnosticConfig, normalizeAssessmentType, type AssessmentType } from "@/lib/diagnostics";
 import type { WizardData, WizardQuestion, WizardSection } from "@/lib/scoring";
 import { deepRepairText } from "@/lib/text";
 
@@ -57,11 +60,19 @@ type LocalStorageEnvelope<T> = {
 
 const WIZARD_STORAGE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
-export const WIZARD_STORAGE_KEY = "formeducweb-loi25-draft";
-export const WIZARD_RESULT_STORAGE_KEY = "formeducweb-loi25-result";
+const wizardDataByType: Record<AssessmentType, unknown> = {
+  loi25: loi25WizardDataRaw,
+  cybersecurity: cyberWizardDataRaw,
+  ai: aiWizardDataRaw
+};
 
-export function getWizardData(): WizardDataset {
-  return deepRepairText(wizardDataRaw as unknown as WizardDataset);
+export function getWizardData(assessmentType: AssessmentType = "loi25"): WizardDataset {
+  const normalizedType = normalizeAssessmentType(assessmentType);
+  return deepRepairText(wizardDataByType[normalizedType] as WizardDataset);
+}
+
+export function getWizardStorageKey(assessmentType: AssessmentType, suffix: "draft" | "result") {
+  return `${getDiagnosticConfig(assessmentType).storagePrefix}-${suffix}`;
 }
 
 export function getWizardSteps(wizard: WizardDataset): WizardStep[] {
@@ -132,30 +143,30 @@ function saveToStorage<T>(storageKey: string, value: T) {
   window.localStorage.setItem(storageKey, JSON.stringify(envelope));
 }
 
-export function loadWizardDraft(): WizardFormDraft | null {
-  return loadFromStorage<WizardFormDraft>(WIZARD_STORAGE_KEY);
+export function loadWizardDraft(assessmentType: AssessmentType): WizardFormDraft | null {
+  return loadFromStorage<WizardFormDraft>(getWizardStorageKey(assessmentType, "draft"));
 }
 
-export function saveWizardDraft(value: WizardFormDraft) {
-  saveToStorage(WIZARD_STORAGE_KEY, value);
+export function saveWizardDraft(value: WizardFormDraft, assessmentType: AssessmentType) {
+  saveToStorage(getWizardStorageKey(assessmentType, "draft"), value);
 }
 
-export function clearWizardDraft() {
+export function clearWizardDraft(assessmentType: AssessmentType) {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(WIZARD_STORAGE_KEY);
+  window.localStorage.removeItem(getWizardStorageKey(assessmentType, "draft"));
 }
 
-export function loadWizardPersistedResult<T>() {
-  return loadFromStorage<T>(WIZARD_RESULT_STORAGE_KEY);
+export function loadWizardPersistedResult<T>(assessmentType: AssessmentType) {
+  return loadFromStorage<T>(getWizardStorageKey(assessmentType, "result"));
 }
 
-export function saveWizardPersistedResult<T>(value: T) {
-  saveToStorage(WIZARD_RESULT_STORAGE_KEY, value);
+export function saveWizardPersistedResult<T>(value: T, assessmentType: AssessmentType) {
+  saveToStorage(getWizardStorageKey(assessmentType, "result"), value);
 }
 
-export function clearWizardPersistedResult() {
+export function clearWizardPersistedResult(assessmentType: AssessmentType) {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(WIZARD_RESULT_STORAGE_KEY);
+  window.localStorage.removeItem(getWizardStorageKey(assessmentType, "result"));
 }
 
 export function getRequiredQuestionIds(wizard: WizardDataset) {

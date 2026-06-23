@@ -43,23 +43,7 @@ function priorityFromWeight(weight: number): ReportPriority {
 }
 
 function defaultWhyItMatters(gap: GapItem): string {
-  if (gap.sectionId === "D") {
-    return "Réduit fortement les risques techniques (accès non autorisés, pertes, rançongiciel).";
-  }
-  if (gap.sectionId === "E") {
-    return "Améliore la capacité à réagir rapidement et à documenter les événements.";
-  }
-  if (gap.sectionId === "C") {
-    return "Augmente la transparence et diminue les surprises liées aux formulaires/cookies.";
-  }
-  if (gap.sectionId === "B") {
-    return "Clarifie ce que vous collectez, où ça va, et pourquoi. Base de toute démarche.";
-  }
-  if (gap.sectionId === "F") {
-    return "Structure la gouvernance: responsabilités, preuves et cohérence des pratiques.";
-  }
-
-  return "Aide à réduire les risques et à structurer vos pratiques.";
+  return `Cette zone influence directement votre niveau de risque et la qualite de vos pratiques (${gap.sectionTitle ?? gap.sectionId}).`;
 }
 
 function defaultActionText(gap: GapItem): string {
@@ -68,23 +52,7 @@ function defaultActionText(gap: GapItem): string {
 }
 
 function consolidationActionBySection(sectionId: string) {
-  if (sectionId === "B") {
-    return "Reviser la cartographie des donnees et confirmer les regles de conservation et suppression avec les responsables.";
-  }
-  if (sectionId === "C") {
-    return "Verifier les formulaires, la transparence et les mecanismes de consentement sur le site avec un controle mensuel.";
-  }
-  if (sectionId === "D") {
-    return "Planifier une revue technique trimestrielle (MFA, acces, sauvegardes, mises a jour) avec preuve datee.";
-  }
-  if (sectionId === "E") {
-    return "Tester la procedure d'incident avec un scenario simple et consigner les ajustements a faire.";
-  }
-  if (sectionId === "F") {
-    return "Centraliser les preuves de gouvernance (politiques, registres, revues) et fixer un rythme de mise a jour.";
-  }
-
-  return "Maintenir une revue periodique des pratiques et documenter les actions pour garder un niveau stable.";
+  return `Planifier une revue periodique de la section ${sectionId}, confirmer les responsables et conserver une preuve datee des actions.`;
 }
 
 function priorityFromSectionPercent(percent: number): ReportPriority {
@@ -119,17 +87,17 @@ function buildConsolidationGap(section: ScoreResult["sectionScores"][number]): R
 
 const GENERIC_CONSOLIDATION_GAPS: ReportGap[] = [
   {
-    title: "Consolider les pratiques deja en place",
+    title: "Consolider les pratiques déjà en place",
     whyItMatters: "Un bon niveau doit etre entretenu pour rester fiable dans le temps.",
-    action: "Planifier une revue mensuelle courte des mesures deja implantees et corriger rapidement les ecarts.",
+    action: "Planifier une revue mensuelle courte des mesures déjà implantées et corriger rapidement les écarts.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_1"
   },
   {
-    title: "Centraliser les preuves de conformite",
+    title: "Centraliser les preuves de conformité",
     whyItMatters: "Des preuves simples et datees facilitent la gouvernance et la prise de decision.",
-    action: "Regrouper politiques, journaux, captures et decisions dans un espace unique maintenu a jour.",
+    action: "Regrouper politiques, journaux, captures et décisions dans un espace unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_2"
@@ -193,7 +161,13 @@ function ensureFiveTopGaps(criticalTopGaps: ReportGap[], score: ScoreResult) {
   }
 
   return {
-    topGaps: selected.map(({ sectionId, ...gap }) => gap),
+    topGaps: selected.map((gap) => ({
+      title: gap.title,
+      whyItMatters: gap.whyItMatters,
+      action: gap.action,
+      section: gap.section,
+      priority: gap.priority
+    })),
     criticalCount,
     topGapsContext: buildTopGapsContext(criticalCount)
   };
@@ -414,6 +388,8 @@ export function generateReport(
   answers: AssessmentAnswers,
   score: ScoreResult
 ): GeneratedReport {
+  const isLoi25Wizard = /loi 25/i.test(wizard.title);
+  const branchAnswers = isLoi25Wizard ? answers : {};
   const disclaimers = [
     wizard.disclaimer ??
       "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un avis juridique.",
@@ -438,8 +414,8 @@ export function generateReport(
   const days30Template = (wizard as { report?: { planTemplates?: { days30?: string[] } } }).report?.planTemplates?.days30;
   const days90Template = (wizard as { report?: { planTemplates?: { days90?: string[] } } }).report?.planTemplates?.days90;
 
-  const plan30Days = buildPlan30Days(topGaps, answers, days30Template);
-  const plan90Days = buildPlan90Days(topGaps, answers, plan30Days, days90Template);
+  const plan30Days = buildPlan30Days(topGaps, branchAnswers, days30Template);
+  const plan90Days = buildPlan90Days(topGaps, branchAnswers, plan30Days, days90Template);
   const diagnosticAnchors = buildDiagnosticAnchors(wizardQuestionsById, score.gaps, topGaps);
 
   return {

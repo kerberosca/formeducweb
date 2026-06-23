@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { buildProcedureOnePager } from "@/lib/bonus-assets";
-import { findAssessmentByToken } from "@/lib/assessment-store";
+import { findAssessmentByToken, hydrateAssessment } from "@/lib/assessment-store";
+import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { tokenSearchParamSchema } from "@/lib/schemas";
 
 export const runtime = "nodejs";
@@ -39,12 +40,14 @@ export async function GET(request: Request) {
     );
   }
 
-  const procedureText = buildProcedureOnePager(assessment.companyName);
+  const hydrated = hydrateAssessment(assessment);
+  const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
+  const procedureText = buildProcedureOnePager(assessment.companyName, hydrated.assessmentType);
 
   return new NextResponse(procedureText, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="procedure-1-page-loi25.txt"',
+      "Content-Disposition": `attachment; filename="${diagnostic.bonusAssets.procedureFilename}"`,
       "Cache-Control": "no-store"
     }
   });

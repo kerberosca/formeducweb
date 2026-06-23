@@ -1,5 +1,6 @@
 import type { Assessment } from "@prisma/client";
 
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getBaseUrl } from "@/lib/payments";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LiteReport } from "@/lib/reportFilters";
@@ -64,7 +65,7 @@ function getEmailPublicBaseUrl() {
       return normalizeBaseUrl(appBaseUrl);
     }
   } catch {
-    // fallback handled below
+    // Fallback handled below.
   }
 
   const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
@@ -83,7 +84,7 @@ function toAbsoluteUrl(pathOrUrl: string) {
         return `${getEmailPublicBaseUrl()}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
       }
     } catch {
-      // ignore and return original input
+      // Keep original input.
     }
 
     return pathOrUrl;
@@ -95,12 +96,12 @@ function toAbsoluteUrl(pathOrUrl: string) {
   return `${base}${path}`;
 }
 
-function getWizardUrl() {
-  return toAbsoluteUrl("/loi-25/wizard");
+function getWizardUrl(assessmentType: AssessmentType) {
+  return toAbsoluteUrl(getDiagnosticConfig(assessmentType).wizardPath);
 }
 
-function getSummaryUrl(accessToken: string) {
-  return toAbsoluteUrl(`/loi-25/rapport/${accessToken}`);
+function getSummaryUrl(accessToken: string, assessmentType: AssessmentType) {
+  return toAbsoluteUrl(getDiagnosticConfig(assessmentType).reportPath(accessToken));
 }
 
 function getContactUrl(source: string) {
@@ -108,7 +109,7 @@ function getContactUrl(source: string) {
 }
 
 function getBookingUrl() {
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL || "/contact?source=appel-loi-25";
+  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL || "/contact?source=appel-diagnostic";
   return toAbsoluteUrl(bookingUrl);
 }
 
@@ -206,27 +207,29 @@ async function sendMail(options: MailOptions) {
 export async function sendAssessmentReceivedEmails(payload: {
   assessmentId: string;
   accessToken: string;
+  assessmentType: AssessmentType;
   leadCapture: LeadCaptureInput;
   scoreResult: ScoreResult;
   liteReport: LiteReport;
 }) {
+  const diagnostic = getDiagnosticConfig(payload.assessmentType);
   const adminEmail = getAdminNotificationEmail();
-  const summaryUrl = getSummaryUrl(payload.accessToken);
-  const wizardUrl = getWizardUrl();
+  const summaryUrl = getSummaryUrl(payload.accessToken, payload.assessmentType);
+  const wizardUrl = getWizardUrl(payload.assessmentType);
   const bookingUrl = getBookingUrl();
-  const contactUrl = getContactUrl("email-resume-loi25");
+  const contactUrl = getContactUrl(`email-resume-${diagnostic.leadSource}`);
   const prioritiesHtml = payload.liteReport.topGaps
-    .map((gap) => `<li><strong>${escapeHtml(gap.title)}</strong> — ${escapeHtml(gap.action)}</li>`)
+    .map((gap) => `<li><strong>${escapeHtml(gap.title)}</strong> - ${escapeHtml(gap.action)}</li>`)
     .join("");
 
   await sendMail({
     to: payload.leadCapture.email,
-    subject: "Votre résumé Loi 25 est prêt",
+    subject: `Votre résumé ${diagnostic.label} est prêt`,
     html: renderEmailLayout(
-      "Votre résumé Loi 25 est prêt",
+      `Votre résumé ${diagnostic.label} est prêt`,
       `
       <p>Bonjour ${escapeHtml(payload.leadCapture.contactName)},</p>
-      <p>Merci d’avoir complété l’auto-évaluation Loi 25.</p>
+      <p>Merci d'avoir complété l'auto-évaluation ${escapeHtml(diagnostic.label)}.</p>
       <p><strong>Score global :</strong> ${payload.scoreResult.overallScore}/100 (${escapeHtml(payload.scoreResult.level.label)})</p>
       <p>${escapeHtml(payload.scoreResult.level.tagline)}</p>
       <h2>Vos 3 priorités</h2>
@@ -237,11 +240,11 @@ export async function sendAssessmentReceivedEmails(payload: {
       <p>Si vous préférez valider vos prochaines actions avec notre équipe:</p>
       <ul>
         <li><a href="${bookingUrl}">Réserver un appel de 20 minutes</a></li>
-        <li><a href="${contactUrl}">Écrire à ForméducWeb</a></li>
+        <li><a href="${contactUrl}">Écrire ? ForméducWeb</a></li>
       </ul>
-      <p>Vous pouvez aussi refaire l’auto-évaluation à tout moment: <a href="${wizardUrl}">${wizardUrl}</a></p>
+      <p>Vous pouvez aussi refaire l'auto-évaluation à tout moment: <a href="${wizardUrl}">${wizardUrl}</a></p>
       <p>${escapeHtml(payload.liteReport.disclaimers.join(" "))}</p>
-      <p style="font-size:12px;color:#5f646d;">Ce courriel fournit un résumé opérationnel. Il ne constitue pas un avis juridique.</p>
+      <p style="font-size:12px;color:#5f646d;">Ce courriel fournit un résumé opérationnel. Il ne constitue pas un avis professionnel personnalisé.</p>
     `
     )
   });
@@ -249,11 +252,12 @@ export async function sendAssessmentReceivedEmails(payload: {
   if (adminEmail) {
     await sendMail({
       to: adminEmail,
-      subject: `Nouveau lead Loi 25 — ${payload.leadCapture.companyName}`,
+      subject: `Nouveau lead ${diagnostic.label} - ${payload.leadCapture.companyName}`,
       html: renderEmailLayout(
-        "Nouveau lead Loi 25",
+        `Nouveau lead ${diagnostic.label}`,
         `
         <p><strong>Assessment ID :</strong> ${payload.assessmentId}</p>
+        <p><strong>Diagnostic :</strong> ${escapeHtml(diagnostic.label)}</p>
         <p><strong>Nom :</strong> ${escapeHtml(payload.leadCapture.contactName)}</p>
         <p><strong>Entreprise :</strong> ${escapeHtml(payload.leadCapture.companyName)}</p>
         <p><strong>Courriel :</strong> ${escapeHtml(payload.leadCapture.email)}</p>
@@ -270,34 +274,33 @@ export async function sendAssessmentReceivedEmails(payload: {
 
 export async function sendReportUnlockedEmails(payload: {
   assessment: Assessment;
+  assessmentType: AssessmentType;
   fullReport: GeneratedReport;
   reportUrl: string;
 }) {
+  const diagnostic = getDiagnosticConfig(payload.assessmentType);
   const adminEmail = getAdminNotificationEmail();
   const reportUrl = toAbsoluteUrl(payload.reportUrl);
   const bookingUrl = getBookingUrl();
-  const contactUrl = getContactUrl("email-paiement-confirme");
+  const contactUrl = getContactUrl(`email-paiement-${diagnostic.leadSource}`);
   const disclaimer = escapeHtml(payload.fullReport.disclaimers.join(" "));
 
   await sendMail({
     to: payload.assessment.email,
-    subject: "Paiement confirmé — votre rapport complet Loi 25 est prêt",
+    subject: `Paiement confirmé - votre rapport complet ${diagnostic.label} est prêt`,
     html: renderEmailLayout(
       "Votre rapport complet est disponible",
       `
       <p>Bonjour ${escapeHtml(payload.assessment.contactName)},</p>
-      <p>Votre paiement a été confirmé. Vous pouvez maintenant accéder à votre rapport complet.</p>
+      <p>Votre paiement a été confirmé. Vous pouvez maintenant accéder à votre rapport complet ${escapeHtml(diagnostic.label)}.</p>
       ${renderPrimaryCta("Voir mon rapport complet", reportUrl)}
       <h2>Ce qui vous attend</h2>
       <ul>
-        <li>Top 5 des écarts prioritaires détaillés</li>
-        <li>Plan 30 + 90 jours</li>
-        <li>PDF brandé</li>
-        <li>Checklist et gabarits téléchargeables</li>
+        ${diagnostic.fullReportIncludes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
-      <p>Besoin d’un coup de pouce pour la suite? <a href="${bookingUrl}">Réserver un appel de 20 minutes</a> ou <a href="${contactUrl}">nous écrire</a>.</p>
+      <p>Besoin d'un coup de pouce pour la suite? <a href="${bookingUrl}">Réserver un appel de 20 minutes</a> ou <a href="${contactUrl}">nous Écrire</a>.</p>
       <p>${disclaimer}</p>
-      <p style="font-size:12px;color:#5f646d;">Ce rapport aide à prioriser et implanter. Il ne constitue pas un avis juridique.</p>
+      <p style="font-size:12px;color:#5f646d;">Ce rapport aide à prioriser et implanter. Il ne constitue pas un avis professionnel personnalisé.</p>
     `
     )
   });
@@ -305,10 +308,11 @@ export async function sendReportUnlockedEmails(payload: {
   if (adminEmail) {
     await sendMail({
       to: adminEmail,
-      subject: `Paiement confirmé Loi 25 — ${payload.assessment.companyName}`,
+      subject: `Paiement confirmé ${diagnostic.label} - ${payload.assessment.companyName}`,
       html: renderEmailLayout(
         "Paiement confirmé",
         `
+        <p><strong>Diagnostic :</strong> ${escapeHtml(diagnostic.label)}</p>
         <p><strong>Entreprise :</strong> ${escapeHtml(payload.assessment.companyName)}</p>
         <p><strong>Contact :</strong> ${escapeHtml(payload.assessment.contactName)}</p>
         <p><strong>Courriel :</strong> ${escapeHtml(payload.assessment.email)}</p>
@@ -333,7 +337,7 @@ export async function sendContactEmail(data: ContactFormInput) {
 
   return sendMail({
     to: adminEmail,
-    subject: `Nouveau message contact — ${data.company}`,
+    subject: `Nouveau message contact - ${data.company}`,
     html: renderEmailLayout(
       "Nouveau message de contact",
       `
@@ -386,21 +390,21 @@ export async function sendPrivacyRequestEmail(data: PrivacyRequestInput) {
       <p><strong>Nom:</strong> ${escapeHtml(data.fullName)}</p>
       <p><strong>Courriel:</strong> ${escapeHtml(data.email)}</p>
       <p><strong>Entreprise:</strong> ${escapeHtml(data.companyName || "Non fournie")}</p>
-      <p><strong>Details:</strong><br/>${nl2br(data.message)}</p>
+      <p><strong>Détails:</strong><br/>${nl2br(data.message)}</p>
     `
     )
   });
 
   await sendMail({
     to: data.email,
-    subject: "Confirmation de reception de votre demande",
+    subject: "Confirmation de réception de votre demande",
     html: renderEmailLayout(
       "Demande reçue",
       `
       <p>Bonjour ${escapeHtml(data.fullName)},</p>
       <p>Nous avons bien reçu votre demande de confidentialité (${requestTypeLabel}).</p>
-      <p>Notre equipe analysera votre demande et vous reviendra dans un délai raisonnable.</p>
-      <p>Ce message confirme la reception. Il ne constitue pas un avis juridique.</p>
+      <p>Notre équipe analysera votre demande et vous reviendra dans un délai raisonnable.</p>
+      <p>Ce message confirme la réception. Il ne constitue pas un avis juridique.</p>
     `
     )
   });

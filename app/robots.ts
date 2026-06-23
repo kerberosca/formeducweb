@@ -10,7 +10,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/loi-25/rapport/", "/loi-25/wizard/impression", "/merci"]
+        disallow: [
+          "/api/",
+          "/loi-25/rapport/",
+          "/cybersecurite/rapport/",
+          "/intelligence-artificielle/rapport/",
+          "/loi-25/wizard/impression",
+          "/merci"
+        ]
       }
     ],
     host: siteUrl,

@@ -7,8 +7,8 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { QuestionField } from "@/components/wizard/question-field";
 import { LiteResultView } from "@/components/wizard/lite-result-view";
+import { QuestionField } from "@/components/wizard/question-field";
 import { WizardStepper } from "@/components/wizard/stepper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { getFirstTouchAttribution } from "@/lib/attribution";
 import type { AssessmentApiResponse, PersistedAssessmentResult } from "@/lib/assessment-types";
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { trackGoogleAdsLead } from "@/lib/google-ads";
 import { trackMetaLead } from "@/lib/meta-pixel";
 import { assessmentAnswersSchema, leadCaptureSchema, type LeadCaptureInput } from "@/lib/schemas";
@@ -41,7 +42,6 @@ const wizardClientSchema = leadCaptureSchema.extend({
 });
 
 type WizardFormValues = z.infer<typeof wizardClientSchema>;
-
 type WizardResultState = PersistedAssessmentResult;
 
 function hasDraftContent(draft: WizardFormDraft | null) {
@@ -70,7 +70,7 @@ function formatLastSaved(isoDate: string) {
 
   const diffMs = Date.now() - savedAt;
   if (diffMs < 60 * 1000) {
-    return "a l'instant";
+    return "à l'instant";
   }
 
   return new Date(savedAt).toLocaleTimeString("fr-CA", {
@@ -80,12 +80,15 @@ function formatLastSaved(isoDate: string) {
 }
 
 export function AssessmentWizard({
+  assessmentType,
   wizard,
   reportUnlockPriceLabel
 }: {
+  assessmentType: AssessmentType;
   wizard: WizardDataset;
   reportUnlockPriceLabel: string;
 }) {
+  const diagnostic = getDiagnosticConfig(assessmentType);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [questionErrors, setQuestionErrors] = useState<Record<string, string>>({});
   const [resultState, setResultState] = useState<WizardResultState | null>(null);
@@ -126,7 +129,7 @@ export function AssessmentWizard({
     if (!draftReady || pendingDraft || resultState) return;
 
     const draft = buildDraftFromValues(values ?? form.getValues());
-    saveWizardDraft(draft);
+    saveWizardDraft(draft, assessmentType);
 
     if (updateIndicator) {
       setLastSavedAt(new Date().toISOString());
@@ -134,9 +137,9 @@ export function AssessmentWizard({
   };
 
   useEffect(() => {
-    const restoredResult = loadWizardPersistedResult<WizardResultState>();
+    const restoredResult = loadWizardPersistedResult<WizardResultState>(assessmentType);
 
-    if (restoredResult) {
+    if (restoredResult?.assessmentType === assessmentType) {
       setResultState(restoredResult);
       form.reset({
         answers: restoredResult.answers,
@@ -151,31 +154,31 @@ export function AssessmentWizard({
       return;
     }
 
-    const draft = loadWizardDraft();
+    const draft = loadWizardDraft(assessmentType);
 
     if (hasDraftContent(draft)) {
       setPendingDraft(draft);
     }
 
     setDraftReady(true);
-  }, [form]);
+  }, [assessmentType, form]);
 
   useEffect(() => {
     if (!draftReady || pendingDraft || resultState) return;
 
     const subscription = form.watch((values) => {
-      saveWizardDraft(buildDraftFromValues(values));
+      saveWizardDraft(buildDraftFromValues(values), assessmentType);
     });
 
     return () => subscription.unsubscribe();
-  }, [draftReady, pendingDraft, resultState, form]);
+  }, [assessmentType, draftReady, pendingDraft, resultState, form]);
 
   useEffect(() => {
     if (!draftReady || pendingDraft || resultState) return;
 
     const persist = (updateIndicator: boolean) => {
       const draft = buildDraftFromValues(form.getValues());
-      saveWizardDraft(draft);
+      saveWizardDraft(draft, assessmentType);
 
       if (updateIndicator) {
         setLastSavedAt(new Date().toISOString());
@@ -198,7 +201,7 @@ export function AssessmentWizard({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [draftReady, pendingDraft, resultState, form]);
+  }, [assessmentType, draftReady, pendingDraft, resultState, form]);
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
@@ -222,8 +225,8 @@ export function AssessmentWizard({
   };
 
   const handleDiscardDraft = () => {
-    clearWizardDraft();
-    clearWizardPersistedResult();
+    clearWizardDraft(assessmentType);
+    clearWizardPersistedResult(assessmentType);
     form.reset(createEmptyDraft());
     setPendingDraft(null);
     setCurrentStepIndex(0);
@@ -301,6 +304,7 @@ export function AssessmentWizard({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          assessmentType,
           leadCapture,
           answers: values.answers,
           attribution: getFirstTouchAttribution()
@@ -315,16 +319,17 @@ export function AssessmentWizard({
 
       const nextResultState: WizardResultState = {
         ...payload,
+        assessmentType,
         leadCapture,
         answers: values.answers
       };
 
-      clearWizardDraft();
-      saveWizardPersistedResult(nextResultState);
+      clearWizardDraft(assessmentType);
+      saveWizardPersistedResult(nextResultState, assessmentType);
       setResultState(nextResultState);
       trackMetaLead({
-        content_name: "Auto-evaluation Loi 25",
-        content_category: "Diagnostic gratuit",
+        content_name: diagnostic.metaContentName,
+        content_category: diagnostic.metaContentCategory,
         source: "wizard"
       });
       trackGoogleAdsLead({
@@ -353,19 +358,19 @@ export function AssessmentWizard({
   };
 
   const handleRestart = () => {
-    clearWizardDraft();
-    clearWizardPersistedResult();
+    clearWizardDraft(assessmentType);
+    clearWizardPersistedResult(assessmentType);
     form.reset(createEmptyDraft());
     setQuestionErrors({});
     setCurrentStepIndex(0);
     setResultState(null);
     setPendingDraft(null);
     setLastSavedAt(null);
-    toast.success("L’assistant a été remis à zéro.");
+    toast.success("L'assistant a été remis à zéro.");
   };
 
   const handleEditResult = () => {
-    clearWizardPersistedResult();
+    clearWizardPersistedResult(assessmentType);
     setResultState(null);
     setLastSavedAt(null);
     toast.success("Vous pouvez ajuster vos réponses et régénérer le résumé.");
@@ -374,6 +379,7 @@ export function AssessmentWizard({
   if (resultState) {
     return (
       <LiteResultView
+        assessmentType={assessmentType}
         leadCapture={resultState.leadCapture}
         scoreResult={resultState.scoreResult}
         liteReport={resultState.liteReport}
@@ -409,10 +415,9 @@ export function AssessmentWizard({
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-2">
-                  <p className="eyebrow">Sauvegarde trouvée</p>
+                  <p className="eyebrow">Sauvegarde trouvee</p>
                   <p className="text-sm leading-7 text-muted-foreground">
-                    Une progression locale a été trouvée dans ce navigateur. Vous pouvez reprendre là où vous étiez ou
-                    repartir à neuf.
+                    Une progression locale a été trouvée dans ce navigateur. Vous pouvez reprendre ou repartir à neuf.
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
@@ -434,18 +439,18 @@ export function AssessmentWizard({
                 <p className="eyebrow">{currentStep.kind === "questions" ? "Questionnaire" : "Coordonnées"}</p>
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  Diagnostic, pas avis juridique
+                  {diagnostic.disclaimerBadge}
                 </div>
               </div>
               <div className="space-y-3">
                 <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h2>
                 <p className="text-lg leading-8 text-muted-foreground">
-                  {currentStep.description || "Répondez avec franchise pour obtenir un portrait plus utile."}
+                  {currentStep.description || "Repondez avec franchise pour obtenir un portrait plus utile."}
                 </p>
               </div>
               <div className="rounded-[24px] border border-border/70 bg-muted/30 p-5 text-sm leading-7 text-muted-foreground">
                 Vos réponses sont gardées localement dans ce navigateur pendant votre progression et expirent
-                automatiquement après 30 jours. Votre brouillon est enregistré sur cet appareil. Si vous effacez les
+                automatiquement apres 30 jours. Votre brouillon est enregistre sur cet appareil. Si vous effacez les
                 données du site, il sera perdu.
               </div>
             </CardContent>
@@ -504,7 +509,7 @@ export function AssessmentWizard({
                 Étape {currentStepIndex + 1} sur {steps.length}
               </p>
               <p className="text-xs text-muted-foreground/80">
-                Dernière sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
+                Derniere sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -520,7 +525,7 @@ export function AssessmentWizard({
                 variant="secondary"
                 onClick={() => {
                   saveDraftSnapshot();
-                  toast.success("Brouillon enregistré localement.");
+                  toast.success("Brouillon enregistre localement.");
                 }}
               >
                 <Save className="mr-2 h-4 w-4" />
@@ -530,7 +535,7 @@ export function AssessmentWizard({
               <Button type="button" onClick={handleNext} disabled={isSubmitting}>
                 {currentStep.kind === "lead" ? (
                   isSubmitting ? (
-                    "Génération..."
+                    "Generation..."
                   ) : (
                     "Voir mon résumé gratuit"
                   )

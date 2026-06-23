@@ -11,12 +11,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AssessmentPaymentStatus } from "@/lib/assessment-types";
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import type { LiteReport } from "@/lib/reportFilters";
 import type { LeadCaptureInput } from "@/lib/schemas";
 import type { ScoreResult } from "@/lib/scoring";
 import { siteConfig } from "@/lib/site";
 
 type LiteResultViewProps = {
+  assessmentType: AssessmentType;
   leadCapture: LeadCaptureInput;
   scoreResult: ScoreResult;
   liteReport: LiteReport;
@@ -26,11 +28,24 @@ type LiteResultViewProps = {
   priceLabel: string;
   onEdit?: () => void;
   onRestart?: () => void;
-  /** h2 quand la page a déjà un h1 (ex. assistant sur /loi-25/wizard) */
   mainHeadingLevel?: "h1" | "h2";
 };
 
+function IncludedList({ items }: { items: string[] }) {
+  return (
+    <ul className="space-y-2.5 text-sm leading-6 text-muted-foreground">
+      {items.map((item) => (
+        <li key={item} className="flex gap-3">
+          <span className="mt-2 h-2 w-2 rounded-full bg-primary" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function LiteResultView({
+  assessmentType,
   leadCapture,
   scoreResult,
   liteReport,
@@ -42,36 +57,27 @@ export function LiteResultView({
   onRestart,
   mainHeadingLevel = "h1"
 }: LiteResultViewProps) {
+  const diagnostic = getDiagnosticConfig(assessmentType);
   const [activeTab, setActiveTab] = useState("lite");
   const isPaid = paymentStatus === "paid";
-  const fullReportHref = `/loi-25/rapport/${accessToken}`;
+  const fullReportHref = diagnostic.reportPath(accessToken);
   const MainHeading = mainHeadingLevel;
-
-  const fullReportIncludes = (
-    <ul className="space-y-2.5 text-sm leading-6 text-muted-foreground">
-      <li>• Top 5 des écarts prioritaires, avec le pourquoi et quoi faire</li>
-      <li>• Plan d’action 30 jours + 90 jours adapté à votre profil</li>
-      <li>• Rapport PDF téléchargeable (présentation soignée)</li>
-      <li>• Checklist de démarrage et gabarits : procédure 1 page, texte type pour formulaire</li>
-      <li>• Crédit de {priceLabel} sur un forfait d’implantation si vous poursuivez avec nous</li>
-    </ul>
-  );
 
   return (
     <section className="container py-12 md:py-16">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="eyebrow">Résultat gratuit</p>
-          <MainHeading className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</MainHeading>
+          <MainHeading className="font-heading text-4xl font-semibold tracking-tight">{diagnostic.resultTitle}</MainHeading>
           <p className="mt-3 max-w-3xl text-lg leading-8 text-muted-foreground">
             Résumé préparé pour {leadCapture.companyName}. Vous obtenez ici un portrait rapide, vos 3 priorités et un
-            plan d’action 30 jours pour amorcer la suite.
+            plan d'action 30 jours pour amorcer la suite.
           </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button asChild variant="secondary">
-            <Link href="/contact?source=diagnostic-loi-25">
+            <Link href={`/contact?source=${diagnostic.contactSource}`}>
               <MessageCircle className="mr-2 h-4 w-4" />
               Parler à ForméducWeb
             </Link>
@@ -93,7 +99,7 @@ export function LiteResultView({
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList>
-          <TabsTrigger value="lite">Résumé (gratuit)</TabsTrigger>
+          <TabsTrigger value="lite">Résumé gratuit</TabsTrigger>
           <TabsTrigger value="full">Rapport complet {isPaid ? "" : "(verrouillé)"}</TabsTrigger>
         </TabsList>
 
@@ -111,12 +117,7 @@ export function LiteResultView({
 
               <div className="rounded-[28px] border border-primary/20 bg-primary/5 p-6">
                 <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Ce que vous avez déjà</p>
-                <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
-                  <li>• Score global et niveau de préparation</li>
-                  <li>• 3 priorités concrètes</li>
-                  <li>• Plan d’action 30 jours</li>
-                  <li>• Disclaimers et prochaines étapes</li>
-                </ul>
+                <IncludedList items={diagnostic.content.freeDeliverables.slice(0, 4)} />
               </div>
             </CardContent>
           </Card>
@@ -131,7 +132,7 @@ export function LiteResultView({
                   <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Points forts</p>
                   <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                     {liteReport.summary.highlights.map((item) => (
-                      <li key={item}>• {item}</li>
+                      <li key={item}>{item}</li>
                     ))}
                   </ul>
                 </div>
@@ -140,7 +141,7 @@ export function LiteResultView({
                     <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">À surveiller</p>
                     <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                       {liteReport.summary.cautions.map((item) => (
-                        <li key={item}>• {item}</li>
+                        <li key={item}>{item}</li>
                       ))}
                     </ul>
                   </div>
@@ -193,7 +194,7 @@ export function LiteResultView({
 
             <Card>
               <CardHeader>
-                <CardTitle>Et après ?</CardTitle>
+              <CardTitle>Et après ?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm leading-7 text-muted-foreground">
                 <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
@@ -231,7 +232,7 @@ export function LiteResultView({
             </CardHeader>
             <CardContent className="space-y-3 text-sm leading-7 text-muted-foreground">
               {liteReport.disclaimers.map((item) => (
-                <p key={item}>• {item}</p>
+                <p key={item}>{item}</p>
               ))}
             </CardContent>
           </Card>
@@ -244,13 +245,14 @@ export function LiteResultView({
                   Rapport complet ({priceLabel})
                 </CardTitle>
                 <p className="text-base font-normal leading-7 text-muted-foreground">
-                  Paiement unique, accès immédiat après Stripe. Voici ce que vous obtenez en plus du résumé gratuit :
+                  Paiement unique, accès immédiat après Stripe. Voici ce que vous obtenez en plus du résumé gratuit:
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                {fullReportIncludes}
+                <IncludedList items={diagnostic.fullReportIncludes} />
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                   <UnlockReportButton
+                    assessmentType={assessmentType}
                     assessmentId={assessmentId}
                     accessToken={accessToken}
                     label={`Débloquer mon rapport complet (${priceLabel})`}
@@ -261,7 +263,7 @@ export function LiteResultView({
                   </Button>
                 </div>
                 <p className="text-xs leading-5 text-muted-foreground">
-                  Pas un avis juridique — outil de diagnostic et de priorisation, comme l’auto-évaluation gratuite.
+                  Outil de diagnostic et de priorisation. Les recommandations doivent être adaptées à votre contexte.
                 </p>
               </CardContent>
             </Card>
@@ -270,7 +272,7 @@ export function LiteResultView({
               <CardContent className="flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-medium">Votre rapport complet est déjà débloqué</p>
-                  <p className="text-sm text-muted-foreground">Ouvrez l’onglet « Rapport complet » ou accédez directement au rapport détaillé.</p>
+                  <p className="text-sm text-muted-foreground">Ouvrez l'onglet Rapport complet ou accédez directement au rapport détaillé.</p>
                 </div>
                 <Button asChild>
                   <Link href={fullReportHref}>Voir mon rapport complet</Link>
@@ -296,7 +298,7 @@ export function LiteResultView({
                     Paiement unique, accès immédiat et lien sécurisé pour revenir plus tard sur votre rapport complet.
                   </p>
                 </div>
-                {fullReportIncludes}
+                <IncludedList items={diagnostic.fullReportIncludes} />
               </div>
 
               <div className="space-y-4 rounded-[28px] border border-border/70 bg-background p-6">
@@ -312,17 +314,18 @@ export function LiteResultView({
                 ) : (
                   <>
                     <UnlockReportButton
+                      assessmentType={assessmentType}
                       assessmentId={assessmentId}
                       accessToken={accessToken}
                       label={`Débloquer mon rapport complet (${priceLabel})`}
                       className="w-full"
                     />
-                    <p className="text-sm text-muted-foreground">Paiement sécurisé Stripe • Accès immédiat • Téléchargement PDF</p>
+                    <p className="text-sm text-muted-foreground">Paiement sécurisé Stripe - Accès immédiat - Téléchargement PDF</p>
                   </>
                 )}
                 <div className="text-sm leading-6 text-muted-foreground">
                   <Link href="/conditions-utilisation" className="underline underline-offset-4">
-                    Conditions d’utilisation
+                    Conditions d'utilisation
                   </Link>{" "}
                   et{" "}
                   <Link href="/politique-confidentialite" className="underline underline-offset-4">
@@ -340,22 +343,22 @@ export function LiteResultView({
             <CardContent>
               <Accordion type="single" collapsible>
                 <AccordionItem value="a">
-                  <AccordionTrigger>Qu’est-ce qui change entre le gratuit et le complet ?</AccordionTrigger>
+                  <AccordionTrigger>Qu'est-ce qui change entre le gratuit et le complet ?</AccordionTrigger>
                   <AccordionContent>
-                    Le gratuit vous donne un portrait utile pour démarrer. Le complet ajoute le Top 5 détaillé, le plan 90 jours,
-                    le PDF brandé et les gabarits prêts à utiliser.
+                    Le gratuit donne un portrait utile pour démarrer. Le complet ajoute le Top 5 détaillé, le plan 90 jours,
+                    le PDF et les gabarits prêts à utiliser.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="b">
-                  <AccordionTrigger>Quand est-ce que j’obtiens l’accès ?</AccordionTrigger>
+                  <AccordionTrigger>Quand est-ce que j'obtiens l'accès ?</AccordionTrigger>
                   <AccordionContent>
                     Immédiatement après la confirmation du paiement. Vous êtes redirigé vers une page merci avec un lien sécurisé.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="c">
-                  <AccordionTrigger>Est-ce que le rapport complet remplace un avis juridique ?</AccordionTrigger>
+                  <AccordionTrigger>Est-ce que le rapport complet remplace un avis professionnel ?</AccordionTrigger>
                   <AccordionContent>
-                    Non. Le rapport sert au diagnostic, à l’alignement et à la priorisation. Une validation juridique peut rester
+                    Non. Le rapport sert au diagnostic, à l'alignement et à la priorisation. Une validation externe peut rester
                     pertinente selon votre contexte.
                   </AccordionContent>
                 </AccordionItem>
@@ -366,7 +369,7 @@ export function LiteResultView({
           <Card className="border-border/70 bg-muted/20">
             <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="font-medium">Besoin d’un accompagnement humain ?</p>
+                <p className="font-medium">Besoin d'un accompagnement humain ?</p>
                 <p className="text-sm leading-6 text-muted-foreground">
                   Si vous préférez valider vos priorités avec nous avant de débloquer le rapport, on peut faire un appel rapide.
                 </p>
@@ -381,4 +384,3 @@ export function LiteResultView({
     </section>
   );
 }
-

@@ -45,8 +45,9 @@ export async function GET(request: Request) {
     }
 
     const hydrated = hydrateAssessment(assessment);
-    const wizard = getWizardData();
+    const wizard = getWizardData(hydrated.assessmentType);
     const document = AssessmentReportPdfDocument({
+      assessmentType: hydrated.assessmentType,
       wizard,
       leadCapture: {
         contactName: assessment.contactName,
@@ -63,7 +64,7 @@ export async function GET(request: Request) {
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${filenameFromCompany(assessment.companyName)}"`,
+        "Content-Disposition": `attachment; filename="${filenameFromCompany(assessment.companyName, hydrated.assessmentType)}"`,
         "Cache-Control": "no-store"
       }
     });

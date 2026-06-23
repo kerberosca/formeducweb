@@ -47,7 +47,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const wizard = getWizardData();
+    const assessmentType = parsed.data.assessmentType;
+    const wizard = getWizardData(assessmentType);
     const missingRequired = getRequiredQuestionIds(wizard).filter((id) => !parsed.data.answers[id]);
 
     if (missingRequired.length) {
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
     const fullReport = deepRepairText(generateReport(wizard, parsed.data.answers, scoreResult));
     const liteReport = toLiteReport(fullReport);
     const assessment = await createAssessmentRecord({
+      assessmentType,
       leadCapture: parsed.data.leadCapture,
       answers: parsed.data.answers,
       scoreResult,
@@ -80,6 +82,7 @@ export async function POST(request: Request) {
       assessmentId: assessment.id,
       accessToken: assessment.accessToken,
       leadCapture: parsed.data.leadCapture,
+      assessmentType,
       scoreResult,
       liteReport
     }).catch((error) => {
@@ -87,6 +90,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
+      assessmentType,
       assessmentId: assessment.id,
       accessToken: assessment.accessToken,
       paymentStatus: assessment.paymentStatus,

@@ -6,6 +6,11 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    rules: {
+      "react/no-unescaped-entities": "off",
+    },
+  },
+  {
     files: ["lib/recommendations.ts"],
     rules: {
       "@typescript-eslint/no-explicit-any": "off",

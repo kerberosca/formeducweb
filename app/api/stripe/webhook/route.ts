@@ -1,7 +1,8 @@
-﻿import type Stripe from "stripe";
+import type Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 import { hydrateAssessment, markAssessmentPaid, markAssessmentRefundedByPaymentIntent } from "@/lib/assessment-store";
+import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { sendReportUnlockedEmails } from "@/lib/email";
 import { getBaseUrl } from "@/lib/payments";
 import { getStripeClient } from "@/lib/stripe";
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
   if (!signature || !webhookSecret) {
     return NextResponse.json(
       {
-        error: "Webhook Stripe non configuré."
+        error: "Webhook Stripe non configure."
       },
       { status: 400 }
     );
@@ -43,10 +44,12 @@ export async function POST(request: Request) {
           });
 
           const hydrated = hydrateAssessment(assessment);
-          const reportUrl = `${getBaseUrl()}/loi-25/rapport/${assessment.accessToken}`;
+          const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
+          const reportUrl = `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}`;
 
           sendReportUnlockedEmails({
             assessment,
+            assessmentType: hydrated.assessmentType,
             fullReport: hydrated.fullReport,
             reportUrl
           }).catch((error) => {
@@ -82,4 +85,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

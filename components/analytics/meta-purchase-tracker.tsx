@@ -8,9 +8,17 @@ type MetaPurchaseTrackerProps = {
   sessionId: string;
   valueCents?: number;
   currency?: string;
+  contentName?: string;
+  contentCategory?: string;
 };
 
-export function MetaPurchaseTracker({ sessionId, valueCents, currency = "CAD" }: MetaPurchaseTrackerProps) {
+export function MetaPurchaseTracker({
+  sessionId,
+  valueCents,
+  currency = "CAD",
+  contentName = "Rapport complet",
+  contentCategory = "Diagnostic"
+}: MetaPurchaseTrackerProps) {
   useEffect(() => {
     if (!sessionId) return;
 
@@ -28,8 +36,8 @@ export function MetaPurchaseTracker({ sessionId, valueCents, currency = "CAD" }:
     const sent = trackMetaPurchase({
       value: normalizedValue,
       currency: currency.toUpperCase(),
-      content_name: "Rapport complet Loi 25",
-      content_category: "Diagnostic Loi 25"
+      content_name: contentName,
+      content_category: contentCategory
     });
 
     if (!sent) return;
@@ -39,7 +47,7 @@ export function MetaPurchaseTracker({ sessionId, valueCents, currency = "CAD" }:
     } catch {
       // Ignore storage write errors and keep the tracking call best-effort.
     }
-  }, [currency, sessionId, valueCents]);
+  }, [contentCategory, contentName, currency, sessionId, valueCents]);
 
   return null;
 }

@@ -5,9 +5,11 @@ import { CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { trackMetaInitiateCheckout } from "@/lib/meta-pixel";
 
 type UnlockReportButtonProps = {
+  assessmentType?: AssessmentType;
   assessmentId?: string;
   accessToken?: string;
   label?: string;
@@ -16,12 +18,14 @@ type UnlockReportButtonProps = {
 };
 
 export function UnlockReportButton({
+  assessmentType = "loi25",
   assessmentId,
   accessToken,
   label = "Débloquer mon rapport complet (29$)",
   variant = "default",
   className
 }: UnlockReportButtonProps) {
+  const diagnostic = getDiagnosticConfig(assessmentType);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
@@ -54,8 +58,8 @@ export function UnlockReportButton({
       }
 
       trackMetaInitiateCheckout({
-        content_name: "Rapport complet Loi 25",
-        content_category: "Diagnostic Loi 25",
+        content_name: diagnostic.stripeProductName,
+        content_category: diagnostic.metaContentCategory,
         num_items: 1
       });
       window.location.assign(nextUrl);

@@ -5,34 +5,38 @@ import { CopySnippetButton } from "@/components/wizard/copy-snippet-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { buildChecklistItems, buildFormSnippet, buildProcedureOnePager } from "@/lib/bonus-assets";
-import type { GeneratedReport } from "@/lib/recommendations";
-import type { ScoreResult } from "@/lib/scoring";
-import type { LeadCaptureInput } from "@/lib/schemas";
+import { buildChecklistItems, buildFormSnippet, buildProcedureOnePager, getBonusAssetLabels } from "@/lib/bonus-assets";
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
+import type { GeneratedReport } from "@/lib/recommendations";
+import type { LeadCaptureInput } from "@/lib/schemas";
+import type { ScoreResult } from "@/lib/scoring";
 import { siteConfig } from "@/lib/site";
 
 type ReportViewProps = {
+  assessmentType: AssessmentType;
   leadCapture: LeadCaptureInput;
   scoreResult: ScoreResult;
   report: GeneratedReport;
   accessToken: string;
 };
 
-export function ReportView({ leadCapture, scoreResult, report, accessToken }: ReportViewProps) {
+export function ReportView({ assessmentType, leadCapture, scoreResult, report, accessToken }: ReportViewProps) {
+  const diagnostic = getDiagnosticConfig(assessmentType);
+  const bonusLabels = getBonusAssetLabels(assessmentType);
   const checklistItems = buildChecklistItems(report, scoreResult);
-  const procedureText = buildProcedureOnePager(leadCapture.companyName);
-  const formSnippet = buildFormSnippet(leadCapture.companyName);
+  const procedureText = buildProcedureOnePager(leadCapture.companyName, assessmentType);
+  const formSnippet = buildFormSnippet(leadCapture.companyName, assessmentType);
 
   return (
     <section className="container py-12 md:py-16">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="eyebrow">Rapport complet</p>
-          <h1 className="font-heading text-4xl font-semibold tracking-tight">Votre diagnostic Loi 25</h1>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight">{diagnostic.reportTitle}</h1>
           <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
             Rapport détaillé préparé pour {leadCapture.companyName}. Vous avez maintenant accès au plan complet, au PDF et
-            aux gabarits texte (procédure, formulaire).
+            aux gabarits associés à ce diagnostic.
           </p>
         </div>
 
@@ -44,7 +48,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
             </a>
           </Button>
           <Button asChild variant="ghost">
-            <Link href="/contact?source=rapport-loi25">Poser une question</Link>
+            <Link href={`/contact?source=rapport-${diagnostic.leadSource}`}>Poser une question</Link>
           </Button>
         </div>
       </div>
@@ -87,7 +91,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
                 <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Points forts</p>
                 <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                   {report.summary.highlights.map((item) => (
-                    <li key={item}>• {item}</li>
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -95,7 +99,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
                 <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">À surveiller</p>
                 <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                   {report.summary.cautions.map((item) => (
-                    <li key={item}>• {item}</li>
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -104,7 +108,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
                   <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Notes</p>
                   <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                     {scoreResult.notes.map((item) => (
-                      <li key={item}>• {item}</li>
+                      <li key={item}>{item}</li>
                     ))}
                   </ul>
                 </div>
@@ -153,7 +157,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
               </div>
             ))}
             {report.topGapsContext ? (
-              <div className="md:col-span-2 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
+              <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4 md:col-span-2">
                 <p className="text-sm leading-6 text-muted-foreground">{report.topGapsContext}</p>
               </div>
             ) : null}
@@ -206,7 +210,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
             <CardContent>
               <ul className="space-y-3 text-sm leading-7 text-muted-foreground">
                 {checklistItems.map((item) => (
-                  <li key={item}>• {item}</li>
+                  <li key={item}>{item}</li>
                 ))}
               </ul>
             </CardContent>
@@ -214,10 +218,10 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
 
           <Card>
             <CardHeader>
-              <CardTitle>Texte de formulaire</CardTitle>
+              <CardTitle>{bonusLabels.snippetTitle}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground whitespace-pre-wrap">
+              <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground">
                 {formSnippet}
               </pre>
               <div className="flex flex-col gap-3 sm:flex-row">
@@ -235,10 +239,10 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
 
         <Card>
           <CardHeader>
-            <CardTitle>Procédure 1 page</CardTitle>
+            <CardTitle>{bonusLabels.procedureTitle}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <pre className="overflow-x-auto rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground whitespace-pre-wrap">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm leading-7 text-muted-foreground">
               {procedureText}
             </pre>
             <Button asChild variant="secondary">
@@ -254,7 +258,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
           <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
             <p className="font-medium text-foreground">Valeur ajoutée</p>
             <p>
-              Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait d’implantation si vous poursuivez avec
+              Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait d'implantation si vous poursuivez avec
               nous. Mentionnez votre achat du rapport complet lors de votre prise de contact.
             </p>
           </CardContent>
@@ -266,7 +270,7 @@ export function ReportView({ leadCapture, scoreResult, report, accessToken }: Re
           </CardHeader>
           <CardContent className="space-y-3 text-sm leading-7 text-muted-foreground">
             {report.disclaimers.map((item) => (
-              <p key={item}>• {item}</p>
+              <p key={item}>{item}</p>
             ))}
           </CardContent>
         </Card>

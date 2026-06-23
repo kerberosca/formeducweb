@@ -1,3 +1,5 @@
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
+
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
 export function getBaseUrl() {
@@ -17,8 +19,8 @@ export function getStripeCurrency() {
   return (process.env.STRIPE_CURRENCY || "cad").toLowerCase();
 }
 
-export function getStripeProductName() {
-  return "Rapport Loi 25 - Complet";
+export function getStripeProductName(assessmentType: AssessmentType = "loi25") {
+  return getDiagnosticConfig(assessmentType).stripeProductName;
 }
 
 export function isStripeConfigured() {

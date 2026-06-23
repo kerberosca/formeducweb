@@ -1,7 +1,8 @@
 ﻿import { NextResponse } from "next/server";
 
 import { buildFormSnippet } from "@/lib/bonus-assets";
-import { findAssessmentByToken } from "@/lib/assessment-store";
+import { findAssessmentByToken, hydrateAssessment } from "@/lib/assessment-store";
+import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { tokenSearchParamSchema } from "@/lib/schemas";
 
 export const runtime = "nodejs";
@@ -39,12 +40,14 @@ export async function GET(request: Request) {
     );
   }
 
-  const snippet = buildFormSnippet(assessment.companyName);
+  const hydrated = hydrateAssessment(assessment);
+  const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
+  const snippet = buildFormSnippet(assessment.companyName, hydrated.assessmentType);
 
   return new NextResponse(snippet, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="texte-formulaire-loi25.txt"',
+      "Content-Disposition": `attachment; filename="${diagnostic.bonusAssets.snippetFilename}"`,
       "Cache-Control": "no-store"
     }
   });

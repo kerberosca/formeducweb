@@ -5,9 +5,16 @@ import { Button } from "@/components/ui/button";
 type CtaBandProps = {
   title: string;
   description: string;
+  primaryHref?: string;
+  primaryLabel?: string;
 };
 
-export function CtaBand({ title, description }: CtaBandProps) {
+export function CtaBand({
+  title,
+  description,
+  primaryHref = "/#diagnostics",
+  primaryLabel = "Choisir un diagnostic"
+}: CtaBandProps) {
   return (
     <section className="container py-12 md:py-20">
       <div className="overflow-hidden rounded-[36px] border border-primary/20 bg-[linear-gradient(135deg,rgba(13,79,154,0.98),rgba(21,113,212,0.95))] px-8 py-10 text-white shadow-halo md:px-12">
@@ -19,7 +26,7 @@ export function CtaBand({ title, description }: CtaBandProps) {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
             <Button asChild variant="secondary" className="border-white/25 bg-white text-primary hover:bg-white/95">
-              <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
+              <Link href={primaryHref}>{primaryLabel}</Link>
             </Button>
             <Button asChild variant="ghost" className="text-white hover:bg-white/10 hover:text-white">
               <Link href="/contact">Parler à ForméducWeb</Link>

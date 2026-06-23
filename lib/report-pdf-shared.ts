@@ -1,4 +1,6 @@
-export function filenameFromCompany(companyName: string) {
+import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
+
+export function filenameFromCompany(companyName: string, assessmentType: AssessmentType = "loi25") {
   const slug = companyName
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -7,5 +9,5 @@ export function filenameFromCompany(companyName: string) {
     .replace(/^-+|-+$/g, "");
 
   const date = new Date().toISOString().slice(0, 10);
-  return `rapport-loi25-${slug || "entreprise"}-${date}.pdf`;
+  return `${getDiagnosticConfig(assessmentType).filePrefix}-${slug || "entreprise"}-${date}.pdf`;
 }

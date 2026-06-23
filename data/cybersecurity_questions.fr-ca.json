@@ -1,0 +1,792 @@
+{
+  "version": "1.0.0",
+  "locale": "fr-CA",
+  "title": "Auto-évaluation - Cybersécurité PME",
+  "subtitle": "Un outil d'auto-évaluation pour identifier vos risques courants, vos écarts et un plan d'action.",
+  "disclaimer": "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un audit de sécurité, un test d'intrusion ou une certification.",
+  "scoring": {
+    "maxRawScoreNote": "Le score final est normalise sur 100 ? partir des scores ponderes.",
+    "levels": [
+      {
+        "min": 0,
+        "max": 39,
+        "label": "Expose",
+        "tagline": "Plusieurs bases de protection doivent être mises en place rapidement."
+      },
+      {
+        "min": 40,
+        "max": 69,
+        "label": "En renforcement",
+        "tagline": "Vous avez déjà certains réflexes, mais des écarts importants restent ? corriger."
+      },
+      {
+        "min": 70,
+        "max": 100,
+        "label": "Structure",
+        "tagline": "Votre posture est solide pour une PME. Continuez ? testér et documenter vos pratiques."
+      }
+    ],
+    "recommendationSelection": {
+      "topGapsCount": 5,
+      "threshold": 2
+    }
+  },
+  "sections": [
+    {
+      "id": "A",
+      "title": "Profil de l'entreprise",
+      "description": "Quelques questions simples sur votre organisation et votre support TI."
+    },
+    {
+      "id": "B",
+      "title": "Identités et accès",
+      "description": "Comptes, mots de passe, MFA, départ des employes et droits admin."
+    },
+    {
+      "id": "C",
+      "title": "Appareils, réseau et mises à jour",
+      "description": "Postes, mobiles, Wi-Fi, logiciels et accès ? distance."
+    },
+    {
+      "id": "D",
+      "title": "Sauvegardes et continuite",
+      "description": "Ce qui permet de reprendre rapidement après une erreur, une panne ou un rancongiciel."
+    },
+    {
+      "id": "E",
+      "title": "Courriel, fraude et sensibilisation",
+      "description": "Phishing, courriels frauduleux, habitudes d'équipe et verification des demandes."
+    },
+    {
+      "id": "F",
+      "title": "Incidents, fournisseurs et gouvernance",
+      "description": "Procédure, journalisation, fournisseurs critiques et responsabilités internes."
+    }
+  ],
+  "questions": [
+    {
+      "id": "A1",
+      "sectionId": "A",
+      "title": "Votre organisation est :",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "pme",
+          "label": "PME"
+        },
+        {
+          "value": "obnl",
+          "label": "OBNL"
+        },
+        {
+          "value": "travailleur_autonome",
+          "label": "Travailleur autonome"
+        },
+        {
+          "value": "autre",
+          "label": "Autre"
+        }
+      ],
+      "scoreMap": {
+        "pme": 0,
+        "obnl": 0,
+        "travailleur_autonome": 0,
+        "autre": 0
+      },
+      "helpText": "Cette information aide ? adapter les recommandations sans influencer le score.",
+      "recommendation": null
+    },
+    {
+      "id": "A2",
+      "sectionId": "A",
+      "title": "Combien de personnes utilisent vos outils numériques au quotidien?",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "1_5",
+          "label": "1 ? 5"
+        },
+        {
+          "value": "6_20",
+          "label": "6 ? 20"
+        },
+        {
+          "value": "21_75",
+          "label": "21 ? 75"
+        },
+        {
+          "value": "76_plus",
+          "label": "76 et plus"
+        }
+      ],
+      "scoreMap": {
+        "1_5": 0,
+        "6_20": 0,
+        "21_75": 0,
+        "76_plus": 0
+      },
+      "helpText": "Plus il y ? d'utilisateurs, plus la gestion des accès et des appareils devient importante.",
+      "recommendation": null
+    },
+    {
+      "id": "A3",
+      "sectionId": "A",
+      "title": "Qui vous aide principalement pour l'informatique?",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "interne",
+          "label": "Une personne ou équipe interne"
+        },
+        {
+          "value": "fournisseur",
+          "label": "Un fournisseur externe"
+        },
+        {
+          "value": "mixte",
+          "label": "Un melange interne/externe"
+        },
+        {
+          "value": "personne",
+          "label": "Personne de façon claire"
+        }
+      ],
+      "scoreMap": {
+        "interne": 0,
+        "fournisseur": 0,
+        "mixte": 0,
+        "personne": 0
+      },
+      "helpText": "Le rapport indiquera quand impliquer un fournisseur ou clarifier les roles.",
+      "recommendation": null
+    },
+    {
+      "id": "B1",
+      "sectionId": "B",
+      "title": "L'authentification multifacteur est-elle activee sur les comptes critiques?",
+      "type": "single_select",
+      "required": true,
+      "weight": 10,
+      "options": [
+        {
+          "value": "all",
+          "label": "Oui, sur presque tous les comptes critiques"
+        },
+        {
+          "value": "some",
+          "label": "Sur certains seulement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou je ne sais pas"
+        }
+      ],
+      "scoreMap": {
+        "all": 4,
+        "some": 2,
+        "no": 0
+      },
+      "helpText": "Courriel, Microsoft/Google, banque, hébergement, site web, CRM et outils d'administration.",
+      "recommendation": {
+        "title": "Activer MFA sur les comptes critiques",
+        "text": "Commencez par le courriel, les comptes administrateurs, l'hébergement, le CRM et les outils de facturation. Documentez qui est responsable de chaque activation."
+      }
+    },
+    {
+      "id": "B2",
+      "sectionId": "B",
+      "title": "Avez-vous des comptes individuels plutôt que des comptes partagés?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, presque partout"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non, plusieurs comptes sont partagés"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Les comptes partagés compliquent les enquetes et le retrait d'accès.",
+      "recommendation": {
+        "title": "Remplacer les comptes partagés",
+        "text": "Créez des comptes individuels, limitez les droits administrateurs et retirez les accès qui ne sont plus nécessaires."
+      }
+    },
+    {
+      "id": "B3",
+      "sectionId": "B",
+      "title": "Avez-vous une routine claire lors du départ d'un employe ou collaborateur?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "documented",
+          "label": "Oui, documentee et appliquee"
+        },
+        {
+          "value": "informal",
+          "label": "Informelle"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "documented": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Courriel, cloud, CRM, site web, outils marketing, mots de passe et appareils.",
+      "recommendation": {
+        "title": "Formaliser la fermeture des accès",
+        "text": "Préparez une checklist de départ: comptes ? fermer, mots de passe ? changer, appareils ? reçuperer et accès fournisseurs ? verifier."
+      }
+    },
+    {
+      "id": "B4",
+      "sectionId": "B",
+      "title": "Les droits administrateurs sont-ils reserves aux personnes qui en ont vraiment besoin?",
+      "type": "single_select",
+      "required": true,
+      "weight": 8,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, droits limites et revises"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Les droits admin sont une cible prioritaire en cas de compromission.",
+      "recommendation": {
+        "title": "Reduire les droits administrateurs",
+        "text": "Listez les admins, retirez les droits non essentiels et prevoyez une revue mensuelle ou trimestrielle."
+      }
+    },
+    {
+      "id": "C1",
+      "sectionId": "C",
+      "title": "Vos ordinateurs et appareils sont-ils mis à jour regulierement?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "automatic",
+          "label": "Oui, mises à jour automatiques ou suivies"
+        },
+        {
+          "value": "sometimes",
+          "label": "Parfois"
+        },
+        {
+          "value": "rare",
+          "label": "Rarement ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "automatic": 4,
+        "sometimes": 2,
+        "rare": 0
+      },
+      "helpText": "Systemes, navigateurs, suites bureautiques, plugins et applications critiques.",
+      "recommendation": {
+        "title": "Mettre une routine de mises à jour",
+        "text": "Activez les mises à jour automatiques quand possible et gardez une courte liste des logiciels critiques ? verifier."
+      }
+    },
+    {
+      "id": "C2",
+      "sectionId": "C",
+      "title": "Avez-vous une protection antivirus/EDR activee sur les appareils de travail?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "managed",
+          "label": "Oui, gèree et verifiee"
+        },
+        {
+          "value": "basic",
+          "label": "Protection de base seulement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou je ne sais pas"
+        }
+      ],
+      "scoreMap": {
+        "managed": 4,
+        "basic": 2,
+        "no": 0
+      },
+      "helpText": "L'objectif est de savoir si la protection est presente, active et surveillee.",
+      "recommendation": {
+        "title": "Vérifier la protection des appareils",
+        "text": "Confirmez que chaque appareil de travail ? une protection activee et que les alertes importantes sont vues par quelqu'un."
+      }
+    },
+    {
+      "id": "C3",
+      "sectionId": "C",
+      "title": "Votre Wi-Fi ou accès ? distance est-il séparé et protège?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, réseau protège et invites séparés"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Inclut le mot de passe Wi-Fi, les invites, VPN et accès administrateur au routeur.",
+      "recommendation": {
+        "title": "Securiser les accès réseau",
+        "text": "Separez le Wi-Fi invite, changez les mots de passe par défaut et limitez l'administration du routeur ou du VPN."
+      }
+    },
+    {
+      "id": "C4",
+      "sectionId": "C",
+      "title": "Les outils web critiques sont-ils administrés de façon sécurisée?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, accès limites et MFA"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Site web, hébergement, DNS, courriel transactionnel, outils marketing et analytics.",
+      "recommendation": {
+        "title": "Revoir les accès aux outils web",
+        "text": "Vérifiez les administrateurs du site, de l'hébergement et du DNS. Activez MFA et retirez les anciens accès."
+      }
+    },
+    {
+      "id": "D1",
+      "sectionId": "D",
+      "title": "Avez-vous des sauvégardes automatiques des données et systèmes importants?",
+      "type": "single_select",
+      "required": true,
+      "weight": 9,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, automatisees"
+        },
+        {
+          "value": "partial",
+          "label": "Partielles"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Site web, base de données, fichiers partagés, comptabilite, CRM et courriels importants.",
+      "recommendation": {
+        "title": "Mettre en place des sauvégardes automatiques",
+        "text": "Priorisez les systèmes qui arretent l'entreprise s'ils disparaissent. Automatisez et documentez la frequence."
+      }
+    },
+    {
+      "id": "D2",
+      "sectionId": "D",
+      "title": "Avez-vous déjà testé une restauration de sauvégarde?",
+      "type": "single_select",
+      "required": true,
+      "weight": 9,
+      "options": [
+        {
+          "value": "recent",
+          "label": "Oui, dans les 12 derniers mois"
+        },
+        {
+          "value": "old",
+          "label": "Oui, mais ca date"
+        },
+        {
+          "value": "never",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "recent": 4,
+        "old": 2,
+        "never": 0
+      },
+      "helpText": "Une sauvégarde jamais testée peut donner un faux sentiment de sécurité.",
+      "recommendation": {
+        "title": "Tester une restauration",
+        "text": "Faites un test simple: restaurer un fichier, une base de données ou une copie du site, puis noter le temps et les problemes."
+      }
+    },
+    {
+      "id": "D3",
+      "sectionId": "D",
+      "title": "Savez-vous quels systèmes doivent être remis en marche en premier après un incident?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, ordre clair"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Courriel, site, operations, comptabilite, CRM, telephone ou dossiers clients.",
+      "recommendation": {
+        "title": "Définir les priorités de reprise",
+        "text": "Listez les systèmes critiques et l'ordre de reprise pour eviter l'improvisation pendant une panne."
+      }
+    },
+    {
+      "id": "E1",
+      "sectionId": "E",
+      "title": "Votre équipe sait-elle reconnaitre et signaler un courriel suspect?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes_recent",
+          "label": "Oui, sensibilisation recente"
+        },
+        {
+          "value": "informal",
+          "label": "Informel"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes_recent": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Le phishing reste une porte d'entree tres frequente.",
+      "recommendation": {
+        "title": "Sensibiliser au phishing",
+        "text": "Faites une courte capsule: signes d'un courriel suspect, verification hors courriel et procédure de signalement."
+      }
+    },
+    {
+      "id": "E2",
+      "sectionId": "E",
+      "title": "Avez-vous une regle de verification pour les demandes de paiement ou changement bancaire?",
+      "type": "single_select",
+      "required": true,
+      "weight": 8,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, verification hors courriel"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "La fraude au président et les changements de coordonnées bancaires visent souvent les PME.",
+      "recommendation": {
+        "title": "Vérifier les demandes sensibles",
+        "text": "Imposez une verification par telephone ou canal connu avant tout paiement inhabituel ou changement bancaire."
+      }
+    },
+    {
+      "id": "E3",
+      "sectionId": "E",
+      "title": "Les domaines courriel sont-ils protégés contre l'usurpation?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, SPF/DKIM/DMARC verifies"
+        },
+        {
+          "value": "not_sure",
+          "label": "Je ne sais pas"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "not_sure": 1,
+        "no": 0
+      },
+      "helpText": "Ces reglages reduisent certains risques d'usurpation de votre domaine.",
+      "recommendation": {
+        "title": "Vérifier SPF, DKIM et DMARC",
+        "text": "Demandez à votre fournisseur TI ou courriel de verifier les enregistrements SPF, DKIM et DMARC de votre domaine."
+      }
+    },
+    {
+      "id": "F1",
+      "sectionId": "F",
+      "title": "Avez-vous une procédure écrite en cas d'incident cyber?",
+      "type": "single_select",
+      "required": true,
+      "weight": 8,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, simple et connue"
+        },
+        {
+          "value": "partial",
+          "label": "Partielle"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Qui appeler, quoi isoler, quoi documenter, comment communiquer.",
+      "recommendation": {
+        "title": "Créer une procédure d'incident",
+        "text": "Rédigez une procédure 1 page: signalement, containment, contacts, préservation des preuves, communication et reprise."
+      }
+    },
+    {
+      "id": "F2",
+      "sectionId": "F",
+      "title": "Gardez-vous des journaux ou traces pour enqueter en cas de probleme?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, journaux disponibles"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Accès admin, connexions, changements importants et alertes.",
+      "recommendation": {
+        "title": "Activer les journaux utiles",
+        "text": "Assurez-vous que les systèmes critiques conservent des traces consultables en cas d'incident."
+      }
+    },
+    {
+      "id": "F3",
+      "sectionId": "F",
+      "title": "Les responsabilités cyber de vos fournisseurs critiques sont-elles claires?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, responsabilités claires"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        },
+        {
+          "value": "na",
+          "label": "Non applicable"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0,
+        "na": 4
+      },
+      "helpText": "Hebergement, infogerance, courriel, CRM, sauvégardes et logiciels metiers.",
+      "recommendation": {
+        "title": "Clarifier les responsabilités fournisseur",
+        "text": "Demandez qui gère les sauvégardes, alertes, mises à jour, accès et incidents pour chaque fournisseur critique."
+      }
+    }
+  ],
+  "report": {
+    "sectionsScoring": [
+      {
+        "sectionId": "B",
+        "label": "Identités et accès"
+      },
+      {
+        "sectionId": "C",
+        "label": "Appareils, réseau et mises à jour"
+      },
+      {
+        "sectionId": "D",
+        "label": "Sauvegardes et continuite"
+      },
+      {
+        "sectionId": "E",
+        "label": "Courriel, fraude et sensibilisation"
+      },
+      {
+        "sectionId": "F",
+        "label": "Incidents, fournisseurs et gouvernance"
+      }
+    ],
+    "planTemplates": {
+      "days30": [
+        "Activer MFA sur les comptes critiques.",
+        "Lister les administrateurs et retirer les accès inutiles.",
+        "Vérifier les sauvégardes automatiques des données critiques.",
+        "Tester une restauration simple et noter le résultat.",
+        "Créer une procédure 1 page de signalement d'incident cyber."
+      ],
+      "days90": [
+        "Faire une revue complète des comptes et droits administrateurs.",
+        "Mettre en place une cadence mensuelle de mises à jour et verification.",
+        "Vérifier SPF, DKIM et DMARC avec le fournisseur courriel.",
+        "Faire une mini-simulation d'incident et corriger les trous.",
+        "Clarifier les responsabilités cyber avec les fournisseurs critiques."
+      ]
+    }
+  },
+  "leadCapture": {
+    "fields": [
+      {
+        "id": "contactName",
+        "label": "Nom",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "companyName",
+        "label": "Entreprise",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "email",
+        "label": "Courriel",
+        "type": "email",
+        "required": true
+      },
+      {
+        "id": "phone",
+        "label": "Telephone (optionnel)",
+        "type": "tel",
+        "required": false
+      }
+    ],
+    "consent": {
+      "id": "consentMarketing",
+      "label": "J'accepte de recevoir des communications de ForméducWeb (je peux me désabonner en tout temps).",
+      "defaultChecked": false
+    }
+  }
+}

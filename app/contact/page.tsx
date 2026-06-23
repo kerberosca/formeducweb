@@ -9,18 +9,18 @@ import { getAbsoluteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 const pageDescription =
-  "Parlez-nous de votre projet. Diagnostic Loi 25, refonte web, SEO ou audit cyber pour PME au Québec. Réponse rapide.";
+  "Parlez-nous de votre projet: diagnostic Loi 25, cybersécurité, IA ou accompagnement numérique pour PME au Québec.";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Contact ForméducWeb | Loi 25, site web, SEO et cyber"
+    absolute: "Contact ForméducWeb | Loi 25, cybersécurité et IA"
   },
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/contact")
   },
   openGraph: {
-    title: "Contact ForméducWeb | Loi 25, site web, SEO et cyber",
+    title: "Contact ForméducWeb | Loi 25, cybersécurité et IA",
     description: pageDescription,
     url: getAbsoluteUrl("/contact")
   }
@@ -34,7 +34,7 @@ export default function ContactPage() {
           <SectionHeading
             eyebrow="Contact"
             title="Expliquez-nous votre besoin"
-            description="Si vous hésitez entre diagnostic, refonte web ou accompagnement, on vous aidera à choisir la bonne prochaine étape."
+            description="Si vous hésitez entre Loi 25, cybersécurité, IA ou accompagnement, on vous aidera à choisir la bonne prochaine étape."
             titleLevel="h1"
           />
           <Card>
@@ -45,7 +45,7 @@ export default function ContactPage() {
             </CardContent>
           </Card>
           <Button asChild variant="secondary">
-            <Link href="/loi-25/wizard">Faire plutôt l’auto-évaluation Loi 25</Link>
+            <Link href="/#diagnostics">Faire plutôt une auto-évaluation</Link>
           </Button>
         </div>
 

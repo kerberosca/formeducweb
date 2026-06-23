@@ -4,6 +4,7 @@ import type { Assessment, Prisma } from "@prisma/client";
 
 import { db } from "@/lib/db";
 import { mapAttributionToDb } from "@/lib/attribution-server";
+import { normalizeAssessmentType, type AssessmentType } from "@/lib/diagnostics";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LiteReport } from "@/lib/reportFilters";
 import type { AttributionInput, LeadCaptureInput } from "@/lib/schemas";
@@ -14,6 +15,7 @@ import { getWizardData } from "@/lib/wizard";
 
 export type HydratedAssessment = {
   assessment: Assessment;
+  assessmentType: AssessmentType;
   answers: AssessmentAnswers;
   scoreResult: ScoreResult;
   liteReport: LiteReport;
@@ -29,6 +31,7 @@ function cleanAnswers(answers: AssessmentAnswers) {
 }
 
 export async function createAssessmentRecord(input: {
+  assessmentType: AssessmentType;
   leadCapture: LeadCaptureInput;
   answers: AssessmentAnswers;
   scoreResult: ScoreResult;
@@ -41,6 +44,7 @@ export async function createAssessmentRecord(input: {
 
   return db.assessment.create({
     data: {
+      assessmentType: input.assessmentType,
       contactName: input.leadCapture.contactName,
       companyName: input.leadCapture.companyName,
       email: input.leadCapture.email,
@@ -109,12 +113,14 @@ export async function markAssessmentRefundedByPaymentIntent(stripePaymentIntentI
 }
 
 export function hydrateAssessment(assessment: Assessment): HydratedAssessment {
-  const wizard = getWizardData();
+  const assessmentType = normalizeAssessmentType(assessment.assessmentType);
+  const wizard = getWizardData(assessmentType);
   const answers = (assessment.answers as AssessmentAnswers) ?? {};
   const scoreResult = deepRepairText(computeScore(wizard, answers));
 
   return {
     assessment,
+    assessmentType,
     answers,
     scoreResult,
     liteReport: deepRepairText(assessment.reportLite as unknown as LiteReport),

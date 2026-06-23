@@ -1,0 +1,824 @@
+{
+  "version": "1.0.0",
+  "locale": "fr-CA",
+  "title": "Auto-évaluation - IA en entreprise",
+  "subtitle": "Un outil d'auto-évaluation pour cadrer les usages IA, les données, les risques et l'adoption.",
+  "disclaimer": "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un avis juridique, une certification ou une promesse de performance.",
+  "scoring": {
+    "maxRawScoreNote": "Le score final est normalise sur 100 ? partir des scores ponderes.",
+    "levels": [
+      {
+        "min": 0,
+        "max": 39,
+        "label": "Exploratoire",
+        "tagline": "Vos usages IA sont encore peu cadrés. Commencez par les objectifs, les données et les règles de base."
+      },
+      {
+        "min": 40,
+        "max": 69,
+        "label": "En structuration",
+        "tagline": "Vous avez de bonnes pistes, mais il faut mieux encadrer les usages, les données et la validation."
+      },
+      {
+        "min": 70,
+        "max": 100,
+        "label": "Mature",
+        "tagline": "Votre démarche IA est bien structurée. Continuez à mesurer, documenter et former l'équipe."
+      }
+    ],
+    "recommendationSelection": {
+      "topGapsCount": 5,
+      "threshold": 2
+    }
+  },
+  "sections": [
+    {
+      "id": "A",
+      "title": "Profil de l'entreprise",
+      "description": "Votre contexte, vos usages actuels et le niveau de sensibilité des données."
+    },
+    {
+      "id": "B",
+      "title": "Usages et objectifs",
+      "description": "Pourquoi vous utilisez l'IA et comment vous choisissez les bons cas d'usage."
+    },
+    {
+      "id": "C",
+      "title": "Données et confidentialité",
+      "description": "Ce que l'équipe entre dans les outils IA et comment les données sensibles sont protégées."
+    },
+    {
+      "id": "D",
+      "title": "Gouvernance et validation",
+      "description": "Règles internes, validation humaine, responsabilités et traces."
+    },
+    {
+      "id": "E",
+      "title": "Outils, sécurité et fournisseurs",
+      "description": "Choix des plateformes IA, accès, intégrations et conditions d'utilisation."
+    },
+    {
+      "id": "F",
+      "title": "Adoption, competences et mesure",
+      "description": "Formation, expérimentation, qualité des résultats et suivi des gains."
+    }
+  ],
+  "questions": [
+    {
+      "id": "A1",
+      "sectionId": "A",
+      "title": "Votre organisation est :",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "pme",
+          "label": "PME"
+        },
+        {
+          "value": "obnl",
+          "label": "OBNL"
+        },
+        {
+          "value": "travailleur_autonome",
+          "label": "Travailleur autonome"
+        },
+        {
+          "value": "autre",
+          "label": "Autre"
+        }
+      ],
+      "scoreMap": {
+        "pme": 0,
+        "obnl": 0,
+        "travailleur_autonome": 0,
+        "autre": 0
+      },
+      "helpText": "Cette information aide ? adapter les recommandations sans influencer le score.",
+      "recommendation": null
+    },
+    {
+      "id": "A2",
+      "sectionId": "A",
+      "title": "Quel est votre niveau actuel d'utilisation de l'IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "none",
+          "label": "Presque aucun usage"
+        },
+        {
+          "value": "individual",
+          "label": "Quelques usages individuels"
+        },
+        {
+          "value": "team",
+          "label": "Usages dans certaines équipes"
+        },
+        {
+          "value": "structured",
+          "label": "Démarche déjà structurée"
+        }
+      ],
+      "scoreMap": {
+        "none": 0,
+        "individual": 0,
+        "team": 0,
+        "structured": 0
+      },
+      "helpText": "Le rapport ajustera les prochaines étapes selon votre maturité actuelle.",
+      "recommendation": null
+    },
+    {
+      "id": "A3",
+      "sectionId": "A",
+      "title": "Travaillez-vous avec des données sensibles ou confidentielles?",
+      "type": "single_select",
+      "required": true,
+      "weight": 0,
+      "options": [
+        {
+          "value": "often",
+          "label": "Oui, souvent"
+        },
+        {
+          "value": "sometimes",
+          "label": "Parfois"
+        },
+        {
+          "value": "rare",
+          "label": "Rarement"
+        },
+        {
+          "value": "not_sure",
+          "label": "Je ne suis pas certain"
+        }
+      ],
+      "scoreMap": {
+        "often": 0,
+        "sometimes": 0,
+        "rare": 0,
+        "not_sure": 0
+      },
+      "helpText": "Données clients, dossiers RH, informations financières, secrets commerciaux ou données personnelles.",
+      "recommendation": null
+    },
+    {
+      "id": "B1",
+      "sectionId": "B",
+      "title": "Avez-vous liste les cas d'usage IA que votre équipe utilise ou veut testér?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, liste claire"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Exemples: rédaction, service client, analyse, résumé, idéation, automatisation interne.",
+      "recommendation": {
+        "title": "Inventorier les usages IA",
+        "text": "Créez un tableau simple: usage, équipe, outil, données utilisées, gains attendus, risques et responsable."
+      }
+    },
+    {
+      "id": "B2",
+      "sectionId": "B",
+      "title": "Chaque usage IA a-t-il un objectif d'affaires clair?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, objectif et critere de succes"
+        },
+        {
+          "value": "some",
+          "label": "Pour certains usages"
+        },
+        {
+          "value": "no",
+          "label": "Non, c'est surtout exploratoire"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "some": 2,
+        "no": 0
+      },
+      "helpText": "Gain de temps, qualité, réduction d'erreurs, meilleure réponse client ou accélération d'un processus.",
+      "recommendation": {
+        "title": "Associer l'IA ? des objectifs mesurables",
+        "text": "Pour chaque cas d'usage prioritaire, notez le probleme ? resoudre, le gain attendu et comment vous validerez le résultat."
+      }
+    },
+    {
+      "id": "B3",
+      "sectionId": "B",
+      "title": "Avez-vous choisi 1 à 3 cas d'usage prioritaires plutôt que de tout essayer?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, priorités claires"
+        },
+        {
+          "value": "partial",
+          "label": "On commence à prioriser"
+        },
+        {
+          "value": "no",
+          "label": "Non, usage disperse"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Les meilleurs gains viennent souvent de quelques usages bien cadrés.",
+      "recommendation": {
+        "title": "Prioriser les cas d'usage",
+        "text": "Choisissez 1 à 3 usages avec bon ratio impact/risque/effort et mettez les autres dans un backlog."
+      }
+    },
+    {
+      "id": "B4",
+      "sectionId": "B",
+      "title": "Une personne est-elle responsable de coordonner les usages IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, role clair"
+        },
+        {
+          "value": "informal",
+          "label": "Informel"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Pas besoin d'un poste dedie, mais il faut un point de coordination.",
+      "recommendation": {
+        "title": "Nommer un responsable IA",
+        "text": "Designez une personne responsable de l'inventaire, des règles, de la priorisation et du suivi des usages IA."
+      }
+    },
+    {
+      "id": "C1",
+      "sectionId": "C",
+      "title": "Votre équipe sait-elle quelles données ne doivent pas être entrees dans un outil IA public?",
+      "type": "single_select",
+      "required": true,
+      "weight": 9,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, regle claire"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Données personnelles, contrats, documents clients, secrets commerciaux et informations RH.",
+      "recommendation": {
+        "title": "Définir les données interdites",
+        "text": "Rédigez une liste courte des données ? ne jamais coller dans un outil IA non approuvé."
+      }
+    },
+    {
+      "id": "C2",
+      "sectionId": "C",
+      "title": "Avez-vous une méthode pour anonymiser ou minimiser les données avant un usage IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, méthode appliquee"
+        },
+        {
+          "value": "sometimes",
+          "label": "Parfois"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "sometimes": 2,
+        "no": 0
+      },
+      "helpText": "Retirer noms, courriels, numeros, details client et elements confidentiels quand possible.",
+      "recommendation": {
+        "title": "Minimiser les données dans les prompts",
+        "text": "Utilisez des exemples fictifs ou anonymisés et ne transmettez que l'information nécessaire au résultat voulu."
+      }
+    },
+    {
+      "id": "C3",
+      "sectionId": "C",
+      "title": "Savez-vous si vos outils IA utilisent les données pour entraîner leurs modèles?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, conditions verifiees"
+        },
+        {
+          "value": "not_sure",
+          "label": "Je ne sais pas"
+        },
+        {
+          "value": "no",
+          "label": "Non verifie"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "not_sure": 1,
+        "no": 0
+      },
+      "helpText": "Les conditions varient selon les outils, forfaits et parametres.",
+      "recommendation": {
+        "title": "Vérifier les conditions des outils IA",
+        "text": "Vérifiez les conditions d'utilisation, options de confidentialité et parametres d'entrainement des outils IA utilisés."
+      }
+    },
+    {
+      "id": "C4",
+      "sectionId": "C",
+      "title": "Vos usages IA respectent-ils vos engagements de confidentialité envers clients et employes?",
+      "type": "single_select",
+      "required": true,
+      "weight": 8,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, verifie"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Politiques internes, contrats, confidentialité client, Loi 25 et attentes de transparence.",
+      "recommendation": {
+        "title": "Aligner IA et confidentialité",
+        "text": "Revisitez les usages IA avec vos engagements de confidentialité et retirez les usages qui exposent des données sensibles sans cadre clair."
+      }
+    },
+    {
+      "id": "D1",
+      "sectionId": "D",
+      "title": "Avez-vous une politique ou charte IA courte pour l'équipe?",
+      "type": "single_select",
+      "required": true,
+      "weight": 8,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, connue de l'équipe"
+        },
+        {
+          "value": "draft",
+          "label": "Brouillon ou règles informelles"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "draft": 2,
+        "no": 0
+      },
+      "helpText": "Une page suffit souvent pour clarifier les usages permis, limites et validations.",
+      "recommendation": {
+        "title": "Créer une charte IA courte",
+        "text": "Rédigez une charte d'une page: usages permis, données interdites, outils approuvés, validation humaine et responsable."
+      }
+    },
+    {
+      "id": "D2",
+      "sectionId": "D",
+      "title": "Les résultats produits par IA sont-ils valides par une personne avant usage externe?",
+      "type": "single_select",
+      "required": true,
+      "weight": 9,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, validation systematique"
+        },
+        {
+          "value": "sometimes",
+          "label": "Parfois"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "sometimes": 2,
+        "no": 0
+      },
+      "helpText": "Important pour contenus publics, conseils clients, documents juridiques, financiers ou RH.",
+      "recommendation": {
+        "title": "Imposer la validation humaine",
+        "text": "Ajoutez une étape de validation humaine pour tout résultat IA utilise avec clients, public, RH ou décisions importantes."
+      }
+    },
+    {
+      "id": "D3",
+      "sectionId": "D",
+      "title": "Gardez-vous des traces des usages IA importants?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, traces utiles"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Cas d'usage, outil, responsable, données utilisées, décision finale et date.",
+      "recommendation": {
+        "title": "Documenter les usages IA importants",
+        "text": "Gardez une trace simple des usages ? risque ou ? impact pour pouvoir expliquer les décisions et ameliorer les pratiques."
+      }
+    },
+    {
+      "id": "D4",
+      "sectionId": "D",
+      "title": "Avez-vous des criteres pour approuvér un nouvel outil IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, criteres clairs"
+        },
+        {
+          "value": "informal",
+          "label": "Informel"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Confidentialité, sécurité, coût, valeur d'affaires, export des données et conditions.",
+      "recommendation": {
+        "title": "Créer une grille d'approbation IA",
+        "text": "Avant d'ajouter un outil IA, verifiez données traitees, conditions, accès, coûts, valeur attendue et responsable."
+      }
+    },
+    {
+      "id": "E1",
+      "sectionId": "E",
+      "title": "Les outils IA utilisés par l'équipe sont-ils connus et approuvés?",
+      "type": "single_select",
+      "required": true,
+      "weight": 7,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, liste approuvée"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non, chacun choisit ses outils"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "L'IA fantome cree des risques de données, de coût et de qualité.",
+      "recommendation": {
+        "title": "Maintenir une liste d'outils IA approuvés",
+        "text": "Listez les outils permis, ceux ? eviter et les conditions d'utilisation pour chaque équipe."
+      }
+    },
+    {
+      "id": "E2",
+      "sectionId": "E",
+      "title": "Les comptes IA sont-ils gérés avec des accès individuels et MFA quand possible?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou incertain"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Surtout pour les outils qui contiennent historiques, fichiers, automatisations ou données client.",
+      "recommendation": {
+        "title": "Securiser les comptes IA",
+        "text": "Évitez les comptes partagés, activez MFA quand disponible et retirez les accès lors des départs."
+      }
+    },
+    {
+      "id": "E3",
+      "sectionId": "E",
+      "title": "Les intégrations IA avec vos outils internes sont-elles encadrees?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, permissions revues"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non ou aucune verification"
+        },
+        {
+          "value": "na",
+          "label": "Non applicable"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0,
+        "na": 4
+      },
+      "helpText": "Connecteurs avec Drive, Microsoft 365, CRM, Slack, courriels ou bases de données.",
+      "recommendation": {
+        "title": "Limiter les permissions d'integration",
+        "text": "Révisez les intégrations IA, limitez les permissions et Évitez les accès larges aux dossiers ou données sensibles."
+      }
+    },
+    {
+      "id": "F1",
+      "sectionId": "F",
+      "title": "Votre équipe a-t-elle reçu une sensibilisation de base sur l'IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 6,
+      "options": [
+        {
+          "value": "yes_recent",
+          "label": "Oui, recemment"
+        },
+        {
+          "value": "informal",
+          "label": "Informelle"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes_recent": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Limites, hallucinations, données sensibles, validation et bons prompts.",
+      "recommendation": {
+        "title": "Former l'équipe aux bases IA",
+        "text": "Offrez une courte formation: limites, données interdites, validation humaine, bons prompts et exemples propres à votre réalité."
+      }
+    },
+    {
+      "id": "F2",
+      "sectionId": "F",
+      "title": "Mesurez-vous les gains ou problemes des usages IA?",
+      "type": "single_select",
+      "required": true,
+      "weight": 5,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, quelques indicateurs"
+        },
+        {
+          "value": "informal",
+          "label": "Informel"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "informal": 2,
+        "no": 0
+      },
+      "helpText": "Temps sauvé, qualité, erreurs, satisfaction, coûts et risques observés.",
+      "recommendation": {
+        "title": "Mesurer les usages IA",
+        "text": "Pour chaque usage prioritaire, suivez un petit indicateur de gain et un indicateur de risque ou qualité."
+      }
+    },
+    {
+      "id": "F3",
+      "sectionId": "F",
+      "title": "Avez-vous un espace pour partager les bons exemples et les erreurs ? eviter?",
+      "type": "single_select",
+      "required": true,
+      "weight": 4,
+      "options": [
+        {
+          "value": "yes",
+          "label": "Oui, base partagee"
+        },
+        {
+          "value": "partial",
+          "label": "Partiellement"
+        },
+        {
+          "value": "no",
+          "label": "Non"
+        }
+      ],
+      "scoreMap": {
+        "yes": 4,
+        "partial": 2,
+        "no": 0
+      },
+      "helpText": "Bibliotheque de prompts, exemples valides, limites connues, lecons apprises.",
+      "recommendation": {
+        "title": "Créer une base d'apprentissage IA",
+        "text": "Centralisez les prompts utiles, exemples valides, pieges, limites et décisions pour accelerer l'apprentissage collectif."
+      }
+    }
+  ],
+  "report": {
+    "sectionsScoring": [
+      {
+        "sectionId": "B",
+        "label": "Usages et objectifs"
+      },
+      {
+        "sectionId": "C",
+        "label": "Données et confidentialité"
+      },
+      {
+        "sectionId": "D",
+        "label": "Gouvernance et validation"
+      },
+      {
+        "sectionId": "E",
+        "label": "Outils, sécurité et fournisseurs"
+      },
+      {
+        "sectionId": "F",
+        "label": "Adoption, competences et mesure"
+      }
+    ],
+    "planTemplates": {
+      "days30": [
+        "Inventorier les usages IA actuels et les outils utilisés.",
+        "Définir les données interdites dans les outils IA publics.",
+        "Choisir 1 à 3 cas d'usage prioritaires avec objectif clair.",
+        "Rédiger une charte IA courte pour l'équipe.",
+        "Prevoir une validation humaine pour les contenus et décisions externes."
+      ],
+      "days90": [
+        "Vérifier les conditions de confidentialité des outils IA utilisés.",
+        "Former l'équipe sur limites, données sensibles et validation.",
+        "Mettre en place une liste d'outils IA approuvés.",
+        "Mesurer les gains et problemes des usages prioritaires.",
+        "Documenter les usages ? impact et ajuster la charte IA."
+      ]
+    }
+  },
+  "leadCapture": {
+    "fields": [
+      {
+        "id": "contactName",
+        "label": "Nom",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "companyName",
+        "label": "Entreprise",
+        "type": "text",
+        "required": true
+      },
+      {
+        "id": "email",
+        "label": "Courriel",
+        "type": "email",
+        "required": true
+      },
+      {
+        "id": "phone",
+        "label": "Telephone (optionnel)",
+        "type": "tel",
+        "required": false
+      }
+    ],
+    "consent": {
+      "id": "consentMarketing",
+      "label": "J'accepte de recevoir des communications de ForméducWeb (je peux me désabonner en tout temps).",
+      "defaultChecked": false
+    }
+  }
+}

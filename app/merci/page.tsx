@@ -1,10 +1,11 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { MetaPurchaseTracker } from "@/components/analytics/meta-purchase-tracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { findAssessmentById, findAssessmentByStripeSessionId, markAssessmentPaid } from "@/lib/assessment-store";
+import { getDiagnosticConfig, normalizeAssessmentType } from "@/lib/diagnostics";
 import { checkoutSearchParamsSchema } from "@/lib/schemas";
 import { getStripeClient } from "@/lib/stripe";
 
@@ -14,13 +15,11 @@ type MerciSearchParamsInput = {
 };
 
 type MerciPageProps = {
-  /** Next peut fournir un objet ou une Promise selon la version / le mode. */
   searchParams?: Promise<MerciSearchParamsInput> | MerciSearchParamsInput;
 };
 
 function normalizeMerciSearchParams(raw: MerciSearchParamsInput | undefined) {
-  const pick = (value: string | string[] | undefined) =>
-    Array.isArray(value) ? value[0] : value;
+  const pick = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
 
   return {
     session_id: pick(raw?.session_id),
@@ -57,7 +56,7 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild>
-                <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
+                <Link href="/services">Voir les diagnostics</Link>
               </Button>
               <Button asChild variant="secondary">
                 <Link href="/contact">Retour au contact</Link>
@@ -70,6 +69,10 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
   }
 
   let reportHref: string | null = null;
+  let serviceHref = "/services";
+  let serviceLabel = "services";
+  let purchaseContentName = "Rapport complet";
+  let purchaseContentCategory = "Diagnostic";
   let paymentConfirmed = false;
   let customerName = "";
   let companyName = "";
@@ -98,8 +101,13 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
       }
 
       if (assessment && (assessment.paymentStatus === "paid" || session.payment_status === "paid")) {
+        const diagnostic = getDiagnosticConfig(normalizeAssessmentType(assessment.assessmentType));
         paymentConfirmed = true;
-        reportHref = `/loi-25/rapport/${assessment.accessToken}`;
+        reportHref = diagnostic.reportPath(assessment.accessToken);
+        serviceHref = diagnostic.path;
+        serviceLabel = diagnostic.label;
+        purchaseContentName = diagnostic.stripeProductName;
+        purchaseContentCategory = diagnostic.metaContentCategory;
         customerName = assessment.contactName;
         companyName = assessment.companyName;
       }
@@ -117,11 +125,13 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
               sessionId={resolved.session_id}
               valueCents={purchaseValueCents}
               currency={purchaseCurrency}
+              contentName={purchaseContentName}
+              contentCategory={purchaseContentCategory}
             />
           ) : null}
           <p className="eyebrow">Merci</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">
-            {paymentConfirmed ? "Paiement confirmé" : "Votre paiement est en cours de validation"}
+            {paymentConfirmed ? "Paiement confirme" : "Votre paiement est en cours de validation"}
           </h1>
           <p className="text-lg leading-8 text-muted-foreground">
             {paymentConfirmed
@@ -135,11 +145,11 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
               </Button>
             ) : (
               <Button asChild>
-                <Link href="/contact?source=paiement-loi-25">Nous joindre</Link>
+                <Link href="/contact?source=paiement-diagnostic">Nous joindre</Link>
               </Button>
             )}
             <Button asChild variant="secondary">
-              <Link href="/loi-25">Retour au service Loi 25</Link>
+              <Link href={serviceHref}>Retour au service {serviceLabel}</Link>
             </Button>
           </div>
         </CardContent>

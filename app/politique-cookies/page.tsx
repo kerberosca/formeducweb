@@ -9,7 +9,7 @@ export default function PolitiqueCookiesPage() {
           <p className="eyebrow">Politique cookies</p>
           <h1 className="font-heading text-5xl font-semibold tracking-tight">Utilisation des cookies et technologies similaires</h1>
           <p className="text-lg leading-8 text-muted-foreground">
-            Cette page explique quels cookies peuvent etre utilises, pourquoi, et comment vous informer de facon claire.
+            Cette page explique quels cookies peuvent être utilisés, pourquoi, et comment vous informer de façon claire.
           </p>
         </div>
 
@@ -19,22 +19,22 @@ export default function PolitiqueCookiesPage() {
           {
             title: "Cookies essentiels",
             body:
-              "Le site peut utiliser des cookies techniques necessaires au fonctionnement, a la securite, a la prevention d'abus et a la stabilite de la plateforme."
+              "Le site peut utiliser des cookies techniques nécessaires au fonctionnement, à la sécurité, à la prévention d'abus et à la stabilité de la plateforme."
           },
           {
             title: "Cookies tiers",
             body:
-              "Le parcours de paiement est opere par Stripe. Selon votre navigateur, des cookies peuvent etre definis sur les domaines de Stripe pendant le checkout."
+              "Le parcours de paiement est opéré par Stripe. Selon votre navigateur, des cookies peuvent être définis sur les domaines de Stripe pendant le checkout."
           },
           {
             title: "Cookies non essentiels",
             body:
-              "Les cookies non essentiels sont desactives par defaut. Ils ne sont charges qu'apres un consentement explicite (analytics et/ou marketing), puis peuvent etre retires en tout temps."
+              "Les cookies non essentiels sont désactivés par défaut. Ils ne sont chargés qu'après un consentement explicite (analytics et/ou marketing), puis peuvent être retirés en tout temps."
           },
           {
             title: "Google Ads et mesure de conversion",
             body:
-              "Si la categorie Marketing est acceptee, le site peut charger la balise Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-evaluation). Selon la configuration, Meta Pixel peut aussi etre actif."
+              "Si la catégorie Marketing est acceptée, le site peut charger la balise Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-évaluation). Selon la configuration, Meta Pixel peut aussi être actif."
           },
           {
             title: "Banniere conditionnelle",
@@ -44,17 +44,17 @@ export default function PolitiqueCookiesPage() {
           {
             title: "Fournisseurs et transferts",
             body:
-              "Certains fournisseurs de mesure publicitaire ou analytics peuvent traiter des donnees en dehors du Quebec ou du Canada, selon leur infrastructure. Ces traitements restent soumis a vos choix de consentement."
+              "Certains fournisseurs de mesure publicitaire ou analytics peuvent traiter des données en dehors du Québec ou du Canada, selon leur infrastructure. Ces traitements restent soumis à vos choix de consentement."
           },
           {
-            title: "Comment gerer vos preferences",
+            title: "Comment gérer vos préférences",
             body:
-              "Vous pouvez modifier vos preferences directement sur cette page, ou via les reglages de votre navigateur (suppression, blocage, conservation)."
+              "Vous pouvez modifier vos préférences directement sur cette page, ou via les réglages de votre navigateur (suppression, blocage, conservation)."
           },
           {
-            title: "Mise a jour",
+            title: "Mise à jour",
             body:
-              "Cette politique peut etre mise a jour pour refleter les evolutions du site, des fournisseurs techniques ou des obligations applicables."
+              "Cette politique peut être mise à jour pour refléter les évolutions du site, des fournisseurs techniques ou des obligations applicables."
           }
         ].map((section) => (
           <Card key={section.title}>

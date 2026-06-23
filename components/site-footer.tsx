@@ -53,7 +53,7 @@ export function SiteFooter() {
             ))}
             <div>
               <Link href="/politique-cookies#preferences-cookies" className="text-white/70 transition hover:text-white">
-                Gerer mes cookies
+                Gérer mes cookies
               </Link>
             </div>
           </div>

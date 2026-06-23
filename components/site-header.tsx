@@ -19,7 +19,7 @@ export function SiteHeader() {
                 priority
                 className="h-auto w-[170px] sm:w-[230px]"
               />
-              <p className="mt-1 text-xs text-muted-foreground">Loi 25, web et implantation</p>
+              <p className="mt-1 text-xs text-muted-foreground">Loi 25, cybersécurité et IA</p>
             </div>
           </Link>
 
@@ -37,11 +37,11 @@ export function SiteHeader() {
             </nav>
 
             <Button asChild size="sm" className="md:hidden">
-              <Link href="/loi-25/wizard">Auto-évaluation</Link>
+              <Link href="/#diagnostics">Auto-évaluation</Link>
             </Button>
 
             <Button asChild className="hidden md:inline-flex">
-              <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
+              <Link href="/#diagnostics">Choisir un diagnostic</Link>
             </Button>
           </div>
         </div>
