@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrainCircuit, FileText, Layers3, MessageCircle, Network, ShieldCheck } from "lucide-react";
+import { ArrowRight, BrainCircuit, FileText, Layers3, MessageCircle, Network, ShieldCheck } from "lucide-react";
 
 import { FaqList } from "@/components/marketing/faq-list";
 import { SectionHeading } from "@/components/marketing/section-heading";
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
+import { getSeoSupportPagesByTheme, pillarSeoContent } from "@/lib/seo-content";
 import { siteConfig } from "@/lib/site";
 
 type DiagnosticLandingPageProps = {
@@ -38,6 +39,8 @@ function BulletList({ items }: { items: string[] }) {
 export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageProps) {
   const diagnostic = getDiagnosticConfig(assessmentType);
   const content = diagnostic.content;
+  const pillarSeo = pillarSeoContent[assessmentType];
+  const supportPages = getSeoSupportPagesByTheme(pillarSeo.supportTheme);
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -109,6 +112,48 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
                   <p className="font-medium">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
                 </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <section className="container py-8 md:py-14">
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardDescription className="font-semibold uppercase tracking-[0.25em] text-primary/70">
+                {pillarSeo.eyebrow}
+              </CardDescription>
+              <CardTitle>{pillarSeo.title}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5 p-6 pt-0 text-sm leading-7 text-muted-foreground">
+              <p>{pillarSeo.answer}</p>
+              <BulletList items={pillarSeo.bullets} />
+              <Button asChild variant="secondary">
+                <Link href="/hygiene-informatique">
+                  Voir l'approche hygiène informatique
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Guides pratiques liés</CardTitle>
+              <CardDescription>Des réponses courtes pour approfondir sans quitter le parcours.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-3">
+              {supportPages.slice(0, 5).map((page) => (
+                <Link
+                  key={page.path}
+                  href={page.path}
+                  className="group rounded-2xl border border-border/70 bg-white/75 p-4 transition hover:border-primary/40 hover:bg-primary/5"
+                >
+                  <span className="block text-sm font-medium text-foreground">{page.shortTitle}</span>
+                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">{page.description}</span>
+                </Link>
               ))}
             </CardContent>
           </Card>

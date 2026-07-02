@@ -16,12 +16,12 @@ const sections = [
   {
     title: "Cookies et technologies similaires",
     body:
-      "Le site utilise des cookies techniques nécessaires au fonctionnement et à la sécurité. Les cookies non essentiels (analytics, Google Ads, pixels publicitaires) restent bloqués tant que vous n'avez pas donné un consentement explicite."
+      "Le site utilise des cookies techniques nécessaires au fonctionnement et à la sécurité. Les cookies non essentiels de mesure analytics restent bloqués tant que vous n'avez pas donné un consentement explicite."
   },
   {
-    title: "Publicite et mesure",
+    title: "Mesure d'audience",
     body:
-      "Si vous acceptez la catégorie Marketing, le site peut activer Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-évaluation). Selon la configuration, Meta Pixel peut aussi être active."
+      "Si vous acceptez la catégorie Analytics, le site peut activer Google Analytics pour comprendre les visites et améliorer les parcours. Aucun pixel publicitaire ni suivi publicitaire n'est chargé dans la configuration active."
   },
   {
     title: "Conservation",

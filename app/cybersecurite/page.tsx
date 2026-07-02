@@ -4,16 +4,16 @@ import { DiagnosticLandingPage } from "@/components/diagnostics/diagnostic-landi
 import { getAbsoluteUrl } from "@/lib/seo";
 
 const pageDescription =
-  "Diagnostic cybersécurité pour PME: accès, MFA, sauvegardes, courriel, incidents et plan d'action priorisé.";
+  "Diagnostic cybersécurité pour PME: améliorez votre hygiène informatique avec MFA, sauvegardes, accès, courriels et incidents.";
 
 export const metadata: Metadata = {
-  title: "Diagnostic cybersécurité PME | Auto-évaluation gratuite",
+  title: "Diagnostic cybersécurité PME | Hygiène informatique",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/cybersecurite")
   },
   openGraph: {
-    title: "Diagnostic cybersécurité PME | ForméducWeb",
+    title: "Diagnostic cybersécurité PME | Hygiène informatique | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/cybersecurite")
   }

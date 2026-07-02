@@ -4,16 +4,16 @@ import { DiagnosticLandingPage } from "@/components/diagnostics/diagnostic-landi
 import { getAbsoluteUrl } from "@/lib/seo";
 
 const pageDescription =
-  "Diagnostic IA pour PME: cas d'usage, données, gouvernance, outils, formation et plan d'action priorisé.";
+  "Diagnostic IA pour PME: adoptez l'intelligence artificielle avec une bonne hygiène des données, des usages et de la validation humaine.";
 
 export const metadata: Metadata = {
-  title: "Diagnostic IA pour PME | Auto-évaluation gratuite",
+  title: "Diagnostic IA PME | Hygiène IA et usages responsables",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/intelligence-artificielle")
   },
   openGraph: {
-    title: "Diagnostic IA pour PME | ForméducWeb",
+    title: "Diagnostic IA PME | Hygiène IA et usages responsables | ForméducWeb",
     description: pageDescription,
     url: getAbsoluteUrl("/intelligence-artificielle")
   }

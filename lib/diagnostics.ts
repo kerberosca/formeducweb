@@ -93,9 +93,9 @@ const diagnostics = {
     content: {
       eyebrow: "Diagnostic Loi 25",
       badge: "Loi 25",
-      title: "Loi 25: diagnostic clair pour PME et OBNL du Québec",
+      title: "Diagnostic Loi 25 pour PME: données, formulaires et confiance",
       description:
-        "Un parcours simple pour évaluer vos pratiques de collecte, formulaires, consentement, accès, incidents et documentation.",
+        "Un parcours simple pour évaluer vos pratiques Loi 25, mieux connaître vos données, clarifier vos formulaires et prioriser les gestes qui inspirent confiance.",
       audience: "Directions, équipes opérations, marketing ou administration sans ressource conformité dédiée.",
       freeDeliverables: [
         "Score global et niveau de préparation.",
@@ -111,9 +111,9 @@ const diagnostics = {
         "Crédit applicable sur un accompagnement si vous poursuivez avec nous."
       ],
       reasonsToAct: [
-        "Savoir quelles données vous collectez et où elles se trouvent.",
-        "Rendre vos formulaires et votre site plus transparents.",
-        "Renforcer vos accès, sauvegardes et routines en cas d'incident."
+        "Savoir quelles données vous collectez, où elles se trouvent et pourquoi elles sont utiles.",
+        "Rendre vos formulaires et votre site plus transparents pour les clients.",
+        "Relier confidentialité, accès, sauvegardes et routines d'incident dans une même hygiène numérique."
       ],
       notThis: [
         "Ce n'est pas une promesse de conformité garantie.",
@@ -211,9 +211,9 @@ const diagnostics = {
     content: {
       eyebrow: "Diagnostic cybersécurité",
       badge: "Cybersécurité",
-      title: "Cybersécurité PME: voyez vos risques prioritaires sans audit lourd",
+      title: "Diagnostic cybersécurité PME: MFA, sauvegardes, accès et courriels",
       description:
-        "Le même principe que le diagnostic Loi 25, applique aux accès, mots de passe, sauvegardes, appareils, courriels et incidents.",
+        "Un diagnostic positif pour améliorer votre cybersécurité PME: MFA, sauvegardes, accès employés, appareils, courriels et réflexes d'incident.",
       audience: "PME, OBNL et équipes sans responsable sécurité à temps plein.",
       freeDeliverables: [
         "Score global de posture cyber.",
@@ -229,9 +229,9 @@ const diagnostics = {
         "Crédit applicable sur un accompagnement cyber."
       ],
       reasonsToAct: [
-        "Les attaques courantes exploitent souvent des bases manquantes: MFA, mises à jour, sauvegardes.",
-        "Un court diagnostic aide à prioriser avant d'acheter des outils.",
-        "Une procédure claire réduit le temps de réaction quand un incident arrive."
+        "Les bases bien entretenues - MFA, mises à jour, sauvegardes - réduisent beaucoup de risques courants.",
+        "Un court diagnostic aide à prioriser avant d'acheter des outils ou de multiplier les mandats.",
+        "Une procédure claire rend l'équipe plus calme et plus rapide quand un incident arrive."
       ],
       notThis: [
         "Ce n'est pas un test d'intrusion.",
@@ -329,9 +329,9 @@ const diagnostics = {
     content: {
       eyebrow: "Diagnostic IA",
       badge: "IA en entreprise",
-      title: "IA en entreprise: avancez sans exposer vos données ni improviser",
+      title: "Diagnostic IA pour PME: charte, données sensibles et usages utiles",
       description:
-        "Un diagnostic pour savoir où utiliser l'IA, quelles données protéger, quelles règles poser et comment former l'équipe.",
+        "Un diagnostic IA pour choisir les bons cas d'usage, protéger les données sensibles, poser des règles simples et former l'équipe.",
       audience: "PME et OBNL qui veulent utiliser l'IA de façon utile, encadrée et réaliste.",
       freeDeliverables: [
         "Score global de préparation IA.",
@@ -349,7 +349,7 @@ const diagnostics = {
       reasonsToAct: [
         "Vos équipes utilisent peut-être déjà des outils IA sans cadre commun.",
         "Les gains viennent surtout des bons cas d'usage, pas de la mode du moment.",
-        "Un minimum de règles protege les données clients, la propriété intellectuelle et la qualité."
+        "Un minimum de règles protège les données clients, la propriété intellectuelle et la qualité."
       ],
       notThis: [
         "Ce n'est pas une promesse d'automatisation magique.",

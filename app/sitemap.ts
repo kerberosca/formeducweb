@@ -1,6 +1,7 @@
 ﻿import type { MetadataRoute } from "next";
 
 import { getSiteUrl } from "@/lib/seo";
+import { seoSupportPages } from "@/lib/seo-content";
 
 const indexableRoutes: Array<{
   route: string;
@@ -8,9 +9,15 @@ const indexableRoutes: Array<{
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
 }> = [
   { route: "", priority: 1, changeFrequency: "weekly" },
+  { route: "/hygiene-informatique", priority: 0.97, changeFrequency: "weekly" },
   { route: "/loi-25", priority: 0.95, changeFrequency: "weekly" },
   { route: "/cybersecurite", priority: 0.95, changeFrequency: "weekly" },
   { route: "/intelligence-artificielle", priority: 0.95, changeFrequency: "weekly" },
+  ...seoSupportPages.map((page) => ({
+    route: page.path,
+    priority: page.theme === "hygiene" ? 0.86 : 0.82,
+    changeFrequency: "monthly" as const
+  })),
   { route: "/loi-25/cest-quoi", priority: 0.88, changeFrequency: "monthly" },
   { route: "/loi-25/occasion-menage-donnees-cybersecurite", priority: 0.84, changeFrequency: "monthly" },
   { route: "/loi-25/wizard", priority: 0.9, changeFrequency: "weekly" },

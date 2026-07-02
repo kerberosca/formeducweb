@@ -29,22 +29,22 @@ export default function PolitiqueCookiesPage() {
           {
             title: "Cookies non essentiels",
             body:
-              "Les cookies non essentiels sont désactivés par défaut. Ils ne sont chargés qu'après un consentement explicite (analytics et/ou marketing), puis peuvent être retirés en tout temps."
+              "Les cookies non essentiels sont désactivés par défaut. Ils ne sont chargés qu'après un consentement explicite pour la mesure analytics, puis peuvent être retirés en tout temps."
           },
           {
-            title: "Google Ads et mesure de conversion",
+            title: "Mesure d'audience optionnelle",
             body:
-              "Si la catégorie Marketing est acceptée, le site peut charger la balise Google Ads pour mesurer les conversions publicitaires (par exemple la soumission du formulaire d'auto-évaluation). Selon la configuration, Meta Pixel peut aussi être actif."
+              "Si la catégorie Analytics est acceptée, le site peut charger Google Analytics pour comprendre les visites et améliorer les parcours. Aucun pixel publicitaire ni suivi publicitaire n'est chargé dans la configuration active."
           },
           {
             title: "Banniere conditionnelle",
             body:
-              "La banniere de consentement s'affiche seulement si au moins un tracker optionnel (analytics ou marketing) est configure. Sans tracker optionnel, aucun script de suivi non essentiel n'est charge."
+              "La banniere de consentement s'affiche seulement si au moins un tracker analytics optionnel est configure. Sans tracker optionnel, aucun script de suivi non essentiel n'est charge."
           },
           {
             title: "Fournisseurs et transferts",
             body:
-              "Certains fournisseurs de mesure publicitaire ou analytics peuvent traiter des données en dehors du Québec ou du Canada, selon leur infrastructure. Ces traitements restent soumis à vos choix de consentement."
+              "Certains fournisseurs techniques ou analytics peuvent traiter des données en dehors du Québec ou du Canada, selon leur infrastructure. Ces traitements restent soumis à vos choix de consentement."
           },
           {
             title: "Comment gérer vos préférences",

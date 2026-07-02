@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "ForméducWeb",
-  description: "Diagnostics Loi 25, cybersécurité et IA pour PME et OBNL du Québec.",
+  description: "Diagnostics Loi 25, cybersécurité et IA pour améliorer l'hygiène informatique des PME et OBNL du Québec.",
   locale: "fr-CA",
   territory: "Base au Québec",
   email: "info@formeducweb.ca",
@@ -10,6 +10,7 @@ export const siteConfig = {
 };
 
 export const mainNavigation = [
+  { href: "/hygiene-informatique", label: "Hygiène" },
   { href: "/loi-25", label: "Loi 25" },
   { href: "/cybersecurite", label: "Cybersécurité" },
   { href: "/intelligence-artificielle", label: "IA" },

@@ -19,7 +19,7 @@ export function SiteHeader() {
                 priority
                 className="h-auto w-[170px] sm:w-[230px]"
               />
-              <p className="mt-1 text-xs text-muted-foreground">Loi 25, cybersécurité et IA</p>
+              <p className="mt-1 text-xs text-muted-foreground">Hygiène informatique, Loi 25, cyber et IA</p>
             </div>
           </Link>
 

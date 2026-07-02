@@ -11,7 +11,7 @@ import { diagnosticList } from "@/lib/diagnostics";
 import { getAbsoluteUrl } from "@/lib/seo";
 
 const pageDescription =
-  "ForméducWeb aide les PME et OBNL du Québec à diagnostiquer et prioriser la Loi 25, la cybersécurité et l'IA en entreprise.";
+  "Diagnostics Loi 25, cybersécurité et IA pour PME et OBNL du Québec: score, priorités et plan d'action pour améliorer votre hygiène informatique.";
 
 const iconByType = {
   loi25: ShieldCheck,
@@ -42,7 +42,7 @@ const howItWorks = [
 ];
 
 export const metadata: Metadata = {
-  title: "Diagnostics Loi 25, cybersécurité et IA pour PME",
+  title: "Diagnostics Loi 25, cybersécurité et IA pour PME | ForméducWeb",
   description: pageDescription,
   alternates: {
     canonical: getAbsoluteUrl("/")
@@ -76,11 +76,11 @@ export default function HomePage() {
             <Badge variant="secondary">Diagnostics pour PME et OBNL du Québec</Badge>
             <div className="space-y-5">
               <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-7xl">
-                Voyez clair sur vos risques numériques avant d'investir partout.
+                Diagnostics Loi 25, cybersécurité et IA pour avancer sans vous disperser.
               </h1>
               <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
                 ForméducWeb transforme trois sujets souvent flous - Loi 25, cybersécurité et IA - en diagnostics simples,
-                priorités concrètes et plans d'action utilisables.
+                priorités concrètes et plans d'action utilisables pour gagner en clarté, confiance et efficacité.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -88,7 +88,7 @@ export default function HomePage() {
                 <Link href="#diagnostics">Choisir un diagnostic</Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/contact">Parler à ForméducWeb</Link>
+                <Link href="/hygiene-informatique">Comprendre l'hygiène informatique</Link>
               </Button>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
