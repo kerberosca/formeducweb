@@ -5,8 +5,7 @@ import { CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
-import { trackMetaInitiateCheckout } from "@/lib/meta-pixel";
+import type { AssessmentType } from "@/lib/diagnostics";
 
 type UnlockReportButtonProps = {
   assessmentType?: AssessmentType;
@@ -18,14 +17,12 @@ type UnlockReportButtonProps = {
 };
 
 export function UnlockReportButton({
-  assessmentType = "loi25",
   assessmentId,
   accessToken,
   label = "Débloquer mon rapport complet (29$)",
   variant = "default",
   className
 }: UnlockReportButtonProps) {
-  const diagnostic = getDiagnosticConfig(assessmentType);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
@@ -57,11 +54,6 @@ export function UnlockReportButton({
         throw new Error("Aucun lien de paiement n’a été retourné.");
       }
 
-      trackMetaInitiateCheckout({
-        content_name: diagnostic.stripeProductName,
-        content_category: diagnostic.metaContentCategory,
-        num_items: 1
-      });
       window.location.assign(nextUrl);
     } catch (error) {
       console.error("Stripe checkout error", error);

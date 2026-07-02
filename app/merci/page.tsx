@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { MetaPurchaseTracker } from "@/components/analytics/meta-purchase-tracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { findAssessmentById, findAssessmentByStripeSessionId, markAssessmentPaid } from "@/lib/assessment-store";
@@ -71,14 +70,9 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
   let reportHref: string | null = null;
   let serviceHref = "/services";
   let serviceLabel = "services";
-  let purchaseContentName = "Rapport complet";
-  let purchaseContentCategory = "Diagnostic";
   let paymentConfirmed = false;
   let customerName = "";
   let companyName = "";
-  const purchaseValueCentsRaw = Number.parseInt(process.env.STRIPE_PRICE_CENTS || "", 10);
-  const purchaseValueCents = Number.isFinite(purchaseValueCentsRaw) ? purchaseValueCentsRaw : undefined;
-  const purchaseCurrency = (process.env.STRIPE_CURRENCY || "cad").toUpperCase();
 
   if (resolved.session_id && process.env.STRIPE_SECRET_KEY) {
     try {
@@ -106,8 +100,6 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
         reportHref = diagnostic.reportPath(assessment.accessToken);
         serviceHref = diagnostic.path;
         serviceLabel = diagnostic.label;
-        purchaseContentName = diagnostic.stripeProductName;
-        purchaseContentCategory = diagnostic.metaContentCategory;
         customerName = assessment.contactName;
         companyName = assessment.companyName;
       }
@@ -120,15 +112,6 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
     <section className="container py-16 md:py-24">
       <Card className="mx-auto max-w-3xl">
         <CardContent className="space-y-6 p-10 text-center">
-          {paymentConfirmed && resolved.session_id ? (
-            <MetaPurchaseTracker
-              sessionId={resolved.session_id}
-              valueCents={purchaseValueCents}
-              currency={purchaseCurrency}
-              contentName={purchaseContentName}
-              contentCategory={purchaseContentCategory}
-            />
-          ) : null}
           <p className="eyebrow">Merci</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">
             {paymentConfirmed ? "Paiement confirmé" : "Votre paiement est en cours de validation"}

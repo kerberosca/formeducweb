@@ -36,8 +36,6 @@ export type DiagnosticConfig = {
   storagePrefix: string;
   leadSource: string;
   contactSource: string;
-  metaContentName: string;
-  metaContentCategory: string;
   stripeProductName: string;
   stripeDescription: string;
   pdfTitle: string;
@@ -70,8 +68,6 @@ const diagnostics = {
     storagePrefix: "formeducweb-loi25",
     leadSource: "diagnostic-loi25",
     contactSource: "diagnostic-loi25",
-    metaContentName: "Auto-évaluation Loi 25",
-    metaContentCategory: "Diagnostic Loi 25",
     stripeProductName: "Rapport Loi 25 - Complet",
     stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits Loi 25.",
     pdfTitle: "Rapport Loi 25",
@@ -190,8 +186,6 @@ const diagnostics = {
     storagePrefix: "formeducweb-cybersecurity",
     leadSource: "diagnostic-cybersecurite",
     contactSource: "diagnostic-cybersecurite",
-    metaContentName: "Auto-évaluation cybersécurité",
-    metaContentCategory: "Diagnostic cybersécurité",
     stripeProductName: "Rapport cybersécurité PME - Complet",
     stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits cyber.",
     pdfTitle: "Rapport cybersécurité PME",
@@ -310,8 +304,6 @@ const diagnostics = {
     storagePrefix: "formeducweb-ai",
     leadSource: "diagnostic-ia",
     contactSource: "diagnostic-ia",
-    metaContentName: "Auto-évaluation IA",
-    metaContentCategory: "Diagnostic IA",
     stripeProductName: "Rapport IA en entreprise - Complet",
     stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits IA.",
     pdfTitle: "Rapport IA en entreprise",

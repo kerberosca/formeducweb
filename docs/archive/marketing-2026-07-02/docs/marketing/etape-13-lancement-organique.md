@@ -45,12 +45,15 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
   - Post epingle Facebook publie (2026-04-20)
   - Post epingle LinkedIn publie (2026-04-20)
   - Facebook post-01 publie (2026-04-21)
+  - LinkedIn post-01 publie pendant le rattrapage (2026-04-25)
+  - Facebook post-03 publie pendant le rattrapage (2026-05-02)
+  - LinkedIn post-02 publie pendant le rattrapage (2026-05-02)
   - Constat J+1 des posts epingles: aucun signal lead a ce stade
 
 ## Execution manuelle a faire (reseaux sociaux)
 - [x] Publier le post epingle
-- [ ] Publier 3 premieres publications Facebook (1/3 fait)
-- [ ] Publier 3 premieres publications LinkedIn
+- [ ] Publier 3 premieres publications Facebook (2/3 fait)
+- [ ] Publier 3 premieres publications LinkedIn (2/3 fait)
 - [ ] Partager le lien dans le reseau personnel/professionnel
 - [ ] Demander des retours a quelques contacts
 - [ ] Corriger les points de friction identifies
@@ -65,7 +68,7 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
 - Les liens UTM sont prets dans les contenus deja rediges (Etapes 09 et 10).
 - Le systeme de suivi (journal + backlog + friction) est en place.
 - Les actions manuelles restantes sont explicites et tracees.
-- Le lancement est actif (posts publies), mais le volume organique est encore faible en debut de cycle.
+- Le lancement est actif (posts publies), mais le rattrapage organique reste a completer avant de juger le canal.
 
 ## Livrables
 - `docs/marketing/etape-13-lancement-organique.md`
@@ -77,6 +80,6 @@ Lancer les premiers contenus organiques sur Facebook et LinkedIn, puis exploiter
 - `docs/marketing/organique/registre-frictions-loi25.md`
 
 ## Statut
-- Statut: En cours (execution en continu, semaine 1 active).
-- Derniere mise a jour: 2026-04-21.
-- Prochaine action: publier LinkedIn post-01 (2026-04-22), completer les suivis 24h/72h, puis ajuster accroche + CTA si aucun signal d'ici 2026-04-23.
+- Statut: En cours (rattrapage organique).
+- Derniere mise a jour: 2026-05-02.
+- Prochaine action: publier LinkedIn post-03, puis faire la revue organique avec les statistiques disponibles.

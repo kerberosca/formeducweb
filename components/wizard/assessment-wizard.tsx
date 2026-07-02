@@ -19,8 +19,6 @@ import { Progress } from "@/components/ui/progress";
 import { getFirstTouchAttribution } from "@/lib/attribution";
 import type { AssessmentApiResponse, PersistedAssessmentResult } from "@/lib/assessment-types";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
-import { trackGoogleAdsLead } from "@/lib/google-ads";
-import { trackMetaLead } from "@/lib/meta-pixel";
 import { assessmentAnswersSchema, leadCaptureSchema, type LeadCaptureInput } from "@/lib/schemas";
 import { deepRepairText } from "@/lib/text";
 import {
@@ -328,14 +326,6 @@ export function AssessmentWizard({
       clearWizardDraft(assessmentType);
       saveWizardPersistedResult(nextResultState, assessmentType);
       setResultState(nextResultState);
-      trackMetaLead({
-        content_name: diagnostic.metaContentName,
-        content_category: diagnostic.metaContentCategory,
-        source: "wizard"
-      });
-      trackGoogleAdsLead({
-        transaction_id: nextResultState.assessmentId
-      });
       setLastSavedAt(null);
       toast.success("Résumé gratuit généré avec succès.");
       window.scrollTo({ top: 0, behavior: "smooth" });

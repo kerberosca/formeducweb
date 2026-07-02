@@ -310,7 +310,7 @@
 - [ ] Vérifier s’il y a des clics vers le wizard
 - [ ] Vérifier s’il y a des débuts de formulaire
 - [ ] Vérifier s’il y a au moins un premier lead naturel
-- [ ] Etat semaine 1 (au 2026-04-21): 1/3 Facebook publie, 0/3 LinkedIn, pas encore de signal lead
+- [ ] Etat rattrapage (mise a jour 2026-05-02): 2/3 Facebook publie, 2/3 LinkedIn publie, pas encore de signal lead documente
 
 ---
 

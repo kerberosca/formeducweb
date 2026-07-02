@@ -46,7 +46,6 @@ function getConsentServerSnapshot(): ConsentSnapshot {
 export function CookieConsentBanner() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const hasAnalyticsTracker = Boolean(trackerConfig.gaMeasurementId);
-  const hasMarketingTracker = Boolean(trackerConfig.metaPixelId || trackerConfig.googleAdsId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
   const consentSnapshot = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
   const consentState = useMemo(() => {
@@ -56,7 +55,6 @@ export function CookieConsentBanner() {
 
   const [mode, setMode] = useState<ConsentMode>("simple");
   const [allowAnalytics, setAllowAnalytics] = useState(false);
-  const [allowMarketing, setAllowMarketing] = useState(false);
 
   const isVisible = trackerConfigured && consentState === null;
 
@@ -86,7 +84,7 @@ export function CookieConsentBanner() {
           </div>
 
           {mode === "customize" ? (
-            <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/30 p-4 md:grid-cols-2">
+            <div className="grid gap-3 rounded-2xl border border-border/70 bg-muted/30 p-4">
               {hasAnalyticsTracker ? (
                 <label className="flex items-start gap-3">
                   <Checkbox
@@ -98,22 +96,6 @@ export function CookieConsentBanner() {
                     <span className="block text-sm font-medium">Analytics</span>
                     <span className="block text-xs leading-6 text-muted-foreground">
                       Mesure de fréquentation (si configuré).
-                    </span>
-                  </span>
-                </label>
-              ) : null}
-
-              {hasMarketingTracker ? (
-                <label className="flex items-start gap-3">
-                  <Checkbox
-                    checked={allowMarketing}
-                    onCheckedChange={(checked) => setAllowMarketing(Boolean(checked))}
-                    aria-label="Activer marketing"
-                  />
-                  <span className="space-y-1">
-                    <span className="block text-sm font-medium">Marketing</span>
-                    <span className="block text-xs leading-6 text-muted-foreground">
-                      Google Ads et pixels publicitaires (si configures).
                     </span>
                   </span>
                 </label>
@@ -147,7 +129,7 @@ export function CookieConsentBanner() {
                   handleSave(
                     {
                       analytics: hasAnalyticsTracker ? allowAnalytics : false,
-                      marketing: hasMarketingTracker ? allowMarketing : false
+                      marketing: false
                     },
                     "Préférences cookies enregistrées."
                   )
@@ -160,7 +142,7 @@ export function CookieConsentBanner() {
                 type="button"
                 onClick={() =>
                   handleSave(
-                    { analytics: hasAnalyticsTracker, marketing: hasMarketingTracker },
+                    { analytics: hasAnalyticsTracker, marketing: false },
                     "Préférences enregistrées (acceptation)."
                   )
                 }

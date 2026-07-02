@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getFirstTouchAttribution } from "@/lib/attribution";
 import { contactReasons } from "@/lib/content";
-import { trackMetaContact } from "@/lib/meta-pixel";
 import { contactFormSchema, type ContactFormInput } from "@/lib/schemas";
 
 export function ContactForm() {
@@ -56,11 +55,6 @@ export function ContactForm() {
         throw new Error(payload.error || "Impossible d'envoyer votre message pour le moment.");
       }
 
-      trackMetaContact({
-        content_name: "Formulaire contact",
-        content_category: "Contact commercial",
-        source: "contact-page"
-      });
       toast.success("Message envoyé. On vous revient rapidement.");
       form.reset();
       router.push("/merci?source=contact");
