@@ -9,9 +9,9 @@ const sections = [
       "Nous recueillons uniquement les informations nécessaires à nos services: nom, entreprise, courriel, téléphone optionnel, consentement marketing optionnel, réponses au questionnaire et informations de paiement gérées par Stripe."
   },
   {
-    title: "Finalites",
+    title: "Finalités",
     body:
-      "Ces informations servent ? produire votre diagnostic, gérer votre accès au rapport, assurer le support client et, si vous y consentez, envoyer des communications utiles sur nos services."
+      "Ces informations servent à produire votre diagnostic, gérer votre accès au rapport, assurer le support client et, si vous y consentez, envoyer des communications utiles sur nos services."
   },
   {
     title: "Cookies et technologies similaires",
@@ -26,10 +26,10 @@ const sections = [
   {
     title: "Conservation",
     body:
-      "Les brouillons locaux de l'assistant expirent automatiquement. Côté serveur, les données sont conservees selon une durée raisonnable liée aux finalités d'affaires, à la sécurité et aux obligations applicables."
+      "Les brouillons locaux de l'assistant expirent automatiquement. Côté serveur, les données sont conservées selon une durée raisonnable liée aux finalités d'affaires, à la sécurité et aux obligations applicables."
   },
   {
-    title: "Securite",
+    title: "Sécurité",
     body:
       "Le site applique des contrôles techniques raisonnables (validation, limitation d'abus, tokens d'accès non devinables, protections d'en-têtes HTTP, pages sensibles non indexées, cache désactivé sur les routes sensibles)."
   },
@@ -94,7 +94,7 @@ export default function PolitiqueConfidentialitePage() {
               </Link>
               .
             </p>
-            <p>Cette politique presente une vue operationnelle generale et ne constitue pas un avis juridique.</p>
+            <p>Cette politique présente une vue opérationnelle générale et ne constitue pas un avis juridique.</p>
           </CardContent>
         </Card>
       </div>

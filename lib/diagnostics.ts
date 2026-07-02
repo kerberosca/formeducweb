@@ -109,13 +109,13 @@ const diagnostics = {
       ],
       fullReportAdditions: [
         "Top 5 des écarts prioritaires, avec impact et actions proposées.",
-        "Plan 90 jours détaillé pour passer de la lecture ? l'implantation.",
+        "Plan 90 jours détaillé pour passer de la lecture à l'implantation.",
         "PDF téléchargeable pour partager en interne.",
         "Gabarits réutilisables: procédure 1 page et texte type pour formulaire.",
         "Crédit applicable sur un accompagnement si vous poursuivez avec nous."
       ],
       reasonsToAct: [
-        "Savoir quelles données vous collectez et o? elles se trouvent.",
+        "Savoir quelles données vous collectez et où elles se trouvent.",
         "Rendre vos formulaires et votre site plus transparents.",
         "Renforcer vos accès, sauvegardes et routines en cas d'incident."
       ],
@@ -127,8 +127,8 @@ const diagnostics = {
       packages: [
         {
           name: "Starter",
-          price: "? partir de 690 $",
-          summary: "Diagnostic + rapport + plan d'action priorise.",
+          price: "À partir de 690 $",
+          summary: "Diagnostic + rapport + plan d'action priorisé.",
           items: [
             "Auto-évaluation guidée",
             "Lecture du rapport avec vous",
@@ -138,8 +138,8 @@ const diagnostics = {
         },
         {
           name: "Pro",
-          price: "? partir de 1 950 $",
-          summary: "Implantation orientee site web, transparence et pratiques internes.",
+          price: "À partir de 1 950 $",
+          summary: "Implantation orientée site web, transparence et pratiques internes.",
           items: [
             "Mise à jour des pages légales",
             "Ajustement des formulaires",
@@ -149,7 +149,7 @@ const diagnostics = {
         },
         {
           name: "Accompagnement",
-          price: "? partir de 390 $ / mois",
+          price: "À partir de 390 $ / mois",
           summary: "Suivi continu pour garder vos pratiques à jour sans vous surcharger.",
           items: [
             "Revue mensuelle des actions",
@@ -163,12 +163,12 @@ const diagnostics = {
         {
           question: "Pourquoi commencer par un diagnostic Loi 25?",
           answer:
-            "Parce qu'il permet de voir rapidement o? vous avez déjà de bons réflexes et o? un effort concret est requis avant d'investir partout."
+            "Parce qu'il permet de voir rapidement où vous avez déjà de bons réflexes et où un effort concret est requis avant d'investir partout."
         },
         {
           question: "Le rapport remplace-t-il un avis juridique?",
           answer:
-            "Non. Le rapport sert au diagnostic, ? l'alignement et à la priorisation. Une validation juridique peut rester pertinente selon votre contexte."
+            "Non. Le rapport sert au diagnostic, à l'alignement et à la priorisation. Une validation juridique peut rester pertinente selon votre contexte."
         },
         {
           question: "Pouvez-vous implanter les recommandations?",
@@ -242,13 +242,13 @@ const diagnostics = {
       notThis: [
         "Ce n'est pas un test d'intrusion.",
         "Ce n'est pas une certification de sécurité.",
-        "Ce n'est pas une liste d'outils ? acheter sans priorisation."
+        "Ce n'est pas une liste d'outils à acheter sans priorisation."
       ],
       packages: [
         {
           name: "Starter",
-          price: "? partir de 690 $",
-          summary: "Diagnostic + plan cyber priorise pour PME.",
+          price: "À partir de 690 $",
+          summary: "Diagnostic + plan cyber priorisé pour PME.",
           items: [
             "Lecture du questionnaire",
             "Plan 30/90 jours",
@@ -258,8 +258,8 @@ const diagnostics = {
         },
         {
           name: "Renforcement",
-          price: "? partir de 1 950 $",
-          summary: "Implantation accompagnee des mesures de base.",
+          price: "À partir de 1 950 $",
+          summary: "Implantation accompagnée des mesures de base.",
           items: [
             "Activation ou vérification MFA",
             "Revue des comptes et accès",
@@ -269,7 +269,7 @@ const diagnostics = {
         },
         {
           name: "Suivi",
-          price: "? partir de 390 $ / mois",
+          price: "À partir de 390 $ / mois",
           summary: "Cadence légère pour garder les mesures vivantes.",
           items: [
             "Revue mensuelle des actions",
@@ -345,7 +345,7 @@ const diagnostics = {
         "Score global de préparation IA.",
         "3 priorités pour encadrer les usages actuels.",
         "Plan 30 jours pour passer d'essais dispersés à une démarche claire.",
-        "Prochaine étape recommandée selon votre maturit?."
+        "Prochaine étape recommandée selon votre maturité."
       ],
       fullReportAdditions: [
         "Top 5 des écarts IA détaillés avec impacts et actions.",
@@ -367,7 +367,7 @@ const diagnostics = {
       packages: [
         {
           name: "Starter",
-          price: "? partir de 690 $",
+          price: "À partir de 690 $",
           summary: "Diagnostic + feuille de route IA simple.",
           items: [
             "Inventaire des usages actuels",
@@ -378,22 +378,22 @@ const diagnostics = {
         },
         {
           name: "Atelier",
-          price: "? partir de 1 950 $",
+          price: "À partir de 1 950 $",
           summary: "Cadrage des cas d'usage et formation de base.",
           items: [
             "Atelier cas d'usage",
-            "Regles de données et validation humaine",
+            "Règles de données et validation humaine",
             "Gabarits de prompts et processus",
             "Formation courte pour l'équipe"
           ]
         },
         {
           name: "Accompagnement",
-          price: "? partir de 390 $ / mois",
+          price: "À partir de 390 $ / mois",
           summary: "Suivi pour transformer les essais IA en pratiques utiles.",
           items: [
             "Revue mensuelle des expérimentations",
-            "Aide ? documenter les usages",
+            "Aide à documenter les usages",
             "Mesure de gains et risques",
             "Ajustement des règles internes"
           ]
@@ -403,7 +403,7 @@ const diagnostics = {
         {
           question: "Est-ce pour les entreprises qui utilisent déjà l'IA?",
           answer:
-            "Oui, mais aussi pour celles qui veulent commencer. Le diagnostic aide ? voir les usages actuels, les risques et les prochains essais utiles."
+            "Oui, mais aussi pour celles qui veulent commencer. Le diagnostic aide à voir les usages actuels, les risques et les prochains essais utiles."
         },
         {
           question: "Est-ce que le diagnostic choisit un outil IA pour nous?",

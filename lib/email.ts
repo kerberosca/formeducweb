@@ -240,7 +240,7 @@ export async function sendAssessmentReceivedEmails(payload: {
       <p>Si vous préférez valider vos prochaines actions avec notre équipe:</p>
       <ul>
         <li><a href="${bookingUrl}">Réserver un appel de 20 minutes</a></li>
-        <li><a href="${contactUrl}">Écrire ? ForméducWeb</a></li>
+        <li><a href="${contactUrl}">Écrire à ForméducWeb</a></li>
       </ul>
       <p>Vous pouvez aussi refaire l'auto-évaluation à tout moment: <a href="${wizardUrl}">${wizardUrl}</a></p>
       <p>${escapeHtml(payload.liteReport.disclaimers.join(" "))}</p>

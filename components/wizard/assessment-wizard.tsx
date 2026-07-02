@@ -22,6 +22,7 @@ import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { trackGoogleAdsLead } from "@/lib/google-ads";
 import { trackMetaLead } from "@/lib/meta-pixel";
 import { assessmentAnswersSchema, leadCaptureSchema, type LeadCaptureInput } from "@/lib/schemas";
+import { deepRepairText } from "@/lib/text";
 import {
   clearWizardDraft,
   clearWizardPersistedResult,
@@ -137,7 +138,7 @@ export function AssessmentWizard({
   };
 
   useEffect(() => {
-    const restoredResult = loadWizardPersistedResult<WizardResultState>(assessmentType);
+    const restoredResult = deepRepairText(loadWizardPersistedResult<WizardResultState>(assessmentType));
 
     if (restoredResult?.assessmentType === assessmentType) {
       setResultState(restoredResult);
@@ -317,12 +318,12 @@ export function AssessmentWizard({
         throw new Error(payload.error || "Impossible de générer le rapport pour le moment.");
       }
 
-      const nextResultState: WizardResultState = {
+      const nextResultState: WizardResultState = deepRepairText({
         ...payload,
         assessmentType,
         leadCapture,
         answers: values.answers
-      };
+      });
 
       clearWizardDraft(assessmentType);
       saveWizardPersistedResult(nextResultState, assessmentType);
@@ -415,7 +416,7 @@ export function AssessmentWizard({
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                 <div className="space-y-2">
-                  <p className="eyebrow">Sauvegarde trouvee</p>
+                  <p className="eyebrow">Sauvegarde trouvée</p>
                   <p className="text-sm leading-7 text-muted-foreground">
                     Une progression locale a été trouvée dans ce navigateur. Vous pouvez reprendre ou repartir à neuf.
                   </p>
@@ -445,12 +446,12 @@ export function AssessmentWizard({
               <div className="space-y-3">
                 <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h2>
                 <p className="text-lg leading-8 text-muted-foreground">
-                  {currentStep.description || "Repondez avec franchise pour obtenir un portrait plus utile."}
+                  {currentStep.description || "Répondez avec franchise pour obtenir un portrait plus utile."}
                 </p>
               </div>
               <div className="rounded-[24px] border border-border/70 bg-muted/30 p-5 text-sm leading-7 text-muted-foreground">
                 Vos réponses sont gardées localement dans ce navigateur pendant votre progression et expirent
-                automatiquement apres 30 jours. Votre brouillon est enregistre sur cet appareil. Si vous effacez les
+                automatiquement après 30 jours. Votre brouillon est enregistré sur cet appareil. Si vous effacez les
                 données du site, il sera perdu.
               </div>
             </CardContent>
@@ -509,7 +510,7 @@ export function AssessmentWizard({
                 Étape {currentStepIndex + 1} sur {steps.length}
               </p>
               <p className="text-xs text-muted-foreground/80">
-                Derniere sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
+                Dernière sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
@@ -525,7 +526,7 @@ export function AssessmentWizard({
                 variant="secondary"
                 onClick={() => {
                   saveDraftSnapshot();
-                  toast.success("Brouillon enregistre localement.");
+                  toast.success("Brouillon enregistré localement.");
                 }}
               >
                 <Save className="mr-2 h-4 w-4" />

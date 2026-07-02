@@ -43,7 +43,7 @@ function priorityFromWeight(weight: number): ReportPriority {
 }
 
 function defaultWhyItMatters(gap: GapItem): string {
-  return `Cette zone influence directement votre niveau de risque et la qualite de vos pratiques (${gap.sectionTitle ?? gap.sectionId}).`;
+  return `Cette zone influence directement votre niveau de risque et la qualité de vos pratiques (${gap.sectionTitle ?? gap.sectionId}).`;
 }
 
 function defaultActionText(gap: GapItem): string {
@@ -52,7 +52,7 @@ function defaultActionText(gap: GapItem): string {
 }
 
 function consolidationActionBySection(sectionId: string) {
-  return `Planifier une revue periodique de la section ${sectionId}, confirmer les responsables et conserver une preuve datee des actions.`;
+  return `Planifier une revue périodique de la section ${sectionId}, confirmer les responsables et conserver une preuve datée des actions.`;
 }
 
 function priorityFromSectionPercent(percent: number): ReportPriority {
@@ -88,7 +88,7 @@ function buildConsolidationGap(section: ScoreResult["sectionScores"][number]): R
 const GENERIC_CONSOLIDATION_GAPS: ReportGap[] = [
   {
     title: "Consolider les pratiques déjà en place",
-    whyItMatters: "Un bon niveau doit etre entretenu pour rester fiable dans le temps.",
+    whyItMatters: "Un bon niveau doit être entretenu pour rester fiable dans le temps.",
     action: "Planifier une revue mensuelle courte des mesures déjà implantées et corriger rapidement les écarts.",
     section: "Consolidation",
     priority: "Moyenne",
@@ -96,16 +96,16 @@ const GENERIC_CONSOLIDATION_GAPS: ReportGap[] = [
   },
   {
     title: "Centraliser les preuves de conformité",
-    whyItMatters: "Des preuves simples et datees facilitent la gouvernance et la prise de decision.",
+    whyItMatters: "Des preuves simples et datées facilitent la gouvernance et la prise de décision.",
     action: "Regrouper politiques, journaux, captures et décisions dans un espace unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_2"
   },
   {
-    title: "Valider les mecanismes critiques",
-    whyItMatters: "Les controles non verifies peuvent se degrader sans etre visibles.",
-    action: "Faire un mini test trimestriel sur les acces, sauvegardes et formulaires puis noter les resultats.",
+    title: "Valider les mécanismes critiques",
+    whyItMatters: "Les contrôles non vérifiés peuvent se dégrader sans être visibles.",
+    action: "Faire un mini test trimestriel sur les accès, sauvegardes et formulaires puis noter les résultats.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_3"

@@ -5,7 +5,7 @@
   "subtitle": "Un outil d'auto-évaluation pour identifier vos risques courants, vos écarts et un plan d'action.",
   "disclaimer": "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un audit de sécurité, un test d'intrusion ou une certification.",
   "scoring": {
-    "maxRawScoreNote": "Le score final est normalise sur 100 ? partir des scores ponderes.",
+    "maxRawScoreNote": "Le score final est normalisé sur 100 à partir des scores pondérés.",
     "levels": [
       {
         "min": 0,
@@ -17,13 +17,13 @@
         "min": 40,
         "max": 69,
         "label": "En renforcement",
-        "tagline": "Vous avez déjà certains réflexes, mais des écarts importants restent ? corriger."
+        "tagline": "Vous avez déjà certains réflexes, mais des écarts importants restent à corriger."
       },
       {
         "min": 70,
         "max": 100,
         "label": "Structure",
-        "tagline": "Votre posture est solide pour une PME. Continuez ? testér et documenter vos pratiques."
+        "tagline": "Votre posture est solide pour une PME. Continuez à tester et documenter vos pratiques."
       }
     ],
     "recommendationSelection": {
@@ -40,22 +40,22 @@
     {
       "id": "B",
       "title": "Identités et accès",
-      "description": "Comptes, mots de passe, MFA, départ des employes et droits admin."
+      "description": "Comptes, mots de passe, MFA, départ des employés et droits admin."
     },
     {
       "id": "C",
       "title": "Appareils, réseau et mises à jour",
-      "description": "Postes, mobiles, Wi-Fi, logiciels et accès ? distance."
+      "description": "Postes, mobiles, Wi-Fi, logiciels et accès à distance."
     },
     {
       "id": "D",
-      "title": "Sauvegardes et continuite",
-      "description": "Ce qui permet de reprendre rapidement après une erreur, une panne ou un rancongiciel."
+      "title": "Sauvegardes et continuité",
+      "description": "Ce qui permet de reprendre rapidement après une erreur, une panne ou un rançongiciel."
     },
     {
       "id": "E",
       "title": "Courriel, fraude et sensibilisation",
-      "description": "Phishing, courriels frauduleux, habitudes d'équipe et verification des demandes."
+      "description": "Phishing, courriels frauduleux, habitudes d'équipe et vérification des demandes."
     },
     {
       "id": "F",
@@ -95,7 +95,7 @@
         "travailleur_autonome": 0,
         "autre": 0
       },
-      "helpText": "Cette information aide ? adapter les recommandations sans influencer le score.",
+      "helpText": "Cette information aide à adapter les recommandations sans influencer le score.",
       "recommendation": null
     },
     {
@@ -108,15 +108,15 @@
       "options": [
         {
           "value": "1_5",
-          "label": "1 ? 5"
+          "label": "1 à 5"
         },
         {
           "value": "6_20",
-          "label": "6 ? 20"
+          "label": "6 à 20"
         },
         {
           "value": "21_75",
-          "label": "21 ? 75"
+          "label": "21 à 75"
         },
         {
           "value": "76_plus",
@@ -129,7 +129,7 @@
         "21_75": 0,
         "76_plus": 0
       },
-      "helpText": "Plus il y ? d'utilisateurs, plus la gestion des accès et des appareils devient importante.",
+      "helpText": "Plus il y a d'utilisateurs, plus la gestion des accès et des appareils devient importante.",
       "recommendation": null
     },
     {
@@ -169,7 +169,7 @@
     {
       "id": "B1",
       "sectionId": "B",
-      "title": "L'authentification multifacteur est-elle activee sur les comptes critiques?",
+      "title": "L'authentification multifacteur est-elle activée sur les comptes critiques?",
       "type": "single_select",
       "required": true,
       "weight": 10,
@@ -224,7 +224,7 @@
         "partial": 2,
         "no": 0
       },
-      "helpText": "Les comptes partagés compliquent les enquetes et le retrait d'accès.",
+      "helpText": "Les comptes partagés compliquent les enquêtes et le retrait d'accès.",
       "recommendation": {
         "title": "Remplacer les comptes partagés",
         "text": "Créez des comptes individuels, limitez les droits administrateurs et retirez les accès qui ne sont plus nécessaires."
@@ -233,7 +233,7 @@
     {
       "id": "B3",
       "sectionId": "B",
-      "title": "Avez-vous une routine claire lors du départ d'un employe ou collaborateur?",
+      "title": "Avez-vous une routine claire lors du départ d'un employé ou collaborateur?",
       "type": "single_select",
       "required": true,
       "weight": 7,
@@ -259,7 +259,7 @@
       "helpText": "Courriel, cloud, CRM, site web, outils marketing, mots de passe et appareils.",
       "recommendation": {
         "title": "Formaliser la fermeture des accès",
-        "text": "Préparez une checklist de départ: comptes ? fermer, mots de passe ? changer, appareils ? reçuperer et accès fournisseurs ? verifier."
+        "text": "Préparez une checklist de départ: comptes à fermer, mots de passe à changer, appareils à récupérer et accès fournisseurs à vérifier."
       }
     },
     {
@@ -290,14 +290,14 @@
       },
       "helpText": "Les droits admin sont une cible prioritaire en cas de compromission.",
       "recommendation": {
-        "title": "Reduire les droits administrateurs",
-        "text": "Listez les admins, retirez les droits non essentiels et prevoyez une revue mensuelle ou trimestrielle."
+        "title": "Réduire les droits administrateurs",
+        "text": "Listez les admins, retirez les droits non essentiels et prévoyez une revue mensuelle ou trimestrielle."
       }
     },
     {
       "id": "C1",
       "sectionId": "C",
-      "title": "Vos ordinateurs et appareils sont-ils mis à jour regulierement?",
+      "title": "Vos ordinateurs et appareils sont-ils mis à jour régulièrement?",
       "type": "single_select",
       "required": true,
       "weight": 7,
@@ -320,23 +320,23 @@
         "sometimes": 2,
         "rare": 0
       },
-      "helpText": "Systemes, navigateurs, suites bureautiques, plugins et applications critiques.",
+      "helpText": "Systèmes, navigateurs, suites bureautiques, plugins et applications critiques.",
       "recommendation": {
         "title": "Mettre une routine de mises à jour",
-        "text": "Activez les mises à jour automatiques quand possible et gardez une courte liste des logiciels critiques ? verifier."
+        "text": "Activez les mises à jour automatiques quand possible et gardez une courte liste des logiciels critiques à vérifier."
       }
     },
     {
       "id": "C2",
       "sectionId": "C",
-      "title": "Avez-vous une protection antivirus/EDR activee sur les appareils de travail?",
+      "title": "Avez-vous une protection antivirus/EDR activée sur les appareils de travail?",
       "type": "single_select",
       "required": true,
       "weight": 6,
       "options": [
         {
           "value": "managed",
-          "label": "Oui, gèree et verifiee"
+          "label": "Oui, gérée et vérifiée"
         },
         {
           "value": "basic",
@@ -352,16 +352,16 @@
         "basic": 2,
         "no": 0
       },
-      "helpText": "L'objectif est de savoir si la protection est presente, active et surveillee.",
+      "helpText": "L'objectif est de savoir si la protection est présente, active et surveillée.",
       "recommendation": {
         "title": "Vérifier la protection des appareils",
-        "text": "Confirmez que chaque appareil de travail ? une protection activee et que les alertes importantes sont vues par quelqu'un."
+        "text": "Confirmez que chaque appareil de travail a une protection activée et que les alertes importantes sont vues par quelqu'un."
       }
     },
     {
       "id": "C3",
       "sectionId": "C",
-      "title": "Votre Wi-Fi ou accès ? distance est-il séparé et protège?",
+      "title": "Votre Wi-Fi ou accès à distance est-il séparé et protégé?",
       "type": "single_select",
       "required": true,
       "weight": 5,
@@ -425,7 +425,7 @@
     {
       "id": "D1",
       "sectionId": "D",
-      "title": "Avez-vous des sauvégardes automatiques des données et systèmes importants?",
+      "title": "Avez-vous des sauvegardes automatiques des données et systèmes importants?",
       "type": "single_select",
       "required": true,
       "weight": 9,
@@ -448,16 +448,16 @@
         "partial": 2,
         "no": 0
       },
-      "helpText": "Site web, base de données, fichiers partagés, comptabilite, CRM et courriels importants.",
+      "helpText": "Site web, base de données, fichiers partagés, comptabilité, CRM et courriels importants.",
       "recommendation": {
-        "title": "Mettre en place des sauvégardes automatiques",
-        "text": "Priorisez les systèmes qui arretent l'entreprise s'ils disparaissent. Automatisez et documentez la frequence."
+        "title": "Mettre en place des sauvegardes automatiques",
+        "text": "Priorisez les systèmes qui arrêtent l'entreprise s'ils disparaissent. Automatisez et documentez la fréquence."
       }
     },
     {
       "id": "D2",
       "sectionId": "D",
-      "title": "Avez-vous déjà testé une restauration de sauvégarde?",
+      "title": "Avez-vous déjà testé une restauration de sauvegarde?",
       "type": "single_select",
       "required": true,
       "weight": 9,
@@ -480,10 +480,10 @@
         "old": 2,
         "never": 0
       },
-      "helpText": "Une sauvégarde jamais testée peut donner un faux sentiment de sécurité.",
+      "helpText": "Une sauvegarde jamais testée peut donner un faux sentiment de sécurité.",
       "recommendation": {
         "title": "Tester une restauration",
-        "text": "Faites un test simple: restaurer un fichier, une base de données ou une copie du site, puis noter le temps et les problemes."
+        "text": "Faites un test simple: restaurer un fichier, une base de données ou une copie du site, puis noter le temps et les problèmes."
       }
     },
     {
@@ -512,7 +512,7 @@
         "partial": 2,
         "no": 0
       },
-      "helpText": "Courriel, site, operations, comptabilite, CRM, telephone ou dossiers clients.",
+      "helpText": "Courriel, site, operations, comptabilité, CRM, telephone ou dossiers clients.",
       "recommendation": {
         "title": "Définir les priorités de reprise",
         "text": "Listez les systèmes critiques et l'ordre de reprise pour eviter l'improvisation pendant une panne."
@@ -521,7 +521,7 @@
     {
       "id": "E1",
       "sectionId": "E",
-      "title": "Votre équipe sait-elle reconnaitre et signaler un courriel suspect?",
+      "title": "Votre équipe sait-elle reconnaître et signaler un courriel suspect?",
       "type": "single_select",
       "required": true,
       "weight": 7,
@@ -544,23 +544,23 @@
         "informal": 2,
         "no": 0
       },
-      "helpText": "Le phishing reste une porte d'entree tres frequente.",
+      "helpText": "Le phishing reste une porte d'entrée très fréquente.",
       "recommendation": {
         "title": "Sensibiliser au phishing",
-        "text": "Faites une courte capsule: signes d'un courriel suspect, verification hors courriel et procédure de signalement."
+        "text": "Faites une courte capsule: signes d'un courriel suspect, vérification hors courriel et procédure de signalement."
       }
     },
     {
       "id": "E2",
       "sectionId": "E",
-      "title": "Avez-vous une regle de verification pour les demandes de paiement ou changement bancaire?",
+      "title": "Avez-vous une règle de vérification pour les demandes de paiement ou changement bancaire?",
       "type": "single_select",
       "required": true,
       "weight": 8,
       "options": [
         {
           "value": "yes",
-          "label": "Oui, verification hors courriel"
+          "label": "Oui, vérification hors courriel"
         },
         {
           "value": "partial",
@@ -579,7 +579,7 @@
       "helpText": "La fraude au président et les changements de coordonnées bancaires visent souvent les PME.",
       "recommendation": {
         "title": "Vérifier les demandes sensibles",
-        "text": "Imposez une verification par telephone ou canal connu avant tout paiement inhabituel ou changement bancaire."
+        "text": "Imposez une vérification par téléphone ou canal connu avant tout paiement inhabituel ou changement bancaire."
       }
     },
     {
@@ -592,7 +592,7 @@
       "options": [
         {
           "value": "yes",
-          "label": "Oui, SPF/DKIM/DMARC verifies"
+          "label": "Oui, SPF/DKIM/DMARC vérifiés"
         },
         {
           "value": "not_sure",
@@ -649,7 +649,7 @@
     {
       "id": "F2",
       "sectionId": "F",
-      "title": "Gardez-vous des journaux ou traces pour enqueter en cas de probleme?",
+      "title": "Gardez-vous des journaux ou traces pour enquêter en cas de problème?",
       "type": "single_select",
       "required": true,
       "weight": 5,
@@ -709,10 +709,10 @@
         "no": 0,
         "na": 4
       },
-      "helpText": "Hebergement, infogerance, courriel, CRM, sauvégardes et logiciels metiers.",
+      "helpText": "Hébergement, infogérance, courriel, CRM, sauvegardes et logiciels métiers.",
       "recommendation": {
         "title": "Clarifier les responsabilités fournisseur",
-        "text": "Demandez qui gère les sauvégardes, alertes, mises à jour, accès et incidents pour chaque fournisseur critique."
+        "text": "Demandez qui gère les sauvegardes, alertes, mises à jour, accès et incidents pour chaque fournisseur critique."
       }
     }
   ],
@@ -728,7 +728,7 @@
       },
       {
         "sectionId": "D",
-        "label": "Sauvegardes et continuite"
+        "label": "Sauvegardes et continuité"
       },
       {
         "sectionId": "E",
@@ -743,13 +743,13 @@
       "days30": [
         "Activer MFA sur les comptes critiques.",
         "Lister les administrateurs et retirer les accès inutiles.",
-        "Vérifier les sauvégardes automatiques des données critiques.",
+        "Vérifier les sauvegardes automatiques des données critiques.",
         "Tester une restauration simple et noter le résultat.",
         "Créer une procédure 1 page de signalement d'incident cyber."
       ],
       "days90": [
         "Faire une revue complète des comptes et droits administrateurs.",
-        "Mettre en place une cadence mensuelle de mises à jour et verification.",
+        "Mettre en place une cadence mensuelle de mises à jour et vérification.",
         "Vérifier SPF, DKIM et DMARC avec le fournisseur courriel.",
         "Faire une mini-simulation d'incident et corriger les trous.",
         "Clarifier les responsabilités cyber avec les fournisseurs critiques."

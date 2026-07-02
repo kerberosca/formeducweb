@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     gap: 6
   },
   bullet: {
-    width: 12,
+    width: 24,
     fontFamily: "Helvetica-Bold"
   },
   listText: {

@@ -131,7 +131,7 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
           ) : null}
           <p className="eyebrow">Merci</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">
-            {paymentConfirmed ? "Paiement confirme" : "Votre paiement est en cours de validation"}
+            {paymentConfirmed ? "Paiement confirmé" : "Votre paiement est en cours de validation"}
           </h1>
           <p className="text-lg leading-8 text-muted-foreground">
             {paymentConfirmed

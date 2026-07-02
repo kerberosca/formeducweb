@@ -5,22 +5,22 @@ type TopGap = GeneratedReport["topGaps"][number];
 const CONSOLIDATION_PRIORITY_TEMPLATES: TopGap[] = [
   {
     title: "Consolider les pratiques déjà en place",
-    whyItMatters: "Une bonne posture reste fragile si elle n'est pas revue regulierement.",
+    whyItMatters: "Une bonne posture reste fragile si elle n'est pas revue régulièrement.",
     action: "Planifiez une revue mensuelle rapide des mesures déjà implantées et corrigez les écarts détectés.",
     section: "Consolidation",
     priority: "Moyenne"
   },
   {
     title: "Centraliser les preuves de conformité",
-    whyItMatters: "Des preuves simples et datees facilitent le suivi et evitent les oublis.",
+    whyItMatters: "Des preuves simples et datées facilitent le suivi et évitent les oublis.",
     action: "Regroupez politiques, captures, journaux et décisions dans un dossier unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne"
   },
   {
-    title: "Tester les mecanismes critiques",
-    whyItMatters: "Sans verification periodique, les mecanismes peuvent se degrader sans etre visibles.",
-    action: "Faites un mini test trimestriel (acces, sauvegarde, formulaires) et notez le resultat.",
+    title: "Tester les mécanismes critiques",
+    whyItMatters: "Sans vérification périodique, les mécanismes peuvent se dégrader sans être visibles.",
+    action: "Faites un mini test trimestriel (accès, sauvegarde, formulaires) et notez le résultat.",
     section: "Consolidation",
     priority: "Moyenne"
   }

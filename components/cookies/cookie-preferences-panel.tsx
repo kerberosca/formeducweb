@@ -72,8 +72,8 @@ export function CookiePreferencesPanel() {
         <CardContent className="space-y-3 p-8">
           <h2 className="font-heading text-2xl font-semibold">Préférences cookies</h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Aucun tracker optionnel n&apos;est configure pour le moment. La bannière de consentement ne s&apos;affiche donc pas,
-            et aucun cookie non essentiel n&apos;est charge.
+            Aucun tracker optionnel n&apos;est configuré pour le moment. La bannière de consentement ne s&apos;affiche donc pas,
+            et aucun cookie non essentiel n&apos;est chargé.
           </p>
         </CardContent>
       </Card>
@@ -118,7 +118,7 @@ export function CookiePreferencesPanel() {
             <span className="space-y-1">
               <span className="block text-sm font-medium">Analytics</span>
               <span className="block text-xs leading-6 text-muted-foreground">
-                {hasAnalyticsTracker ? "Mesure de frequentation (si configure)." : "Non configure sur cet environnement."}
+                {hasAnalyticsTracker ? "Mesure de fréquentation (si configuré)." : "Non configuré sur cet environnement."}
               </span>
             </span>
           </label>
@@ -139,8 +139,8 @@ export function CookiePreferencesPanel() {
               <span className="block text-sm font-medium">Marketing</span>
               <span className="block text-xs leading-6 text-muted-foreground">
                 {hasMarketingTracker
-                  ? "Google Ads et pixels publicitaires (si configures)."
-                  : "Non configure sur cet environnement."}
+                  ? "Google Ads et pixels publicitaires (si configurés)."
+                  : "Non configuré sur cet environnement."}
               </span>
             </span>
           </label>

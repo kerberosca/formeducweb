@@ -5,7 +5,7 @@
   "subtitle": "Un outil d'auto-évaluation pour cadrer les usages IA, les données, les risques et l'adoption.",
   "disclaimer": "Cet outil fournit une auto-évaluation et des recommandations générales. Il ne constitue pas un avis juridique, une certification ou une promesse de performance.",
   "scoring": {
-    "maxRawScoreNote": "Le score final est normalise sur 100 ? partir des scores ponderes.",
+    "maxRawScoreNote": "Le score final est normalisé sur 100 à partir des scores pondérés.",
     "levels": [
       {
         "min": 0,
@@ -95,7 +95,7 @@
         "travailleur_autonome": 0,
         "autre": 0
       },
-      "helpText": "Cette information aide ? adapter les recommandations sans influencer le score.",
+      "helpText": "Cette information aide à adapter les recommandations sans influencer le score.",
       "recommendation": null
     },
     {
@@ -169,7 +169,7 @@
     {
       "id": "B1",
       "sectionId": "B",
-      "title": "Avez-vous liste les cas d'usage IA que votre équipe utilise ou veut testér?",
+      "title": "Avez-vous listé les cas d'usage IA que votre équipe utilise ou veut tester?",
       "type": "single_select",
       "required": true,
       "weight": 7,
@@ -208,7 +208,7 @@
       "options": [
         {
           "value": "yes",
-          "label": "Oui, objectif et critere de succes"
+          "label": "Oui, objectif et critère de succès"
         },
         {
           "value": "some",
@@ -226,8 +226,8 @@
       },
       "helpText": "Gain de temps, qualité, réduction d'erreurs, meilleure réponse client ou accélération d'un processus.",
       "recommendation": {
-        "title": "Associer l'IA ? des objectifs mesurables",
-        "text": "Pour chaque cas d'usage prioritaire, notez le probleme ? resoudre, le gain attendu et comment vous validerez le résultat."
+        "title": "Associer l'IA à des objectifs mesurables",
+        "text": "Pour chaque cas d'usage prioritaire, notez le problème à résoudre, le gain attendu et comment vous validerez le résultat."
       }
     },
     {
@@ -288,16 +288,16 @@
         "informal": 2,
         "no": 0
       },
-      "helpText": "Pas besoin d'un poste dedie, mais il faut un point de coordination.",
+      "helpText": "Pas besoin d'un poste dédié, mais il faut un point de coordination.",
       "recommendation": {
         "title": "Nommer un responsable IA",
-        "text": "Designez une personne responsable de l'inventaire, des règles, de la priorisation et du suivi des usages IA."
+        "text": "Désignez une personne responsable de l'inventaire, des règles, de la priorisation et du suivi des usages IA."
       }
     },
     {
       "id": "C1",
       "sectionId": "C",
-      "title": "Votre équipe sait-elle quelles données ne doivent pas être entrees dans un outil IA public?",
+      "title": "Votre équipe sait-elle quelles données ne doivent pas être entrées dans un outil IA public?",
       "type": "single_select",
       "required": true,
       "weight": 9,
@@ -323,7 +323,7 @@
       "helpText": "Données personnelles, contrats, documents clients, secrets commerciaux et informations RH.",
       "recommendation": {
         "title": "Définir les données interdites",
-        "text": "Rédigez une liste courte des données ? ne jamais coller dans un outil IA non approuvé."
+        "text": "Rédigez une liste courte des données à ne jamais coller dans un outil IA non approuvé."
       }
     },
     {
@@ -352,7 +352,7 @@
         "sometimes": 2,
         "no": 0
       },
-      "helpText": "Retirer noms, courriels, numeros, details client et elements confidentiels quand possible.",
+      "helpText": "Retirer noms, courriels, numéros, détails client et éléments confidentiels quand possible.",
       "recommendation": {
         "title": "Minimiser les données dans les prompts",
         "text": "Utilisez des exemples fictifs ou anonymisés et ne transmettez que l'information nécessaire au résultat voulu."
@@ -368,7 +368,7 @@
       "options": [
         {
           "value": "yes",
-          "label": "Oui, conditions verifiees"
+          "label": "Oui, conditions vérifiées"
         },
         {
           "value": "not_sure",
@@ -376,7 +376,7 @@
         },
         {
           "value": "no",
-          "label": "Non verifie"
+          "label": "Non vérifié"
         }
       ],
       "scoreMap": {
@@ -384,23 +384,23 @@
         "not_sure": 1,
         "no": 0
       },
-      "helpText": "Les conditions varient selon les outils, forfaits et parametres.",
+      "helpText": "Les conditions varient selon les outils, forfaits et paramètres.",
       "recommendation": {
         "title": "Vérifier les conditions des outils IA",
-        "text": "Vérifiez les conditions d'utilisation, options de confidentialité et parametres d'entrainement des outils IA utilisés."
+        "text": "Vérifiez les conditions d'utilisation, options de confidentialité et paramètres d'entraînement des outils IA utilisés."
       }
     },
     {
       "id": "C4",
       "sectionId": "C",
-      "title": "Vos usages IA respectent-ils vos engagements de confidentialité envers clients et employes?",
+      "title": "Vos usages IA respectent-ils vos engagements de confidentialité envers clients et employés?",
       "type": "single_select",
       "required": true,
       "weight": 8,
       "options": [
         {
           "value": "yes",
-          "label": "Oui, verifie"
+          "label": "Oui, vérifié"
         },
         {
           "value": "partial",
@@ -483,7 +483,7 @@
       "helpText": "Important pour contenus publics, conseils clients, documents juridiques, financiers ou RH.",
       "recommendation": {
         "title": "Imposer la validation humaine",
-        "text": "Ajoutez une étape de validation humaine pour tout résultat IA utilise avec clients, public, RH ou décisions importantes."
+        "text": "Ajoutez une étape de validation humaine pour tout résultat IA utilisé avec clients, public, RH ou décisions importantes."
       }
     },
     {
@@ -515,20 +515,20 @@
       "helpText": "Cas d'usage, outil, responsable, données utilisées, décision finale et date.",
       "recommendation": {
         "title": "Documenter les usages IA importants",
-        "text": "Gardez une trace simple des usages ? risque ou ? impact pour pouvoir expliquer les décisions et ameliorer les pratiques."
+        "text": "Gardez une trace simple des usages à risque ou à impact pour pouvoir expliquer les décisions et améliorer les pratiques."
       }
     },
     {
       "id": "D4",
       "sectionId": "D",
-      "title": "Avez-vous des criteres pour approuvér un nouvel outil IA?",
+      "title": "Avez-vous des critères pour approuver un nouvel outil IA?",
       "type": "single_select",
       "required": true,
       "weight": 6,
       "options": [
         {
           "value": "yes",
-          "label": "Oui, criteres clairs"
+          "label": "Oui, critères clairs"
         },
         {
           "value": "informal",
@@ -576,10 +576,10 @@
         "partial": 2,
         "no": 0
       },
-      "helpText": "L'IA fantome cree des risques de données, de coût et de qualité.",
+      "helpText": "L'IA fantôme crée des risques de données, de coût et de qualité.",
       "recommendation": {
         "title": "Maintenir une liste d'outils IA approuvés",
-        "text": "Listez les outils permis, ceux ? eviter et les conditions d'utilisation pour chaque équipe."
+        "text": "Listez les outils permis, ceux à éviter et les conditions d'utilisation pour chaque équipe."
       }
     },
     {
@@ -617,7 +617,7 @@
     {
       "id": "E3",
       "sectionId": "E",
-      "title": "Les intégrations IA avec vos outils internes sont-elles encadrees?",
+      "title": "Les intégrations IA avec vos outils internes sont-elles encadrées?",
       "type": "single_select",
       "required": true,
       "weight": 6,
@@ -632,7 +632,7 @@
         },
         {
           "value": "no",
-          "label": "Non ou aucune verification"
+          "label": "Non ou aucune vérification"
         },
         {
           "value": "na",
@@ -686,7 +686,7 @@
     {
       "id": "F2",
       "sectionId": "F",
-      "title": "Mesurez-vous les gains ou problemes des usages IA?",
+      "title": "Mesurez-vous les gains ou problèmes des usages IA?",
       "type": "single_select",
       "required": true,
       "weight": 5,
@@ -718,7 +718,7 @@
     {
       "id": "F3",
       "sectionId": "F",
-      "title": "Avez-vous un espace pour partager les bons exemples et les erreurs ? eviter?",
+      "title": "Avez-vous un espace pour partager les bons exemples et les erreurs à éviter?",
       "type": "single_select",
       "required": true,
       "weight": 4,
@@ -777,14 +777,14 @@
         "Définir les données interdites dans les outils IA publics.",
         "Choisir 1 à 3 cas d'usage prioritaires avec objectif clair.",
         "Rédiger une charte IA courte pour l'équipe.",
-        "Prevoir une validation humaine pour les contenus et décisions externes."
+        "Prévoir une validation humaine pour les contenus et décisions externes."
       ],
       "days90": [
         "Vérifier les conditions de confidentialité des outils IA utilisés.",
         "Former l'équipe sur limites, données sensibles et validation.",
         "Mettre en place une liste d'outils IA approuvés.",
-        "Mesurer les gains et problemes des usages prioritaires.",
-        "Documenter les usages ? impact et ajuster la charte IA."
+        "Mesurer les gains et problèmes des usages prioritaires.",
+        "Documenter les usages à impact et ajuster la charte IA."
       ]
     }
   },
