@@ -19,7 +19,6 @@ const NO_STORE_HEADERS: Record<string, string> = {
 };
 
 const DEMO_839_PATH = "/Demo839web";
-const DEMO_839_USERNAME = "demo839";
 
 function isSensitivePath(pathname: string) {
   return (
@@ -72,42 +71,6 @@ function applyNoStoreHeaders(response: NextResponse) {
   });
 }
 
-function getBasicCredentials(request: NextRequest) {
-  const authorization = request.headers.get("authorization");
-
-  if (!authorization?.startsWith("Basic ")) return null;
-
-  try {
-    const decoded = atob(authorization.slice(6));
-    const separator = decoded.indexOf(":");
-
-    if (separator < 0) return null;
-
-    return {
-      username: decoded.slice(0, separator),
-      password: decoded.slice(separator + 1)
-    };
-  } catch {
-    return null;
-  }
-}
-
-function demo839UnauthorizedResponse() {
-  const response = new NextResponse("Authentification requise.", {
-    status: 401,
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "WWW-Authenticate": 'Basic realm="Demo 839", charset="UTF-8"'
-    }
-  });
-
-  applySecurityHeaders(response);
-  applyNoStoreHeaders(response);
-  response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-
-  return response;
-}
-
 export function proxy(request: NextRequest) {
   if (!isLocalHostname(request) && getRequestProtocol(request) !== "https") {
     const redirectUrl = request.nextUrl.clone();
@@ -116,20 +79,6 @@ export function proxy(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-
-  if (isDemo839Path(pathname) && !isLocalHostname(request)) {
-    const expectedPassword = process.env.DEMO839_BASIC_AUTH_PASSWORD;
-    const credentials = getBasicCredentials(request);
-
-    if (
-      !expectedPassword ||
-      !credentials ||
-      credentials.username !== DEMO_839_USERNAME ||
-      credentials.password !== expectedPassword
-    ) {
-      return demo839UnauthorizedResponse();
-    }
-  }
 
   const response = NextResponse.next();
 
