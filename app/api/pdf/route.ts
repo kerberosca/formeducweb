@@ -2,7 +2,10 @@
 import { NextResponse } from "next/server";
 import type { ReactElement } from "react";
 
-import { findAssessmentByToken, hydrateAssessment } from "@/lib/assessment-store";
+import {
+  findAssessmentByToken,
+  hydrateAssessment
+} from "@/lib/assessment-store";
 import { AssessmentReportPdfDocument } from "@/lib/report-pdf";
 import { filenameFromCompany } from "@/lib/report-pdf-shared";
 import { tokenSearchParamSchema } from "@/lib/schemas";
@@ -13,7 +16,9 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const parsed = tokenSearchParamSchema.safeParse({ token: searchParams.get("token") });
+    const parsed = tokenSearchParamSchema.safeParse({
+      token: searchParams.get("token")
+    });
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -38,7 +43,8 @@ export async function GET(request: Request) {
     if (assessment.paymentStatus !== "paid") {
       return NextResponse.json(
         {
-          error: "Le rapport complet doit être débloqué avant le téléchargement PDF."
+          error:
+            "Le rapport complet doit être débloqué avant le téléchargement PDF."
         },
         { status: 403 }
       );
@@ -50,8 +56,8 @@ export async function GET(request: Request) {
       assessmentType: hydrated.assessmentType,
       wizard,
       leadCapture: {
-        contactName: assessment.contactName,
-        companyName: assessment.companyName,
+        contactName: assessment.contactName || "",
+        companyName: assessment.companyName || "Votre organisation",
         email: assessment.email,
         phone: assessment.phone || "",
         consentMarketing: assessment.consentMarketing
@@ -64,7 +70,7 @@ export async function GET(request: Request) {
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${filenameFromCompany(assessment.companyName, hydrated.assessmentType)}"`,
+        "Content-Disposition": `attachment; filename="${filenameFromCompany(assessment.companyName || "entreprise", hydrated.assessmentType)}"`,
         "Cache-Control": "no-store"
       }
     });

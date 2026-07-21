@@ -7,22 +7,22 @@ const eslintConfig = defineConfig([
   ...nextTs,
   {
     rules: {
-      "react/no-unescaped-entities": "off",
-    },
+      "react/no-unescaped-entities": "off"
+    }
   },
   {
     files: ["lib/recommendations.ts"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-    },
+      "@typescript-eslint/no-explicit-any": "off"
+    }
   },
   globalIgnores([
     ".next/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
-    "node_modules/**",
-  ]),
+    "node_modules/**"
+  ])
 ]);
 
 export default eslintConfig;

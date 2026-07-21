@@ -1,24 +1,42 @@
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, FileText, Layers3, MessageCircle, Network, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BrainCircuit,
+  FileText,
+  Layers3,
+  MessageCircle,
+  Network,
+  ShieldCheck
+} from "lucide-react";
 
 import { FaqList } from "@/components/marketing/faq-list";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
 import { getSeoSupportPagesByTheme, pillarSeoContent } from "@/lib/seo-content";
-import { siteConfig } from "@/lib/site";
 
 type DiagnosticLandingPageProps = {
   assessmentType: AssessmentType;
 };
 
-function HeroDiagnosticIcon({ assessmentType }: { assessmentType: AssessmentType }) {
-  if (assessmentType === "cybersecurity") return <Network className="h-6 w-6" />;
+function HeroDiagnosticIcon({
+  assessmentType
+}: {
+  assessmentType: AssessmentType;
+}) {
+  if (assessmentType === "cybersecurity")
+    return <Network className="h-6 w-6" />;
   if (assessmentType === "ai") return <BrainCircuit className="h-6 w-6" />;
   return <ShieldCheck className="h-6 w-6" />;
 }
@@ -36,7 +54,9 @@ function BulletList({ items }: { items: string[] }) {
   );
 }
 
-export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageProps) {
+export function DiagnosticLandingPage({
+  assessmentType
+}: DiagnosticLandingPageProps) {
   const diagnostic = getDiagnosticConfig(assessmentType);
   const content = diagnostic.content;
   const pillarSeo = pillarSeoContent[assessmentType];
@@ -62,21 +82,33 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-6">
             <Badge>{content.badge}</Badge>
-            <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">{content.title}</h1>
-            <p className="max-w-2xl text-xl leading-9 text-muted-foreground">{content.description}</p>
+            <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">
+              {content.title}
+            </h1>
+            <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
+              {content.description}
+            </p>
             <div className="space-y-2 text-sm leading-7 text-muted-foreground">
               <p>Pour qui: {content.audience}</p>
               <p>
-                Démarche: résumé gratuit, rapport complet à {getReportUnlockPriceLabel()} si pertinent, puis accompagnement
-                selon vos priorités.
+                Environ 10 minutes · score instantané · 3 priorités · plan de 30
+                jours.
+              </p>
+              <p>
+                Aucun courriel requis pour voir le résultat. Rapport complet
+                optionnel à {getReportUnlockPriceLabel()}.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <Link href={diagnostic.wizardPath}>Faire mon auto-évaluation</Link>
+                <Link href={diagnostic.wizardPath}>
+                  Faire mon auto-évaluation
+                </Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}`}>Parler de mon contexte</Link>
+                <Link href={`/contact?source=${diagnostic.leadSource}`}>
+                  Parler de mon contexte
+                </Link>
               </Button>
             </div>
           </div>
@@ -87,30 +119,40 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
                 <HeroDiagnosticIcon assessmentType={assessmentType} />
               </div>
               <CardTitle>Parcours en 3 étapes</CardTitle>
-              <CardDescription>Simple à comprendre, concret à exécuter.</CardDescription>
+              <CardDescription>
+                Simple à comprendre, concret à exécuter.
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 p-6">
               {[
                 {
                   icon: FileText,
                   title: "1. Diagnostic",
-                  description: "Réponses guidées pour faire ressortir vos forces et vos angles morts."
+                  description:
+                    "Réponses guidées pour faire ressortir vos forces et vos angles morts."
                 },
                 {
                   icon: Layers3,
                   title: "2. Rapport",
-                  description: "Score, priorités et plan d'action utilisable dès aujourd'hui."
+                  description:
+                    "Score, priorités et plan d'action utilisable dès aujourd'hui."
                 },
                 {
                   icon: ShieldCheck,
                   title: "3. Implantation",
-                  description: "Accompagnement progressif si vous voulez passer à l'exécution."
+                  description:
+                    "Accompagnement progressif si vous voulez passer à l'exécution."
                 }
               ].map((item) => (
-                <div key={item.title} className="rounded-[20px] border border-border/70 bg-background p-5">
+                <div
+                  key={item.title}
+                  className="rounded-[20px] border border-border/70 bg-background p-5"
+                >
                   <item.icon className="mb-3 h-5 w-5 text-primary" />
                   <p className="font-medium">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    {item.description}
+                  </p>
                 </div>
               ))}
             </CardContent>
@@ -142,7 +184,9 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
           <Card>
             <CardHeader>
               <CardTitle>Guides pratiques liés</CardTitle>
-              <CardDescription>Des réponses courtes pour approfondir sans quitter le parcours.</CardDescription>
+              <CardDescription>
+                Des réponses courtes pour approfondir sans quitter le parcours.
+              </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3">
               {supportPages.slice(0, 5).map((page) => (
@@ -151,8 +195,12 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
                   href={page.path}
                   className="group rounded-2xl border border-border/70 bg-white/75 p-4 transition hover:border-primary/40 hover:bg-primary/5"
                 >
-                  <span className="block text-sm font-medium text-foreground">{page.shortTitle}</span>
-                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">{page.description}</span>
+                  <span className="block text-sm font-medium text-foreground">
+                    {page.shortTitle}
+                  </span>
+                  <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                    {page.description}
+                  </span>
                 </Link>
               ))}
             </CardContent>
@@ -171,10 +219,14 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
             <BulletList items={content.freeDeliverables} />
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
               <Button asChild>
-                <Link href={diagnostic.wizardPath}>Voir mon résumé gratuit</Link>
+                <Link href={diagnostic.wizardPath}>
+                  Voir mon résumé gratuit
+                </Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}-gratuit`}>Question rapide</Link>
+                <Link href={`/contact?source=${diagnostic.leadSource}-gratuit`}>
+                  Question rapide
+                </Link>
               </Button>
             </div>
           </CardContent>
@@ -195,7 +247,8 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
                 <Link href={diagnostic.wizardPath}>Commencer gratuitement</Link>
               </Button>
               <p className="text-xs leading-5 text-muted-foreground">
-                Paiement unique, accès immédiat. Toujours sans promesse exagérée.
+                Paiement unique, accès immédiat. Toujours sans promesse
+                exagérée.
               </p>
             </div>
           </CardContent>
@@ -211,7 +264,9 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {content.reasonsToAct.map((item) => (
             <Card key={item}>
-              <CardContent className="p-6 text-sm leading-7 text-muted-foreground">{item}</CardContent>
+              <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
+                {item}
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -231,7 +286,9 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {content.notThis.map((item) => (
             <Card key={item}>
-              <CardContent className="p-6 text-sm leading-7 text-muted-foreground">{item}</CardContent>
+              <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
+                {item}
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -259,7 +316,9 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
                   <CardHeader className="px-0">
                     <CardTitle className="flex items-center justify-between gap-3">
                       <span>{pack.name}</span>
-                      <span className="text-base text-primary">{pack.price}</span>
+                      <span className="text-base text-primary">
+                        {pack.price}
+                      </span>
                     </CardTitle>
                     <CardDescription>{pack.summary}</CardDescription>
                   </CardHeader>
@@ -273,8 +332,11 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
         </div>
       </section>
 
-      <section className="container py-12 md:py-18">
-        <SectionHeading eyebrow="FAQ" title={`Questions fréquentes - ${diagnostic.label}`} />
+      <section className="md:py-18 container py-12">
+        <SectionHeading
+          eyebrow="FAQ"
+          title={`Questions fréquentes - ${diagnostic.label}`}
+        />
         <div className="mt-8 rounded-[32px] border border-border/70 bg-white/80 p-6 md:p-8">
           <FaqList items={content.faq} />
         </div>
@@ -284,21 +346,26 @@ export function DiagnosticLandingPage({ assessmentType }: DiagnosticLandingPageP
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="space-y-5 p-8">
             <div className="space-y-2">
-              <p className="font-medium text-foreground">Parler avec notre équipe</p>
+              <p className="font-medium text-foreground">
+                Parler avec notre équipe
+              </p>
               <p className="text-sm leading-7 text-muted-foreground">
-                Si vous préférez valider vos priorités avec nous avant d'aller plus loin, on peut faire un échange de
-                20 minutes orienté actions.
+                Si vous préférez valider vos priorités avec nous avant d'aller
+                plus loin, on peut faire un échange de 20 minutes orienté
+                actions.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild>
-                <a href={siteConfig.bookingUrl}>
+                <Link href={`/contact?source=${diagnostic.leadSource}-appel`}>
                   <MessageCircle className="mr-2 h-4 w-4" />
-                  Planifier un appel 20 min
-                </a>
+                  Demander un appel
+                </Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}-humain`}>Écrire à ForméducWeb</Link>
+                <Link href={`/contact?source=${diagnostic.leadSource}-humain`}>
+                  Écrire à ForméducWeb
+                </Link>
               </Button>
             </div>
           </CardContent>

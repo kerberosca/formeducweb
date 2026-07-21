@@ -8,11 +8,11 @@ Ce document sert de **référence** si vous avez basculé le domaine **formeducw
 
 ## Contexte de la migration (référence)
 
-| Élément | Ancien (Plesk / WordPress) | Nouveau (VPS FormeducWeb) |
-|--------|----------------------------|----------------------------|
-| DNS **A** `@` (formeducweb.ca) | Ex. **`15.235.86.192`** (hébergement Plesk) | **`155.138.159.183`** (VPS avec Caddy + Docker) |
-| Réponse HTTP typique | `Server: nginx`, `X-Powered-By: PHP`, liens `wp-json` | Next.js / FormeducWeb derrière Caddy |
-| Gestion DNS (exemple) | GoDaddy — enregistrements **DNS** | Inchangé : toujours chez le registrar |
+| Élément                        | Ancien (Plesk / WordPress)                            | Nouveau (VPS FormeducWeb)                       |
+| ------------------------------ | ----------------------------------------------------- | ----------------------------------------------- |
+| DNS **A** `@` (formeducweb.ca) | Ex. **`15.235.86.192`** (hébergement Plesk)           | **`155.138.159.183`** (VPS avec Caddy + Docker) |
+| Réponse HTTP typique           | `Server: nginx`, `X-Powered-By: PHP`, liens `wp-json` | Next.js / FormeducWeb derrière Caddy            |
+| Gestion DNS (exemple)          | GoDaddy — enregistrements **DNS**                     | Inchangé : toujours chez le registrar           |
 
 **FAB** (`familledaccueilbranchee.ca`) sur le **même VPS** n’est **pas** concerné par ce retour en arrière : seul le DNS de **formeducweb.ca** change.
 
@@ -33,7 +33,7 @@ Ce document sert de **référence** si vous avez basculé le domaine **formeducw
 1. Connectez-vous au panneau DNS du domaine **formeducweb.ca** (ex. GoDaddy → **DNS** → **Enregistrements**).
 2. Trouvez l’enregistrement **A** avec **Nom** = `@` (ou vide / `formeducweb.ca`).
 3. **Modifiez** la valeur (Données / Points vers) pour remettre l’**IP du serveur Plesk**  
-   — ex. **`15.235.86.192`** *(remplacez par l’IP fournie par votre hébergeur Plesk si différente)*.
+   — ex. **`15.235.86.192`** _(remplacez par l’IP fournie par votre hébergeur Plesk si différente)_.
 4. Enregistrez. TTL typique : 600 s (10 min) ou 1 h.
 
 ### 2. Sous-domaine **www**

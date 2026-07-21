@@ -34,7 +34,10 @@ export function parseCookieConsent(raw: string | null) {
 
   try {
     const parsed = JSON.parse(raw) as CookieConsentState;
-    if (typeof parsed?.analytics !== "boolean" || typeof parsed?.marketing !== "boolean") {
+    if (
+      typeof parsed?.analytics !== "boolean" ||
+      typeof parsed?.marketing !== "boolean"
+    ) {
       return null;
     }
 
@@ -48,7 +51,9 @@ export function readCookieConsent() {
   return parseCookieConsent(readCookieConsentRaw());
 }
 
-export function saveCookieConsent(state: Omit<CookieConsentState, "updatedAt" | "version">) {
+export function saveCookieConsent(
+  state: Omit<CookieConsentState, "updatedAt" | "version">
+) {
   if (typeof window === "undefined") return;
 
   const payload: CookieConsentState = {
@@ -58,12 +63,17 @@ export function saveCookieConsent(state: Omit<CookieConsentState, "updatedAt" | 
   };
 
   try {
-    window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, JSON.stringify(payload));
+    window.localStorage.setItem(
+      COOKIE_CONSENT_STORAGE_KEY,
+      JSON.stringify(payload)
+    );
   } catch {
     return;
   }
 
-  window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_EVENT, { detail: payload }));
+  window.dispatchEvent(
+    new CustomEvent(COOKIE_CONSENT_EVENT, { detail: payload })
+  );
 }
 
 export function clearCookieConsent() {

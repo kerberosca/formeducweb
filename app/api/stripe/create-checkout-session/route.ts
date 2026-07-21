@@ -1,8 +1,21 @@
 import { NextResponse } from "next/server";
 
-import { attachCheckoutSession, findAssessmentById, findAssessmentByToken } from "@/lib/assessment-store";
-import { getDiagnosticConfig, normalizeAssessmentType } from "@/lib/diagnostics";
-import { getBaseUrl, getReportUnlockPriceCents, getStripeCurrency, getStripeProductName, isStripeConfigured } from "@/lib/payments";
+import {
+  attachCheckoutSession,
+  findAssessmentById,
+  findAssessmentByToken
+} from "@/lib/assessment-store";
+import {
+  getDiagnosticConfig,
+  normalizeAssessmentType
+} from "@/lib/diagnostics";
+import {
+  getBaseUrl,
+  getReportUnlockPriceCents,
+  getStripeCurrency,
+  getStripeProductName,
+  isStripeConfigured
+} from "@/lib/payments";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { checkoutSessionPayloadSchema } from "@/lib/schemas";
 import { getStripeClient } from "@/lib/stripe";
@@ -19,7 +32,8 @@ export async function POST(request: Request) {
   if (!rateLimit.allowed) {
     return NextResponse.json(
       {
-        error: "Trop de tentatives de paiement. Veuillez patienter avant de reessayer."
+        error:
+          "Trop de tentatives de paiement. Veuillez patienter avant de réessayer."
       },
       {
         status: 429,
@@ -51,9 +65,32 @@ export async function POST(request: Request) {
     if (!assessment) {
       return NextResponse.json(
         {
-          error: "Le rapport demande est introuvable."
+          error: "Le rapport demandé est introuvable."
         },
         { status: 404 }
+      );
+    }
+
+    if (
+      parsed.data.accessToken &&
+      assessment.accessToken !== parsed.data.accessToken
+    ) {
+      return NextResponse.json(
+        {
+          error: "Le rapport demandé est introuvable."
+        },
+        { status: 404 }
+      );
+    }
+
+    if (!assessment.contactName?.trim() || !assessment.companyName?.trim()) {
+      return NextResponse.json(
+        {
+          code: "PROFILE_REQUIRED",
+          error:
+            "Ajoutez votre nom et votre entreprise avant de débloquer le rapport complet."
+        },
+        { status: 409 }
       );
     }
 
@@ -69,7 +106,8 @@ export async function POST(request: Request) {
     if (!isStripeConfigured()) {
       return NextResponse.json(
         {
-          error: "Stripe n'est pas configure sur cet environnement. Ajoutez vos cles avant de lancer le paiement."
+          error:
+            "Stripe n'est pas configuré sur cet environnement. Ajoutez vos clés avant de lancer le paiement."
         },
         { status: 503 }
       );
@@ -119,7 +157,7 @@ export async function POST(request: Request) {
     console.error("Stripe checkout session error", error);
     return NextResponse.json(
       {
-        error: "Impossible de creer la session de paiement pour le moment."
+        error: "Impossible de créer la session de paiement pour le moment."
       },
       { status: 500 }
     );

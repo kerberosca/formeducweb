@@ -10,8 +10,8 @@ model Assessment {
   id                  String   @id @default(cuid())
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
-  contactName         String
-  companyName         String
+  contactName         String?
+  companyName         String?
   email               String
   phone               String?
   consentMarketing    Boolean  @default(false)

@@ -1,6 +1,9 @@
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 
-export function filenameFromCompany(companyName: string, assessmentType: AssessmentType = "loi25") {
+export function filenameFromCompany(
+  companyName: string,
+  assessmentType: AssessmentType = "loi25"
+) {
   const slug = companyName
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")

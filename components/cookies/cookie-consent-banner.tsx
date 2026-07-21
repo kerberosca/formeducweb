@@ -47,7 +47,11 @@ export function CookieConsentBanner() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const hasAnalyticsTracker = Boolean(trackerConfig.gaMeasurementId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
-  const consentSnapshot = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
+  const consentSnapshot = useSyncExternalStore(
+    subscribeConsent,
+    getConsentSnapshot,
+    getConsentServerSnapshot
+  );
   const consentState = useMemo(() => {
     if (consentSnapshot === "server") return null;
     return parseCookieConsent(consentSnapshot);
@@ -62,7 +66,10 @@ export function CookieConsentBanner() {
     return null;
   }
 
-  const handleSave = (next: Pick<CookieConsentState, "analytics" | "marketing">, message: string) => {
+  const handleSave = (
+    next: Pick<CookieConsentState, "analytics" | "marketing">,
+    message: string
+  ) => {
     saveCookieConsent(next);
     toast.success(message);
   };
@@ -72,11 +79,17 @@ export function CookieConsentBanner() {
       <Card className="mx-auto w-full max-w-4xl border-primary/20 bg-background/95 shadow-2xl backdrop-blur">
         <CardContent className="space-y-4 p-5 md:p-6">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary/80">Cookies et consentement</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-primary/80">
+              Cookies et consentement
+            </p>
             <p className="text-sm leading-7 text-muted-foreground">
-              Nous utilisons des cookies techniques nécessaires. Les cookies non essentiels sont bloqués tant que vous
-              n’avez pas choisi. Consultez la{" "}
-              <Link href="/politique-cookies" className="underline underline-offset-4">
+              Nous utilisons des cookies techniques nécessaires. Les cookies non
+              essentiels sont bloqués tant que vous n’avez pas choisi. Consultez
+              la{" "}
+              <Link
+                href="/politique-cookies"
+                className="underline underline-offset-4"
+              >
                 politique cookies
               </Link>
               .
@@ -89,7 +102,9 @@ export function CookieConsentBanner() {
                 <label className="flex items-start gap-3">
                   <Checkbox
                     checked={allowAnalytics}
-                    onCheckedChange={(checked) => setAllowAnalytics(Boolean(checked))}
+                    onCheckedChange={(checked) =>
+                      setAllowAnalytics(Boolean(checked))
+                    }
                     aria-label="Activer analytics"
                   />
                   <span className="space-y-1">
@@ -105,11 +120,19 @@ export function CookieConsentBanner() {
 
           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
             {mode === "simple" ? (
-              <Button type="button" variant="secondary" onClick={() => setMode("customize")}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setMode("customize")}
+              >
                 Personnaliser
               </Button>
             ) : (
-              <Button type="button" variant="secondary" onClick={() => setMode("simple")}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setMode("simple")}
+              >
                 Retour
               </Button>
             )}
@@ -117,7 +140,12 @@ export function CookieConsentBanner() {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => handleSave({ analytics: false, marketing: false }, "Préférences enregistrées (refus).")}
+              onClick={() =>
+                handleSave(
+                  { analytics: false, marketing: false },
+                  "Préférences enregistrées (refus)."
+                )
+              }
             >
               Refuser
             </Button>
@@ -152,7 +180,8 @@ export function CookieConsentBanner() {
             )}
           </div>
           <Label className="block text-xs leading-6 text-muted-foreground">
-            Vous pourrez ajuster ces choix plus tard via la page Politique cookies.
+            Vous pourrez ajuster ces choix plus tard via la page Politique
+            cookies.
           </Label>
         </CardContent>
       </Card>

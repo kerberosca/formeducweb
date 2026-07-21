@@ -18,26 +18,42 @@ export function SiteFooter() {
             />
           </div>
           <p className="max-w-md text-sm leading-7 text-white/85">
-            Diagnostic, alignement, plan d’action et implantation pour les PME et OBNL qui veulent avancer simplement.
+            Diagnostic, alignement, plan d’action et implantation pour les PME
+            et OBNL qui veulent avancer simplement.
           </p>
           <p className="text-sm text-white/70">{siteConfig.territory}</p>
         </div>
 
         <div>
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white/65">Navigation</p>
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
+            Navigation
+          </p>
           <div className="space-y-3 text-sm">
             {mainNavigation.map((item) => (
               <div key={item.href}>
-                <Link href={item.href} className="text-white/85 transition hover:text-white">
+                <Link
+                  href={item.href}
+                  className="text-white/85 transition hover:text-white"
+                >
                   {item.label}
                 </Link>
               </div>
             ))}
+            <div>
+              <Link
+                href="/a-propos"
+                className="text-white/85 transition hover:text-white"
+              >
+                À propos
+              </Link>
+            </div>
           </div>
         </div>
 
         <div>
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white/65">Coordonnées</p>
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white/65">
+            Coordonnées
+          </p>
           <div className="space-y-3 text-sm text-white/85">
             <p>{siteConfig.address}</p>
             {siteConfig.phone ? <p>{siteConfig.phone}</p> : null}
@@ -46,13 +62,19 @@ export function SiteFooter() {
           <div className="mt-6 space-y-2 text-sm">
             {legalNavigation.map((item) => (
               <div key={item.href}>
-                <Link href={item.href} className="text-white/70 transition hover:text-white">
+                <Link
+                  href={item.href}
+                  className="text-white/70 transition hover:text-white"
+                >
                   {item.label}
                 </Link>
               </div>
             ))}
             <div>
-              <Link href="/politique-cookies#preferences-cookies" className="text-white/70 transition hover:text-white">
+              <Link
+                href="/politique-cookies#preferences-cookies"
+                className="text-white/70 transition hover:text-white"
+              >
                 Gérer mes cookies
               </Link>
             </div>

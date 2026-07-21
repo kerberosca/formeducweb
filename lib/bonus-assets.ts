@@ -2,7 +2,10 @@ import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { ScoreResult } from "@/lib/scoring";
 
-export function buildProcedureOnePager(companyName: string, assessmentType: AssessmentType = "loi25") {
+export function buildProcedureOnePager(
+  companyName: string,
+  assessmentType: AssessmentType = "loi25"
+) {
   if (assessmentType === "cybersecurity") {
     return [
       `Procédure 1 page - Signalement cyber (${companyName})`,
@@ -65,7 +68,10 @@ export function buildProcedureOnePager(companyName: string, assessmentType: Asse
   ].join("\n");
 }
 
-export function buildFormSnippet(companyName: string, assessmentType: AssessmentType = "loi25") {
+export function buildFormSnippet(
+  companyName: string,
+  assessmentType: AssessmentType = "loi25"
+) {
   if (assessmentType === "cybersecurity") {
     return [
       "Mémo équipe - Réflexes cyber",
@@ -99,15 +105,26 @@ export function buildFormSnippet(companyName: string, assessmentType: Assessment
   ].join("\n");
 }
 
-export function buildChecklistItems(report: GeneratedReport, scoreResult: ScoreResult) {
+export function buildChecklistItems(
+  report: GeneratedReport,
+  scoreResult: ScoreResult
+) {
   const sectionsToWatch = [...scoreResult.sectionScores]
     .sort((a, b) => a.percent - b.percent)
     .slice(0, 3)
-    .map((item) => `Renforcer la section ${item.sectionId} - ${item.sectionTitle}.`);
+    .map(
+      (item) => `Renforcer la section ${item.sectionId} - ${item.sectionTitle}.`
+    );
 
   const topActions = report.topGaps.slice(0, 3).map((gap) => gap.action);
 
-  return Array.from(new Set([...topActions, ...report.plan30Days.slice(0, 3), ...sectionsToWatch])).slice(0, 8);
+  return Array.from(
+    new Set([
+      ...topActions,
+      ...report.plan30Days.slice(0, 3),
+      ...sectionsToWatch
+    ])
+  ).slice(0, 8);
 }
 
 export function getBonusAssetLabels(assessmentType: AssessmentType) {

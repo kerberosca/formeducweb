@@ -38,11 +38,15 @@ export function OptionalTrackers() {
 
     return () => {
       window.removeEventListener("storage", syncConsent);
-      window.removeEventListener(COOKIE_CONSENT_EVENT, syncConsent as EventListener);
+      window.removeEventListener(
+        COOKIE_CONSENT_EVENT,
+        syncConsent as EventListener
+      );
     };
   }, [hasTrackers]);
 
-  const shouldLoadGa = Boolean(trackerConfig.gaMeasurementId) && consent?.analytics === true;
+  const shouldLoadGa =
+    Boolean(trackerConfig.gaMeasurementId) && consent?.analytics === true;
   const queryString = searchParams.toString();
   const pagePath = queryString ? `${pathname}?${queryString}` : pathname;
 
@@ -61,7 +65,9 @@ export function OptionalTrackers() {
 
     if (typeof window.gtag === "function") {
       if (trackerConfig.gaMeasurementId) {
-        window.gtag("config", trackerConfig.gaMeasurementId, { page_path: pagePath });
+        window.gtag("config", trackerConfig.gaMeasurementId, {
+          page_path: pagePath
+        });
       }
     }
   }, [consent, pagePath, shouldLoadGa, trackerConfig.gaMeasurementId]);

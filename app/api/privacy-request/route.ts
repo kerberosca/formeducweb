@@ -16,7 +16,8 @@ export async function POST(request: Request) {
   if (!rateLimit.allowed) {
     return NextResponse.json(
       {
-        error: "Trop de tentatives. Veuillez patienter avant de renvoyer votre demande."
+        error:
+          "Trop de tentatives. Veuillez patienter avant de renvoyer votre demande."
       },
       {
         status: 429,
@@ -56,5 +57,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
-

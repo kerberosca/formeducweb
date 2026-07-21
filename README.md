@@ -307,7 +307,3 @@ npm run db:setup
 - Le site ne promet jamais une entreprise "certifiee conforme" ou une "garantie de conformite".
 - Le langage utilise reste: auto-evaluation, alignement, recommandations generales, priorisation, implantation.
 - Le JSON fourni contient 27 questions au total: 3 de profil et 24 questions scorees.
-
-
-
-

@@ -5,28 +5,37 @@ type TopGap = GeneratedReport["topGaps"][number];
 const CONSOLIDATION_PRIORITY_TEMPLATES: TopGap[] = [
   {
     title: "Consolider les pratiques déjà en place",
-    whyItMatters: "Une bonne posture reste fragile si elle n'est pas revue régulièrement.",
-    action: "Planifiez une revue mensuelle rapide des mesures déjà implantées et corrigez les écarts détectés.",
+    whyItMatters:
+      "Une bonne posture reste fragile si elle n'est pas revue régulièrement.",
+    action:
+      "Planifiez une revue mensuelle rapide des mesures déjà implantées et corrigez les écarts détectés.",
     section: "Consolidation",
     priority: "Moyenne"
   },
   {
     title: "Centraliser les preuves de conformité",
-    whyItMatters: "Des preuves simples et datées facilitent le suivi et évitent les oublis.",
-    action: "Regroupez politiques, captures, journaux et décisions dans un dossier unique maintenu à jour.",
+    whyItMatters:
+      "Des preuves simples et datées facilitent le suivi et évitent les oublis.",
+    action:
+      "Regroupez politiques, captures, journaux et décisions dans un dossier unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne"
   },
   {
     title: "Tester les mécanismes critiques",
-    whyItMatters: "Sans vérification périodique, les mécanismes peuvent se dégrader sans être visibles.",
-    action: "Faites un mini test trimestriel (accès, sauvegarde, formulaires) et notez le résultat.",
+    whyItMatters:
+      "Sans vérification périodique, les mécanismes peuvent se dégrader sans être visibles.",
+    action:
+      "Faites un mini test trimestriel (accès, sauvegarde, formulaires) et notez le résultat.",
     section: "Consolidation",
     priority: "Moyenne"
   }
 ];
 
-function normalizeCriticalCount(knownCount: number | undefined, fallbackCount: number) {
+function normalizeCriticalCount(
+  knownCount: number | undefined,
+  fallbackCount: number
+) {
   if (typeof knownCount !== "number" || !Number.isFinite(knownCount)) {
     return fallbackCount;
   }
@@ -34,9 +43,15 @@ function normalizeCriticalCount(knownCount: number | undefined, fallbackCount: n
   return Math.max(0, Math.min(3, Math.round(knownCount)));
 }
 
-function ensureThreePriorities(topGaps: GeneratedReport["topGaps"], knownCriticalCount?: number) {
+function ensureThreePriorities(
+  topGaps: GeneratedReport["topGaps"],
+  knownCriticalCount?: number
+) {
   const criticalGaps = topGaps.slice(0, 3);
-  const criticalCount = normalizeCriticalCount(knownCriticalCount, criticalGaps.length);
+  const criticalCount = normalizeCriticalCount(
+    knownCriticalCount,
+    criticalGaps.length
+  );
 
   if (criticalGaps.length >= 3) {
     return {
@@ -46,7 +61,10 @@ function ensureThreePriorities(topGaps: GeneratedReport["topGaps"], knownCritica
   }
 
   const missingCount = 3 - criticalGaps.length;
-  const fallbackPriorities = CONSOLIDATION_PRIORITY_TEMPLATES.slice(0, missingCount);
+  const fallbackPriorities = CONSOLIDATION_PRIORITY_TEMPLATES.slice(
+    0,
+    missingCount
+  );
 
   return {
     topGaps: [...criticalGaps, ...fallbackPriorities],
@@ -85,7 +103,10 @@ export type LiteReport = {
 };
 
 export function toLiteReport(fullReport: GeneratedReport): LiteReport {
-  const guaranteedPriorities = ensureThreePriorities(fullReport.topGaps, fullReport.criticalTopGapsCount);
+  const guaranteedPriorities = ensureThreePriorities(
+    fullReport.topGaps,
+    fullReport.criticalTopGapsCount
+  );
 
   return {
     summary: {
@@ -96,10 +117,14 @@ export function toLiteReport(fullReport: GeneratedReport): LiteReport {
       cautions: fullReport.summary.cautions.slice(0, 2)
     },
     topGaps: guaranteedPriorities.topGaps,
-    prioritiesContext: buildPrioritiesContext(guaranteedPriorities.criticalCount),
+    prioritiesContext: buildPrioritiesContext(
+      guaranteedPriorities.criticalCount
+    ),
     plan30Days: fullReport.plan30Days.slice(0, 5),
-    plan90DaysTeaser: "Débloquez le rapport complet pour obtenir le plan 90 jours adapté à votre contexte.",
+    plan90DaysTeaser:
+      "Débloquez le rapport complet pour obtenir le plan 90 jours adapté à votre contexte.",
     disclaimers: fullReport.disclaimers,
-    upsellTeaser: "Passez du diagnostic à l'implantation avec un rapport complet prêt à utiliser."
+    upsellTeaser:
+      "Passez du diagnostic à l'implantation avec un rapport complet prêt à utiliser."
   };
 }

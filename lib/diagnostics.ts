@@ -69,7 +69,8 @@ const diagnostics = {
     leadSource: "diagnostic-loi25",
     contactSource: "diagnostic-loi25",
     stripeProductName: "Rapport Loi 25 - Complet",
-    stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits Loi 25.",
+    stripeDescription:
+      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits Loi 25.",
     pdfTitle: "Rapport Loi 25",
     pdfSubject: "Rapport d'auto-évaluation Loi 25",
     filePrefix: "rapport-loi25",
@@ -79,7 +80,7 @@ const diagnostics = {
     diagnosticNoun: "diagnostic Loi 25",
     fullReportIncludes: [
       "Top 5 des écarts prioritaires, avec le pourquoi et quoi faire",
-      "Plan d'action 30 jours + 90 jours adapte à votre profil",
+      "Plan d'action 30 jours + 90 jours adapté à votre profil",
       "Rapport PDF téléchargeable",
       "Checklist de démarrage et gabarits: procédure 1 page, texte type pour formulaire",
       "Crédit applicable sur un forfait d'implantation si vous poursuivez avec nous"
@@ -96,7 +97,8 @@ const diagnostics = {
       title: "Diagnostic Loi 25 pour PME: données, formulaires et confiance",
       description:
         "Un parcours simple pour évaluer vos pratiques Loi 25, mieux connaître vos données, clarifier vos formulaires et prioriser les gestes qui inspirent confiance.",
-      audience: "Directions, équipes opérations, marketing ou administration sans ressource conformité dédiée.",
+      audience:
+        "Directions, équipes opérations, marketing ou administration sans ressource conformité dédiée.",
       freeDeliverables: [
         "Score global et niveau de préparation.",
         "3 priorités pour démarrer sans vous disperser.",
@@ -135,7 +137,8 @@ const diagnostics = {
         {
           name: "Pro",
           price: "À partir de 1 950 $",
-          summary: "Implantation orientée site web, transparence et pratiques internes.",
+          summary:
+            "Implantation orientée site web, transparence et pratiques internes.",
           items: [
             "Mise à jour des pages légales",
             "Ajustement des formulaires",
@@ -146,12 +149,13 @@ const diagnostics = {
         {
           name: "Accompagnement",
           price: "À partir de 390 $ / mois",
-          summary: "Suivi continu pour garder vos pratiques à jour sans vous surcharger.",
+          summary:
+            "Suivi continu pour garder vos pratiques à jour sans vous surcharger.",
           items: [
             "Revue mensuelle des actions",
             "Support sur les changements web",
             "Mises à jour de documents",
-            "Conseils sur l'evolution des pratiques"
+            "Conseils sur l'évolution des pratiques"
           ]
         }
       ],
@@ -187,16 +191,17 @@ const diagnostics = {
     leadSource: "diagnostic-cybersecurite",
     contactSource: "diagnostic-cybersecurite",
     stripeProductName: "Rapport cybersécurité PME - Complet",
-    stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits cyber.",
+    stripeDescription:
+      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits cyber.",
     pdfTitle: "Rapport cybersécurité PME",
     pdfSubject: "Rapport d'auto-évaluation cybersécurité",
     filePrefix: "rapport-cybersecurite",
     resultTitle: "Votre diagnostic cybersécurité",
     reportTitle: "Votre diagnostic cybersécurité",
-    disclaimerBadge: "Diagnostic, pas audit certifie",
+    disclaimerBadge: "Diagnostic, pas audit certifié",
     diagnosticNoun: "diagnostic cybersécurité",
     fullReportIncludes: [
-      "Top 5 des risques prioritaires, avec impact et correctif propose",
+      "Top 5 des risques prioritaires, avec impact et correctif proposé",
       "Plan d'action 30 jours + 90 jours pour réduire les risques les plus probables",
       "Rapport PDF téléchargeable pour discussion interne ou fournisseur TI",
       "Checklist de démarrage et procédure 1 page de signalement d'incident",
@@ -211,13 +216,14 @@ const diagnostics = {
     content: {
       eyebrow: "Diagnostic cybersécurité",
       badge: "Cybersécurité",
-      title: "Diagnostic cybersécurité PME: MFA, sauvegardes, accès et courriels",
+      title:
+        "Diagnostic cybersécurité PME: MFA, sauvegardes, accès et courriels",
       description:
         "Un diagnostic positif pour améliorer votre cybersécurité PME: MFA, sauvegardes, accès employés, appareils, courriels et réflexes d'incident.",
       audience: "PME, OBNL et équipes sans responsable sécurité à temps plein.",
       freeDeliverables: [
         "Score global de posture cyber.",
-        "3 priorités concretes à traiter d'abord.",
+        "3 priorités concrètes à traiter d'abord.",
         "Plan d'action 30 jours pour réduire les risques courants.",
         "Suite recommandée: autonomie, rapport complet ou accompagnement."
       ],
@@ -225,7 +231,7 @@ const diagnostics = {
         "Top 5 des risques détaillés avec impact opérationnel.",
         "Plan 90 jours pour accès, sauvegardes, appareils et courriels.",
         "PDF partageable avec la direction ou le fournisseur TI.",
-        "Procedure de signalement et mémo équipe réutilisables.",
+        "Procédure de signalement et mémo équipe réutilisables.",
         "Crédit applicable sur un accompagnement cyber."
       ],
       reasonsToAct: [
@@ -258,7 +264,7 @@ const diagnostics = {
             "Activation ou vérification MFA",
             "Revue des comptes et accès",
             "Routine sauvegardes/restauration",
-            "Procedure de signalement et sensibilisation courte"
+            "Procédure de signalement et sensibilisation courte"
           ]
         },
         {
@@ -300,12 +306,14 @@ const diagnostics = {
     themeLabel: "IA en entreprise",
     path: "/intelligence-artificielle",
     wizardPath: "/intelligence-artificielle/wizard",
-    reportPath: (token: string) => `/intelligence-artificielle/rapport/${token}`,
+    reportPath: (token: string) =>
+      `/intelligence-artificielle/rapport/${token}`,
     storagePrefix: "formeducweb-ai",
     leadSource: "diagnostic-ia",
     contactSource: "diagnostic-ia",
     stripeProductName: "Rapport IA en entreprise - Complet",
-    stripeDescription: "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits IA.",
+    stripeDescription:
+      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits IA.",
     pdfTitle: "Rapport IA en entreprise",
     pdfSubject: "Rapport d'auto-évaluation IA",
     filePrefix: "rapport-ia",
@@ -329,10 +337,12 @@ const diagnostics = {
     content: {
       eyebrow: "Diagnostic IA",
       badge: "IA en entreprise",
-      title: "Diagnostic IA pour PME: charte, données sensibles et usages utiles",
+      title:
+        "Diagnostic IA pour PME: charte, données sensibles et usages utiles",
       description:
         "Un diagnostic IA pour choisir les bons cas d'usage, protéger les données sensibles, poser des règles simples et former l'équipe.",
-      audience: "PME et OBNL qui veulent utiliser l'IA de façon utile, encadrée et réaliste.",
+      audience:
+        "PME et OBNL qui veulent utiliser l'IA de façon utile, encadrée et réaliste.",
       freeDeliverables: [
         "Score global de préparation IA.",
         "3 priorités pour encadrer les usages actuels.",
@@ -417,7 +427,10 @@ export const diagnosticConfigs = diagnostics;
 export const diagnosticList = assessmentTypes.map((type) => diagnostics[type]);
 
 export function isAssessmentType(value: unknown): value is AssessmentType {
-  return typeof value === "string" && assessmentTypes.includes(value as AssessmentType);
+  return (
+    typeof value === "string" &&
+    assessmentTypes.includes(value as AssessmentType)
+  );
 }
 
 export function normalizeAssessmentType(value: unknown): AssessmentType {
@@ -428,6 +441,8 @@ export function getDiagnosticConfig(value: unknown): DiagnosticConfig {
   return diagnostics[normalizeAssessmentType(value)];
 }
 
-export function getDiagnosticConfigBySlug(slug: string): DiagnosticConfig | null {
+export function getDiagnosticConfigBySlug(
+  slug: string
+): DiagnosticConfig | null {
   return diagnosticList.find((diagnostic) => diagnostic.slug === slug) ?? null;
 }

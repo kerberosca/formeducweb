@@ -29,6 +29,7 @@ const bodyFont = Source_Sans_3({
 const siteUrl = getSiteUrl();
 const siteName = "ForméducWeb";
 const logoUrl = getAbsoluteUrl("/logo-formeducweb.svg");
+const socialImageUrl = getAbsoluteUrl("/og.png");
 
 const organizationSchema = {
   "@context": "https://schema.org",
@@ -62,9 +63,6 @@ export const metadata: Metadata = {
     template: `%s | ${siteName}`
   },
   description: siteConfig.description,
-  alternates: {
-    canonical: getAbsoluteUrl("/")
-  },
   openGraph: {
     title: siteName,
     description: siteConfig.description,
@@ -74,8 +72,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: logoUrl,
-        alt: siteName
+        url: socialImageUrl,
+        width: 1200,
+        height: 630,
+        alt: `${siteName} — diagnostics pour PME et OBNL`
       }
     ]
   },
@@ -83,18 +83,35 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteName,
     description: siteConfig.description,
-    images: [logoUrl]
+    images: [socialImageUrl]
   }
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr-CA" className={`${headingFont.variable} ${bodyFont.variable}`}>
+    <html
+      lang="fr-CA"
+      className={`${headingFont.variable} ${bodyFont.variable}`}
+    >
       <body>
+        <a
+          href="#contenu-principal"
+          className="sr-only z-[100] rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
+          Aller au contenu
+        </a>
         <div className="relative flex min-h-screen flex-col">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(circle_at_top,rgba(21,113,212,0.16),transparent_50%)]" />
           <SiteHeader />
-          <main className="relative z-10 flex-1">{children}</main>
+          <main
+            id="contenu-principal"
+            tabIndex={-1}
+            className="relative z-10 flex-1"
+          >
+            {children}
+          </main>
           <SiteFooter />
         </div>
         <Suspense fallback={null}>

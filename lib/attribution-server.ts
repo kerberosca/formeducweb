@@ -22,7 +22,9 @@ function toNullableDate(value: string | undefined) {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-export function mapAttributionToDb(attribution: AttributionInput | undefined): AttributionDbFields {
+export function mapAttributionToDb(
+  attribution: AttributionInput | undefined
+): AttributionDbFields {
   return {
     utmSource: toNullableText(attribution?.utm_source),
     utmMedium: toNullableText(attribution?.utm_medium),

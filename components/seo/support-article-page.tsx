@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  Clock,
+  Sparkles
+} from "lucide-react";
 
 import { FaqList } from "@/components/marketing/faq-list";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -7,7 +13,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAbsoluteUrl } from "@/lib/seo";
-import { getRelatedSeoPages, seoThemeLabels, seoThemeLandingPaths, type SeoSupportPage } from "@/lib/seo-content";
+import {
+  getRelatedSeoPages,
+  seoThemeLabels,
+  seoThemeLandingPaths,
+  type SeoSupportPage
+} from "@/lib/seo-content";
 
 type SupportArticlePageProps = {
   page: SeoSupportPage;
@@ -82,12 +93,18 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
           <div className="max-w-4xl space-y-10">
             <header className="space-y-6">
-              <nav aria-label="Fil d'Ariane" className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+              <nav
+                aria-label="Fil d'Ariane"
+                className="flex flex-wrap gap-2 text-sm text-muted-foreground"
+              >
                 <Link href="/" className="transition hover:text-primary">
                   Accueil
                 </Link>
                 <span>/</span>
-                <Link href={seoThemeLandingPaths[page.theme]} className="transition hover:text-primary">
+                <Link
+                  href={seoThemeLandingPaths[page.theme]}
+                  className="transition hover:text-primary"
+                >
                   {seoThemeLabels[page.theme]}
                 </Link>
                 <span>/</span>
@@ -95,8 +112,12 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
               </nav>
               <Badge>{page.eyebrow}</Badge>
               <div className="space-y-5">
-                <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">{page.title}</h1>
-                <p className="max-w-3xl text-xl leading-9 text-muted-foreground">{page.description}</p>
+                <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">
+                  {page.title}
+                </h1>
+                <p className="max-w-3xl text-xl leading-9 text-muted-foreground">
+                  {page.description}
+                </p>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-2">
@@ -120,17 +141,24 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="secondary">
-                  <Link href={page.secondaryCtaHref}>{page.secondaryCtaLabel}</Link>
+                  <Link href={page.secondaryCtaHref}>
+                    {page.secondaryCtaLabel}
+                  </Link>
                 </Button>
               </div>
             </header>
 
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="space-y-5 p-6 md:p-8">
-                <p className="text-lg leading-8 text-foreground">{page.summary}</p>
+                <p className="text-lg leading-8 text-foreground">
+                  {page.summary}
+                </p>
                 <div className="grid gap-4 md:grid-cols-3">
                   {page.takeaways.map((item) => (
-                    <div key={item} className="flex gap-3 text-sm leading-7 text-muted-foreground">
+                    <div
+                      key={item}
+                      className="flex gap-3 text-sm leading-7 text-muted-foreground"
+                    >
                       <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-primary" />
                       <span>{item}</span>
                     </div>
@@ -153,7 +181,10 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                   {section.bullets ? (
                     <ul className="grid gap-3 text-sm leading-7 text-muted-foreground md:grid-cols-3">
                       {section.bullets.map((item) => (
-                        <li key={item} className="flex gap-3 rounded-2xl border border-border/70 bg-white/75 p-4">
+                        <li
+                          key={item}
+                          className="flex gap-3 rounded-2xl border border-border/70 bg-white/75 p-4"
+                        >
                           <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
                           <span>{item}</span>
                         </li>
@@ -186,7 +217,9 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                   <Link href={page.primaryCtaHref}>{page.primaryCtaLabel}</Link>
                 </Button>
                 <Button asChild variant="secondary" className="w-full">
-                  <Link href={seoThemeLandingPaths[page.theme]}>Voir le pilier {seoThemeLabels[page.theme]}</Link>
+                  <Link href={seoThemeLandingPaths[page.theme]}>
+                    Voir le pilier {seoThemeLabels[page.theme]}
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -202,8 +235,12 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                     href={relatedPage.path}
                     className="group block rounded-2xl border border-border/70 bg-white/75 p-4 transition hover:border-primary/40 hover:bg-primary/5"
                   >
-                    <span className="text-sm font-medium text-foreground">{relatedPage.shortTitle}</span>
-                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">{relatedPage.description}</span>
+                    <span className="text-sm font-medium text-foreground">
+                      {relatedPage.shortTitle}
+                    </span>
+                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                      {relatedPage.description}
+                    </span>
                   </Link>
                 ))}
               </CardContent>

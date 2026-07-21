@@ -4,7 +4,9 @@ function looksMojibake(value: string) {
 }
 
 function decodeLatin1AsUtf8(value: string) {
-  const bytes = Uint8Array.from(Array.from(value).map((character) => character.charCodeAt(0)));
+  const bytes = Uint8Array.from(
+    Array.from(value).map((character) => character.charCodeAt(0))
+  );
   return new TextDecoder("utf-8").decode(bytes);
 }
 
@@ -112,7 +114,10 @@ const frenchTextReplacements: Array<[RegExp, string]> = [
 ];
 
 function repairFrenchText(value: string) {
-  return frenchTextReplacements.reduce((current, [pattern, replacement]) => current.replace(pattern, replacement), value);
+  return frenchTextReplacements.reduce(
+    (current, [pattern, replacement]) => current.replace(pattern, replacement),
+    value
+  );
 }
 
 export function repairText(value: string) {

@@ -1,7 +1,11 @@
 import aiWizardDataRaw from "@/data/ai_questions.fr-ca.json";
 import cyberWizardDataRaw from "@/data/cybersecurity_questions.fr-ca.json";
 import loi25WizardDataRaw from "@/data/loi25_questions.fr-ca.json";
-import { getDiagnosticConfig, normalizeAssessmentType, type AssessmentType } from "@/lib/diagnostics";
+import {
+  getDiagnosticConfig,
+  normalizeAssessmentType,
+  type AssessmentType
+} from "@/lib/diagnostics";
 import type { WizardData, WizardQuestion, WizardSection } from "@/lib/scoring";
 import { deepRepairText } from "@/lib/text";
 
@@ -66,12 +70,17 @@ const wizardDataByType: Record<AssessmentType, unknown> = {
   ai: aiWizardDataRaw
 };
 
-export function getWizardData(assessmentType: AssessmentType = "loi25"): WizardDataset {
+export function getWizardData(
+  assessmentType: AssessmentType = "loi25"
+): WizardDataset {
   const normalizedType = normalizeAssessmentType(assessmentType);
   return deepRepairText(wizardDataByType[normalizedType] as WizardDataset);
 }
 
-export function getWizardStorageKey(assessmentType: AssessmentType, suffix: "draft" | "result") {
+export function getWizardStorageKey(
+  assessmentType: AssessmentType,
+  suffix: "draft" | "result"
+) {
   return `${getDiagnosticConfig(assessmentType).storagePrefix}-${suffix}`;
 }
 
@@ -82,7 +91,9 @@ export function getWizardSteps(wizard: WizardDataset): WizardStep[] {
     title: section.title,
     description: section.description,
     section,
-    questions: wizard.questions.filter((question) => question.sectionId === section.id)
+    questions: wizard.questions.filter(
+      (question) => question.sectionId === section.id
+    )
   }));
 }
 
@@ -117,7 +128,10 @@ function loadFromStorage<T>(storageKey: string) {
 
     if (isEnvelope<T>(parsed)) {
       const savedAt = Date.parse(parsed.savedAt);
-      if (Number.isFinite(savedAt) && Date.now() - savedAt > WIZARD_STORAGE_TTL_MS) {
+      if (
+        Number.isFinite(savedAt) &&
+        Date.now() - savedAt > WIZARD_STORAGE_TTL_MS
+      ) {
         window.localStorage.removeItem(storageKey);
         return null;
       }
@@ -125,7 +139,9 @@ function loadFromStorage<T>(storageKey: string) {
       return parsed.data;
     }
 
-    return parsed as T;
+    const legacyValue = parsed as T;
+    saveToStorage(storageKey, legacyValue);
+    return legacyValue;
   } catch {
     window.localStorage.removeItem(storageKey);
     return null;
@@ -143,11 +159,18 @@ function saveToStorage<T>(storageKey: string, value: T) {
   window.localStorage.setItem(storageKey, JSON.stringify(envelope));
 }
 
-export function loadWizardDraft(assessmentType: AssessmentType): WizardFormDraft | null {
-  return loadFromStorage<WizardFormDraft>(getWizardStorageKey(assessmentType, "draft"));
+export function loadWizardDraft(
+  assessmentType: AssessmentType
+): WizardFormDraft | null {
+  return loadFromStorage<WizardFormDraft>(
+    getWizardStorageKey(assessmentType, "draft")
+  );
 }
 
-export function saveWizardDraft(value: WizardFormDraft, assessmentType: AssessmentType) {
+export function saveWizardDraft(
+  value: WizardFormDraft,
+  assessmentType: AssessmentType
+) {
   saveToStorage(getWizardStorageKey(assessmentType, "draft"), value);
 }
 
@@ -160,7 +183,10 @@ export function loadWizardPersistedResult<T>(assessmentType: AssessmentType) {
   return loadFromStorage<T>(getWizardStorageKey(assessmentType, "result"));
 }
 
-export function saveWizardPersistedResult<T>(value: T, assessmentType: AssessmentType) {
+export function saveWizardPersistedResult<T>(
+  value: T,
+  assessmentType: AssessmentType
+) {
   saveToStorage(getWizardStorageKey(assessmentType, "result"), value);
 }
 
@@ -170,7 +196,36 @@ export function clearWizardPersistedResult(assessmentType: AssessmentType) {
 }
 
 export function getRequiredQuestionIds(wizard: WizardDataset) {
-  return wizard.questions.filter((question) => question.required).map((question) => question.id);
+  return wizard.questions
+    .filter((question) => question.required)
+    .map((question) => question.id);
+}
+
+export function validateWizardAnswers(
+  wizard: WizardDataset,
+  answers: Record<string, string | undefined>
+) {
+  const questionsById = new Map(
+    wizard.questions.map((question) => [question.id, question])
+  );
+  const missingQuestionIds = getRequiredQuestionIds(wizard).filter(
+    (id) => !answers[id]
+  );
+  const unknownQuestionIds = Object.keys(answers).filter(
+    (id) => !questionsById.has(id)
+  );
+  const invalidQuestionIds = Object.entries(answers)
+    .filter(([, value]) => value !== undefined && value !== "")
+    .filter(([id, value]) => {
+      const question = questionsById.get(id);
+      return Boolean(
+        question?.options?.length &&
+        !question.options.some((option) => option.value === value)
+      );
+    })
+    .map(([id]) => id);
+
+  return { missingQuestionIds, invalidQuestionIds, unknownQuestionIds };
 }
 
 export function getCompletionPercent(
@@ -178,7 +233,9 @@ export function getCompletionPercent(
   answers: Record<string, string | undefined>,
   currentStepIndex: number
 ) {
-  const requiredQuestions = wizard.questions.filter((question) => question.required);
+  const requiredQuestions = wizard.questions.filter(
+    (question) => question.required
+  );
   const answeredRequired = requiredQuestions.filter((question) => {
     const answer = answers[question.id];
     return typeof answer === "string" && answer.length > 0;
@@ -189,7 +246,9 @@ export function getCompletionPercent(
       ? Math.round((answeredRequired / requiredQuestions.length) * 100)
       : 0;
 
-  const stepPercent = Math.round(((currentStepIndex + 1) / (wizard.sections.length + 1)) * 100);
+  const stepPercent = Math.round(
+    ((currentStepIndex + 1) / wizard.sections.length) * 100
+  );
 
   return Math.max(questionPercent, stepPercent);
 }

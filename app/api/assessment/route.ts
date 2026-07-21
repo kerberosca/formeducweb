@@ -1,6 +1,9 @@
 ﻿import { NextResponse } from "next/server";
 
-import { cleanupAssessmentRetention, createAssessmentRecord } from "@/lib/assessment-store";
+import {
+  cleanupAssessmentRetention,
+  createAssessmentRecord
+} from "@/lib/assessment-store";
 import { sendAssessmentReceivedEmails } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { generateReport } from "@/lib/recommendations";
@@ -8,7 +11,7 @@ import { toLiteReport } from "@/lib/reportFilters";
 import { assessmentPayloadSchema } from "@/lib/schemas";
 import { computeScore } from "@/lib/scoring";
 import { deepRepairText } from "@/lib/text";
-import { getRequiredQuestionIds, getWizardData } from "@/lib/wizard";
+import { getWizardData, validateWizardAnswers } from "@/lib/wizard";
 
 export const runtime = "nodejs";
 
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         {
-          error: "Le payload de l'evaluation est invalide.",
+          error: "Les données de l’évaluation sont invalides.",
           details: parsed.error.flatten()
         },
         { status: 400 }
@@ -49,24 +52,35 @@ export async function POST(request: Request) {
 
     const assessmentType = parsed.data.assessmentType;
     const wizard = getWizardData(assessmentType);
-    const missingRequired = getRequiredQuestionIds(wizard).filter((id) => !parsed.data.answers[id]);
+    const answerIssues = validateWizardAnswers(wizard, parsed.data.answers);
 
-    if (missingRequired.length) {
+    if (Object.values(answerIssues).some((ids) => ids.length)) {
       return NextResponse.json(
         {
-          error: "Certaines réponses obligatoires sont manquantes.",
-          missingQuestionIds: missingRequired
+          error: "Certaines réponses sont manquantes ou invalides.",
+          ...answerIssues
         },
         { status: 400 }
       );
     }
 
-    const scoreResult = deepRepairText(computeScore(wizard, parsed.data.answers));
-    const fullReport = deepRepairText(generateReport(wizard, parsed.data.answers, scoreResult));
+    const scoreResult = deepRepairText(
+      computeScore(wizard, parsed.data.answers)
+    );
+    const fullReport = deepRepairText(
+      generateReport(wizard, parsed.data.answers, scoreResult)
+    );
     const liteReport = toLiteReport(fullReport);
+    const leadCapture = {
+      contactName: "",
+      companyName: "",
+      email: parsed.data.email,
+      phone: "",
+      consentMarketing: parsed.data.consentMarketing
+    };
     const assessment = await createAssessmentRecord({
       assessmentType,
-      leadCapture: parsed.data.leadCapture,
+      leadCapture,
       answers: parsed.data.answers,
       scoreResult,
       liteReport,
@@ -81,7 +95,7 @@ export async function POST(request: Request) {
     sendAssessmentReceivedEmails({
       assessmentId: assessment.id,
       accessToken: assessment.accessToken,
-      leadCapture: parsed.data.leadCapture,
+      leadCapture,
       assessmentType,
       scoreResult,
       liteReport
@@ -101,11 +115,9 @@ export async function POST(request: Request) {
     console.error("Assessment route error", error);
     return NextResponse.json(
       {
-        error: "Une erreur est survenue pendant la generation du rapport."
+        error: "Une erreur est survenue pendant la génération du rapport."
       },
       { status: 500 }
     );
   }
 }
-
-

@@ -5,28 +5,39 @@ import { ContactForm } from "@/components/forms/contact-form";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getAbsoluteUrl } from "@/lib/seo";
+import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 const pageDescription =
   "Parlez-nous de votre projet: diagnostic Loi 25, cybersécurité, IA ou accompagnement numérique pour PME au Québec.";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "Contact ForméducWeb | Loi 25, cybersécurité et IA"
-  },
+export const metadata: Metadata = buildPageMetadata({
+  title: "Contact ForméducWeb | Loi 25, cybersécurité et IA",
   description: pageDescription,
-  alternates: {
-    canonical: getAbsoluteUrl("/contact")
-  },
-  openGraph: {
-    title: "Contact ForméducWeb | Loi 25, cybersécurité et IA",
-    description: pageDescription,
-    url: getAbsoluteUrl("/contact")
-  }
+  path: "/contact"
+});
+
+type ContactPageProps = {
+  searchParams?:
+    | Promise<{ source?: string | string[] }>
+    | { source?: string | string[] };
 };
 
-export default function ContactPage() {
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const rawSearchParams = await Promise.resolve(searchParams ?? {});
+  const source = Array.isArray(rawSearchParams.source)
+    ? rawSearchParams.source[0]
+    : rawSearchParams.source;
+  const defaultReason = source?.includes("loi25")
+    ? "Diagnostic Loi 25"
+    : source?.includes("cybersecurite")
+      ? "Diagnostic cybersécurité"
+      : source?.includes("diagnostic-ia")
+        ? "Diagnostic IA en entreprise"
+        : source?.includes("appel")
+          ? "Accompagnement / implantation"
+          : undefined;
+
   return (
     <section className="container py-16 md:py-24">
       <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
@@ -49,7 +60,7 @@ export default function ContactPage() {
           </Button>
         </div>
 
-        <ContactForm />
+        <ContactForm defaultReason={defaultReason} />
       </div>
     </section>
   );

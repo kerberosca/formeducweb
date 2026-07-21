@@ -33,32 +33,32 @@ Une bonne hygiene informatique n'est pas seulement defensive. Pour une PME ou un
 
 Le mot "hygiene" reste le concept de marque et le fil editorial. Les titles/H1 doivent toutefois commencer par les recherches plus naturelles quand la page vise une intention precise.
 
-| Page | Intention principale | Role de "hygiene" |
-|---|---|---|
-| `/` | diagnostics Loi 25, cybersecurite et IA pour PME | promesse globale |
-| `/hygiene-informatique` | securite informatique PME | concept chapeau |
-| `/hygiene-informatique/10-gestes` | securite informatique PME | angle positif |
-| `/hygiene-informatique/score-hygiene-informatique-pme` | diagnostic cybersecurite PME | lecture du score |
-| `/hygiene-informatique/confiance-client` | protection des donnees clients PME | benefice confiance |
-| `/loi-25` | diagnostic Loi 25 PME | hygiene des donnees |
-| `/loi-25/resume-loi-25` | loi 25 resume | vulgarisation |
-| `/loi-25/inventaire-donnees` | inventaire donnees personnelles PME | base de controle |
-| `/loi-25/formulaires-web` | formulaire web Loi 25 | sobriete des donnees |
-| `/loi-25/conservation-suppression-donnees` | conservation donnees personnelles | menage numerique |
-| `/loi-25/acces-renseignements-personnels` | acces renseignements personnels Loi 25 | procedure claire |
-| `/cybersecurite` | diagnostic cybersecurite PME | hygiene operationnelle |
-| `/cybersecurite/mfa-pme` | authentification multifacteur PME | geste prioritaire |
-| `/cybersecurite/sauvegardes-restauration` | sauvegarde informatique PME | preuve par test |
-| `/cybersecurite/acces-employes` | gestion des acces employes | responsabilites |
-| `/cybersecurite/courriels-frauduleux` | hameconnage PME | reflexe d'equipe |
-| `/cybersecurite/mises-a-jour` | mises a jour securite PME | entretien regulier |
-| `/cybersecurite/procedure-incident` | incident cybersecurite PME | reaction calme |
-| `/intelligence-artificielle` | diagnostic IA PME | hygiene IA |
-| `/intelligence-artificielle/charte-ia-pme` | charte IA entreprise | cadre simple |
-| `/intelligence-artificielle/donnees-sensibles-outils-ia` | donnees confidentielles IA | protection des donnees |
-| `/intelligence-artificielle/validation-humaine` | validation humaine IA | qualite |
-| `/intelligence-artificielle/choix-outils-ia` | outils IA PME | choix responsable |
-| `/intelligence-artificielle/cas-usage-productifs` | IA en entreprise cas d'usage | productivite encadree |
+| Page                                                     | Intention principale                             | Role de "hygiene"      |
+| -------------------------------------------------------- | ------------------------------------------------ | ---------------------- |
+| `/`                                                      | diagnostics Loi 25, cybersecurite et IA pour PME | promesse globale       |
+| `/hygiene-informatique`                                  | securite informatique PME                        | concept chapeau        |
+| `/hygiene-informatique/10-gestes`                        | securite informatique PME                        | angle positif          |
+| `/hygiene-informatique/score-hygiene-informatique-pme`   | diagnostic cybersecurite PME                     | lecture du score       |
+| `/hygiene-informatique/confiance-client`                 | protection des donnees clients PME               | benefice confiance     |
+| `/loi-25`                                                | diagnostic Loi 25 PME                            | hygiene des donnees    |
+| `/loi-25/resume-loi-25`                                  | loi 25 resume                                    | vulgarisation          |
+| `/loi-25/inventaire-donnees`                             | inventaire donnees personnelles PME              | base de controle       |
+| `/loi-25/formulaires-web`                                | formulaire web Loi 25                            | sobriete des donnees   |
+| `/loi-25/conservation-suppression-donnees`               | conservation donnees personnelles                | menage numerique       |
+| `/loi-25/acces-renseignements-personnels`                | acces renseignements personnels Loi 25           | procedure claire       |
+| `/cybersecurite`                                         | diagnostic cybersecurite PME                     | hygiene operationnelle |
+| `/cybersecurite/mfa-pme`                                 | authentification multifacteur PME                | geste prioritaire      |
+| `/cybersecurite/sauvegardes-restauration`                | sauvegarde informatique PME                      | preuve par test        |
+| `/cybersecurite/acces-employes`                          | gestion des acces employes                       | responsabilites        |
+| `/cybersecurite/courriels-frauduleux`                    | hameconnage PME                                  | reflexe d'equipe       |
+| `/cybersecurite/mises-a-jour`                            | mises a jour securite PME                        | entretien regulier     |
+| `/cybersecurite/procedure-incident`                      | incident cybersecurite PME                       | reaction calme         |
+| `/intelligence-artificielle`                             | diagnostic IA PME                                | hygiene IA             |
+| `/intelligence-artificielle/charte-ia-pme`               | charte IA entreprise                             | cadre simple           |
+| `/intelligence-artificielle/donnees-sensibles-outils-ia` | donnees confidentielles IA                       | protection des donnees |
+| `/intelligence-artificielle/validation-humaine`          | validation humaine IA                            | qualite                |
+| `/intelligence-artificielle/choix-outils-ia`             | outils IA PME                                    | choix responsable      |
+| `/intelligence-artificielle/cas-usage-productifs`        | IA en entreprise cas d'usage                     | productivite encadree  |
 
 ## Regles d'execution
 

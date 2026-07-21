@@ -101,7 +101,8 @@ export const loi25Packages = [
   {
     name: "Accompagnement",
     price: "À partir de 390 $ / mois",
-    summary: "Suivi continu pour garder vos pratiques à jour sans vous surcharger.",
+    summary:
+      "Suivi continu pour garder vos pratiques à jour sans vous surcharger.",
     items: [
       "Revue mensuelle des actions",
       "Support sur les changements web",
@@ -269,7 +270,6 @@ export const contactReasons = [
   "Diagnostic cybersécurité",
   "Diagnostic IA en entreprise",
   "Accompagnement / implantation",
-  "Creation ou refonte de site web",
   "Autre besoin"
 ];
 

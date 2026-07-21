@@ -18,9 +18,18 @@ export const metadata: Metadata = {
   }
 };
 
-export default async function AiReportAccessPage({ params, searchParams }: ReportAccessPageProps) {
+export default async function AiReportAccessPage({
+  params,
+  searchParams
+}: ReportAccessPageProps) {
   const { token } = await params;
   const resolvedSearchParams = await searchParams;
 
-  return <DiagnosticReportAccess token={token} cancel={resolvedSearchParams?.cancel} expectedType="ai" />;
+  return (
+    <DiagnosticReportAccess
+      token={token}
+      cancel={resolvedSearchParams?.cancel}
+      expectedType="ai"
+    />
+  );
 }

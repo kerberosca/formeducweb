@@ -3,9 +3,13 @@ import { notFound, redirect } from "next/navigation";
 import { LiteResultView } from "@/components/wizard/lite-result-view";
 import { ReportView } from "@/components/wizard/report-view";
 import { Card, CardContent } from "@/components/ui/card";
-import { findAssessmentByToken, hydrateAssessment } from "@/lib/assessment-store";
+import {
+  findAssessmentByToken,
+  hydrateAssessment
+} from "@/lib/assessment-store";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
+import type { SavedAssessmentState } from "@/lib/assessment-types";
 
 type DiagnosticReportAccessProps = {
   token: string;
@@ -13,7 +17,11 @@ type DiagnosticReportAccessProps = {
   expectedType: AssessmentType;
 };
 
-export async function DiagnosticReportAccess({ token, cancel, expectedType }: DiagnosticReportAccessProps) {
+export async function DiagnosticReportAccess({
+  token,
+  cancel,
+  expectedType
+}: DiagnosticReportAccessProps) {
   const assessment = await findAssessmentByToken(token);
 
   if (!assessment) {
@@ -24,15 +32,28 @@ export async function DiagnosticReportAccess({ token, cancel, expectedType }: Di
   const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
 
   if (hydrated.assessmentType !== expectedType) {
-    redirect(`${diagnostic.reportPath(assessment.accessToken)}${cancel === "1" ? "?cancel=1" : ""}`);
+    redirect(
+      `${diagnostic.reportPath(assessment.accessToken)}${cancel === "1" ? "?cancel=1" : ""}`
+    );
   }
 
   const leadCapture = {
-    contactName: assessment.contactName,
-    companyName: assessment.companyName,
+    contactName: assessment.contactName || "",
+    companyName: assessment.companyName || "",
     email: assessment.email,
     phone: assessment.phone || "",
     consentMarketing: assessment.consentMarketing
+  };
+  const savedResult: SavedAssessmentState = {
+    kind: "saved",
+    assessmentType: hydrated.assessmentType,
+    assessmentId: assessment.id,
+    accessToken: assessment.accessToken,
+    paymentStatus: assessment.paymentStatus as "unpaid" | "paid" | "refunded",
+    scoreResult: hydrated.scoreResult,
+    liteReport: hydrated.liteReport,
+    leadCapture,
+    answers: hydrated.answers
   };
 
   return (
@@ -41,8 +62,8 @@ export async function DiagnosticReportAccess({ token, cancel, expectedType }: Di
         <section className="container pt-12">
           <Card className="border-primary/20 bg-primary/5">
             <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
-              Le paiement a été annulé. Votre résumé gratuit reste disponible et vous pouvez reprendre plus tard sans
-              refaire le questionnaire.
+              Le paiement a été annulé. Votre résumé gratuit reste disponible et
+              vous pouvez reprendre plus tard sans refaire le questionnaire.
             </CardContent>
           </Card>
         </section>
@@ -58,13 +79,7 @@ export async function DiagnosticReportAccess({ token, cancel, expectedType }: Di
         />
       ) : (
         <LiteResultView
-          assessmentType={hydrated.assessmentType}
-          leadCapture={leadCapture}
-          scoreResult={hydrated.scoreResult}
-          liteReport={hydrated.liteReport}
-          assessmentId={assessment.id}
-          accessToken={assessment.accessToken}
-          paymentStatus={assessment.paymentStatus as "unpaid" | "refunded"}
+          resultState={savedResult}
           priceLabel={getReportUnlockPriceLabel()}
         />
       )}

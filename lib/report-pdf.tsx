@@ -237,12 +237,18 @@ export function AssessmentReportPdfDocument({
           <Text style={styles.eyebrow}>{diagnostic.pdfSubject}</Text>
           <Text style={styles.title}>{diagnostic.reportTitle}</Text>
           <View style={styles.metaRow}>
-            <Text style={styles.metaText}>Entreprise: {leadCapture.companyName}</Text>
-            <Text style={styles.metaText}>Contact: {leadCapture.contactName}</Text>
+            <Text style={styles.metaText}>
+              Entreprise: {leadCapture.companyName}
+            </Text>
+            <Text style={styles.metaText}>
+              Contact: {leadCapture.contactName}
+            </Text>
           </View>
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>Courriel: {leadCapture.email}</Text>
-            <Text style={styles.metaText}>Généré le: {new Date().toLocaleDateString("fr-CA")}</Text>
+            <Text style={styles.metaText}>
+              Généré le: {new Date().toLocaleDateString("fr-CA")}
+            </Text>
           </View>
         </View>
 
@@ -250,7 +256,9 @@ export function AssessmentReportPdfDocument({
           <Text style={styles.badge}>{scoreResult.level.label}</Text>
           <View style={styles.heroScoreBlock}>
             <Text style={styles.scoreLabel}>Score global</Text>
-            <Text style={styles.scoreValue}>{scoreResult.overallScore}/100</Text>
+            <Text style={styles.scoreValue}>
+              {scoreResult.overallScore}/100
+            </Text>
           </View>
           <Text style={styles.heroTagline}>{scoreResult.level.tagline}</Text>
           <View style={styles.paragraphBlock}>
@@ -296,7 +304,9 @@ export function AssessmentReportPdfDocument({
           <View style={styles.card}>
             {scoreResult.sectionScores.map((section) => (
               <View key={section.sectionId} style={styles.sectionScoreRow}>
-                <Text style={styles.sectionScoreName}>{section.sectionTitle}</Text>
+                <Text style={styles.sectionScoreName}>
+                  {section.sectionTitle}
+                </Text>
                 <Text style={styles.sectionScoreValue}>{section.percent}%</Text>
               </View>
             ))}
@@ -306,11 +316,19 @@ export function AssessmentReportPdfDocument({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Écarts prioritaires</Text>
           {report.topGaps.map((gap) => (
-            <View key={`${gap.section}-${gap.title}`} style={styles.gapCard} wrap={false}>
+            <View
+              key={`${gap.section}-${gap.title}`}
+              style={styles.gapCard}
+              wrap={false}
+            >
               <Text style={styles.cardTitle}>{gap.title}</Text>
               <Text style={styles.cardSubtle}>{gap.section}</Text>
-              <Text style={[styles.bodyText, { marginTop: 6 }]}>{gap.whyItMatters}</Text>
-              <Text style={[styles.bodyText, { marginTop: 8 }]}>{gap.action}</Text>
+              <Text style={[styles.bodyText, { marginTop: 6 }]}>
+                {gap.whyItMatters}
+              </Text>
+              <Text style={[styles.bodyText, { marginTop: 8 }]}>
+                {gap.action}
+              </Text>
               <Text style={styles.priority}>Priorité: {gap.priority}</Text>
             </View>
           ))}
@@ -325,11 +343,18 @@ export function AssessmentReportPdfDocument({
       <Page size="A4" style={styles.page}>
         {diagnosticAnchors.length ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Lien avec votre questionnaire</Text>
+            <Text style={styles.sectionTitle}>
+              Lien avec votre questionnaire
+            </Text>
             <View style={styles.card}>
               {diagnosticAnchors.map((anchor) => (
-                <View key={`${anchor.questionId}-${anchor.action}`} style={styles.anchorItem}>
-                  <Text style={styles.anchorQuestion}>{anchor.questionLabel}</Text>
+                <View
+                  key={`${anchor.questionId}-${anchor.action}`}
+                  style={styles.anchorItem}
+                >
+                  <Text style={styles.anchorQuestion}>
+                    {anchor.questionLabel}
+                  </Text>
                   <Text style={styles.anchorSection}>{anchor.section}</Text>
                   <Text style={styles.bodyText}>{anchor.action}</Text>
                 </View>
@@ -397,9 +422,10 @@ export function AssessmentReportPdfDocument({
         </View>
 
         <Text style={styles.footer}>
-          Rapport préparé par ForméducWeb. Ce document vise le diagnostic, l’alignement et la priorisation d’actions.
-          Il ne constitue pas un avis professionnel personnalisé. Crédit de {getReportUnlockPriceLabel()} applicable sur
-          un forfait d’implantation si vous poursuivez avec nous.
+          Rapport préparé par ForméducWeb. Ce document vise le diagnostic,
+          l’alignement et la priorisation d’actions. Il ne constitue pas un avis
+          professionnel personnalisé. Crédit de {getReportUnlockPriceLabel()}{" "}
+          applicable sur un forfait d’implantation si vous poursuivez avec nous.
         </Text>
       </Page>
     </Document>

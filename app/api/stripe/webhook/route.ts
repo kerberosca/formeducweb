@@ -1,22 +1,34 @@
 import type Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-import { hydrateAssessment, markAssessmentPaid, markAssessmentRefundedByPaymentIntent } from "@/lib/assessment-store";
+import {
+  hydrateAssessment,
+  markAssessmentPaid,
+  markAssessmentRefundedByPaymentIntent
+} from "@/lib/assessment-store";
 import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { sendReportUnlockedEmails } from "@/lib/email";
+import { areExternalServicesDisabled } from "@/lib/external-services";
 import { getBaseUrl } from "@/lib/payments";
 import { getStripeClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  if (areExternalServicesDisabled()) {
+    return NextResponse.json(
+      { error: "Services externes désactivés sur cet environnement." },
+      { status: 503 }
+    );
+  }
+
   const signature = request.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!signature || !webhookSecret) {
     return NextResponse.json(
       {
-        error: "Webhook Stripe non configure."
+        error: "Webhook Stripe non configuré."
       },
       { status: 400 }
     );
@@ -25,13 +37,18 @@ export async function POST(request: Request) {
   try {
     const stripe = getStripeClient();
     const rawBody = await request.text();
-    const event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
+    const event = stripe.webhooks.constructEvent(
+      rawBody,
+      signature,
+      webhookSecret
+    );
 
     switch (event.type) {
       case "checkout.session.completed":
       case "checkout.session.async_payment_succeeded": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const assessmentId = session.metadata?.assessmentId || session.client_reference_id;
+        const assessmentId =
+          session.metadata?.assessmentId || session.client_reference_id;
 
         if (assessmentId) {
           const assessment = await markAssessmentPaid({
@@ -62,7 +79,9 @@ export async function POST(request: Request) {
       case "charge.refunded": {
         const charge = event.data.object as Stripe.Charge;
         const paymentIntentId =
-          typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+          typeof charge.payment_intent === "string"
+            ? charge.payment_intent
+            : charge.payment_intent?.id;
 
         if (paymentIntentId) {
           await markAssessmentRefundedByPaymentIntent(paymentIntentId);

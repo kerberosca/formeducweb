@@ -49,13 +49,19 @@ export function CookiePreferencesPanel() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const hasAnalyticsTracker = Boolean(trackerConfig.gaMeasurementId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
-  const consentSnapshot = useSyncExternalStore(subscribeConsent, getConsentSnapshot, getConsentServerSnapshot);
+  const consentSnapshot = useSyncExternalStore(
+    subscribeConsent,
+    getConsentSnapshot,
+    getConsentServerSnapshot
+  );
   const consentState = useMemo(() => {
     if (consentSnapshot === "server") return null;
     return parseCookieConsent(consentSnapshot);
   }, [consentSnapshot]);
 
-  const [draftConsent, setDraftConsent] = useState<DraftConsentState | null>(null);
+  const [draftConsent, setDraftConsent] = useState<DraftConsentState | null>(
+    null
+  );
 
   const resolvedAnalytics = hasAnalyticsTracker
     ? (draftConsent?.analytics ?? Boolean(consentState?.analytics))
@@ -65,10 +71,13 @@ export function CookiePreferencesPanel() {
     return (
       <Card>
         <CardContent className="space-y-3 p-8">
-          <h2 className="font-heading text-2xl font-semibold">Préférences cookies</h2>
+          <h2 className="font-heading text-2xl font-semibold">
+            Préférences cookies
+          </h2>
           <p className="text-sm leading-7 text-muted-foreground">
-            Aucun tracker optionnel n&apos;est configuré pour le moment. La bannière de consentement ne s&apos;affiche
-            donc pas, et aucun cookie non essentiel n&apos;est chargé.
+            Aucun tracker optionnel n&apos;est configuré pour le moment. La
+            bannière de consentement ne s&apos;affiche donc pas, et aucun cookie
+            non essentiel n&apos;est chargé.
           </p>
         </CardContent>
       </Card>
@@ -88,12 +97,16 @@ export function CookiePreferencesPanel() {
     <Card id="preferences-cookies" className="border-primary/20">
       <CardContent className="space-y-5 p-8">
         <div className="space-y-2">
-          <h2 className="font-heading text-2xl font-semibold">Préférences cookies</h2>
+          <h2 className="font-heading text-2xl font-semibold">
+            Préférences cookies
+          </h2>
           <p className="text-sm leading-7 text-muted-foreground">
             Vous pouvez modifier vos choix de consentement ici à tout moment.
           </p>
           <Label className="block text-xs leading-6 text-muted-foreground">
-            {consentState ? "Vos préférences sont actuellement enregistrées." : "Aucune préférence enregistrée pour le moment."}
+            {consentState
+              ? "Vos préférences sont actuellement enregistrées."
+              : "Aucune préférence enregistrée pour le moment."}
           </Label>
         </div>
 
@@ -112,22 +125,39 @@ export function CookiePreferencesPanel() {
             <span className="space-y-1">
               <span className="block text-sm font-medium">Analytics</span>
               <span className="block text-xs leading-6 text-muted-foreground">
-                {hasAnalyticsTracker ? "Mesure de fréquentation." : "Non configuré sur cet environnement."}
+                {hasAnalyticsTracker
+                  ? "Mesure de fréquentation."
+                  : "Non configuré sur cet environnement."}
               </span>
             </span>
           </label>
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-          <Button type="button" variant="secondary" onClick={() => handleSave(true, "Préférences enregistrées.")}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => handleSave(true, "Préférences enregistrées.")}
+          >
             Tout accepter
           </Button>
 
-          <Button type="button" variant="ghost" onClick={() => handleSave(false, "Préférences enregistrées (refus).")}>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() =>
+              handleSave(false, "Préférences enregistrées (refus).")
+            }
+          >
             Tout refuser
           </Button>
 
-          <Button type="button" onClick={() => handleSave(resolvedAnalytics, "Préférences cookies enregistrées.")}>
+          <Button
+            type="button"
+            onClick={() =>
+              handleSave(resolvedAnalytics, "Préférences cookies enregistrées.")
+            }
+          >
             Enregistrer mes choix
           </Button>
 
@@ -137,7 +167,9 @@ export function CookiePreferencesPanel() {
             onClick={() => {
               clearCookieConsent();
               setDraftConsent(null);
-              toast.success("Préférences réinitialisées. La bannière sera de nouveau affichée.");
+              toast.success(
+                "Préférences réinitialisées. La bannière sera de nouveau affichée."
+              );
             }}
           >
             Réinitialiser

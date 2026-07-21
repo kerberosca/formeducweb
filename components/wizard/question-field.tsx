@@ -7,10 +7,27 @@ type QuestionFieldProps = {
   onChange: (value: string) => void;
 };
 
-export function QuestionField({ question, value, error, onChange }: QuestionFieldProps) {
+export function QuestionField({
+  question,
+  value,
+  error,
+  onChange
+}: QuestionFieldProps) {
+  const helpId = question.helpText ? `${question.id}-help` : undefined;
+  const errorId = error ? `${question.id}-error` : undefined;
+  const describedBy = [helpId, errorId].filter(Boolean).join(" ") || undefined;
+
   return (
-    <fieldset className="space-y-4 rounded-[28px] border border-border/70 bg-white/85 p-6">
-      <legend className="mb-4 block text-lg font-semibold text-foreground">{question.title}</legend>
+    <fieldset
+      id={`question-${question.id}`}
+      tabIndex={-1}
+      aria-invalid={Boolean(error)}
+      aria-describedby={describedBy}
+      className="space-y-4 rounded-[28px] border border-border/70 bg-white/85 p-6 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    >
+      <legend className="mb-4 block text-lg font-semibold text-foreground">
+        {question.title}
+      </legend>
       <div className="grid gap-3">
         {question.options?.map((option) => {
           const checked = value === option.value;
@@ -18,9 +35,9 @@ export function QuestionField({ question, value, error, onChange }: QuestionFiel
           return (
             <label
               key={option.value}
-              className={`flex cursor-pointer items-start gap-3 rounded-2xl border px-4 py-4 text-sm transition ${
+              className={`flex cursor-pointer items-start gap-3 rounded-2xl border px-4 py-4 text-sm transition focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 ${
                 checked
-                  ? "border-primary bg-primary/8 text-foreground"
+                  ? "bg-primary/8 border-primary text-foreground"
                   : "border-border/80 bg-background hover:border-primary/30 hover:bg-primary/5"
               }`}
             >
@@ -41,8 +58,16 @@ export function QuestionField({ question, value, error, onChange }: QuestionFiel
           );
         })}
       </div>
-      {question.helpText ? <p className="text-sm leading-6 text-muted-foreground">{question.helpText}</p> : null}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      {question.helpText ? (
+        <p id={helpId} className="text-sm leading-6 text-muted-foreground">
+          {question.helpText}
+        </p>
+      ) : null}
+      {error ? (
+        <p id={errorId} role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
     </fieldset>
   );
 }

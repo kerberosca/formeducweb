@@ -10,14 +10,21 @@ type WizardStepperProps = {
 
 export function WizardStepper({ steps, currentStepIndex }: WizardStepperProps) {
   return (
-    <nav aria-label="Progression du questionnaire" className="rounded-[28px] border border-border/70 bg-white/80 p-6">
+    <nav
+      aria-label="Progression du questionnaire"
+      className="rounded-[28px] border border-border/70 bg-white/80 p-6"
+    >
       <ol className="space-y-4">
         {steps.map((step, index) => {
           const isActive = index === currentStepIndex;
           const isCompleted = index < currentStepIndex;
 
           return (
-            <li key={step.id} className="flex items-center gap-4" aria-current={isActive ? "step" : undefined}>
+            <li
+              key={step.id}
+              className="flex items-center gap-4"
+              aria-current={isActive ? "step" : undefined}
+            >
               <span
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
                   isActive
@@ -30,7 +37,11 @@ export function WizardStepper({ steps, currentStepIndex }: WizardStepperProps) {
                 {index + 1}
               </span>
               <div>
-                <p className={`text-sm font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}>{step.title}</p>
+                <p
+                  className={`text-sm font-medium ${isActive ? "text-foreground" : "text-muted-foreground"}`}
+                >
+                  {step.title}
+                </p>
               </div>
             </li>
           );

@@ -1,7 +1,10 @@
 ﻿import { NextResponse } from "next/server";
 
 import { buildFormSnippet } from "@/lib/bonus-assets";
-import { findAssessmentByToken, hydrateAssessment } from "@/lib/assessment-store";
+import {
+  findAssessmentByToken,
+  hydrateAssessment
+} from "@/lib/assessment-store";
 import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { tokenSearchParamSchema } from "@/lib/schemas";
 
@@ -9,7 +12,9 @@ export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const parsed = tokenSearchParamSchema.safeParse({ token: searchParams.get("token") });
+  const parsed = tokenSearchParamSchema.safeParse({
+    token: searchParams.get("token")
+  });
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -42,7 +47,10 @@ export async function GET(request: Request) {
 
   const hydrated = hydrateAssessment(assessment);
   const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
-  const snippet = buildFormSnippet(assessment.companyName, hydrated.assessmentType);
+  const snippet = buildFormSnippet(
+    assessment.companyName || "Votre organisation",
+    hydrated.assessmentType
+  );
 
   return new NextResponse(snippet, {
     headers: {

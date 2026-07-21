@@ -19,7 +19,12 @@ function normalizeText(value: unknown) {
 
 function normalizeHost(rawHost: string | null) {
   if (!rawHost) return undefined;
-  return rawHost.toLowerCase().replace(/^www\./, "").trim() || undefined;
+  return (
+    rawHost
+      .toLowerCase()
+      .replace(/^www\./, "")
+      .trim() || undefined
+  );
 }
 
 function parseUrlHost(rawUrl: string | null) {
@@ -40,7 +45,10 @@ function inferOrganicSource(referrerHost: string | undefined) {
     return { utm_source: "google", utm_medium: "organic" };
   }
 
-  if (referrerHost.includes("facebook.") || referrerHost.includes("instagram.")) {
+  if (
+    referrerHost.includes("facebook.") ||
+    referrerHost.includes("instagram.")
+  ) {
     return { utm_source: "facebook", utm_medium: "organic-social" };
   }
 
@@ -51,7 +59,9 @@ function inferOrganicSource(referrerHost: string | undefined) {
   return null;
 }
 
-function sanitizeAttribution(raw: Partial<AttributionPayload> | null | undefined) {
+function sanitizeAttribution(
+  raw: Partial<AttributionPayload> | null | undefined
+) {
   if (!raw) return null;
 
   const sanitized: AttributionPayload = {
@@ -86,7 +96,10 @@ function saveAttributionToStorage(attribution: AttributionPayload) {
   if (typeof window === "undefined") return;
 
   try {
-    window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(attribution));
+    window.localStorage.setItem(
+      ATTRIBUTION_STORAGE_KEY,
+      JSON.stringify(attribution)
+    );
   } catch {
     // Ignore storage access errors and keep attribution best-effort.
   }
@@ -99,12 +112,19 @@ function buildAttributionFromCurrentPage() {
   const query = currentUrl.searchParams;
   const currentHost = normalizeHost(currentUrl.hostname);
   const referrerHost = parseUrlHost(document.referrer) || undefined;
-  const externalReferrerHost = referrerHost && referrerHost !== currentHost ? referrerHost : undefined;
+  const externalReferrerHost =
+    referrerHost && referrerHost !== currentHost ? referrerHost : undefined;
   const inferredSource = inferOrganicSource(externalReferrerHost);
 
   const attribution = sanitizeAttribution({
-    utm_source: normalizeText(query.get("utm_source")) || inferredSource?.utm_source || "direct",
-    utm_medium: normalizeText(query.get("utm_medium")) || inferredSource?.utm_medium || "none",
+    utm_source:
+      normalizeText(query.get("utm_source")) ||
+      inferredSource?.utm_source ||
+      "direct",
+    utm_medium:
+      normalizeText(query.get("utm_medium")) ||
+      inferredSource?.utm_medium ||
+      "none",
     utm_campaign: normalizeText(query.get("utm_campaign")),
     utm_content: normalizeText(query.get("utm_content")),
     utm_term: normalizeText(query.get("utm_term")),

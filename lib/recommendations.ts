@@ -1,4 +1,10 @@
-import type { AssessmentAnswers, GapItem, ScoreResult, WizardData, WizardQuestion } from "./scoring";
+import type {
+  AssessmentAnswers,
+  GapItem,
+  ScoreResult,
+  WizardData,
+  WizardQuestion
+} from "./scoring";
 
 export type ReportPriority = "Élevée" | "Moyenne" | "Faible";
 
@@ -61,7 +67,9 @@ function priorityFromSectionPercent(percent: number): ReportPriority {
   return "Faible";
 }
 
-function buildConsolidationGap(section: ScoreResult["sectionScores"][number]): ReportGap {
+function buildConsolidationGap(
+  section: ScoreResult["sectionScores"][number]
+): ReportGap {
   const sectionLabel = section.sectionTitle ?? `Section ${section.sectionId}`;
   const fakeGap: GapItem = {
     questionId: `consolidation-${section.sectionId}`,
@@ -88,24 +96,30 @@ function buildConsolidationGap(section: ScoreResult["sectionScores"][number]): R
 const GENERIC_CONSOLIDATION_GAPS: ReportGap[] = [
   {
     title: "Consolider les pratiques déjà en place",
-    whyItMatters: "Un bon niveau doit être entretenu pour rester fiable dans le temps.",
-    action: "Planifier une revue mensuelle courte des mesures déjà implantées et corriger rapidement les écarts.",
+    whyItMatters:
+      "Un bon niveau doit être entretenu pour rester fiable dans le temps.",
+    action:
+      "Planifier une revue mensuelle courte des mesures déjà implantées et corriger rapidement les écarts.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_1"
   },
   {
     title: "Centraliser les preuves de conformité",
-    whyItMatters: "Des preuves simples et datées facilitent la gouvernance et la prise de décision.",
-    action: "Regrouper politiques, journaux, captures et décisions dans un espace unique maintenu à jour.",
+    whyItMatters:
+      "Des preuves simples et datées facilitent la gouvernance et la prise de décision.",
+    action:
+      "Regrouper politiques, journaux, captures et décisions dans un espace unique maintenu à jour.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_2"
   },
   {
     title: "Valider les mécanismes critiques",
-    whyItMatters: "Les contrôles non vérifiés peuvent se dégrader sans être visibles.",
-    action: "Faire un mini test trimestriel sur les accès, sauvegardes et formulaires puis noter les résultats.",
+    whyItMatters:
+      "Les contrôles non vérifiés peuvent se dégrader sans être visibles.",
+    action:
+      "Faire un mini test trimestriel sur les accès, sauvegardes et formulaires puis noter les résultats.",
     section: "Consolidation",
     priority: "Moyenne",
     sectionId: "CONSOLIDATION_3"
@@ -132,17 +146,22 @@ function buildTopGapsContext(criticalCount: number) {
 function ensureFiveTopGaps(criticalTopGaps: ReportGap[], score: ScoreResult) {
   const selected = criticalTopGaps.slice(0, 5);
   const criticalCount = selected.length;
-  const seenTitles = new Set(selected.map((gap) => `${gap.section}|${gap.title}`.toLowerCase()));
+  const seenTitles = new Set(
+    selected.map((gap) => `${gap.section}|${gap.title}`.toLowerCase())
+  );
   const seenSectionIds = new Set(selected.map((gap) => gap.sectionId));
 
-  const sortedSections = [...score.sectionScores].sort((a, b) => a.percent - b.percent);
+  const sortedSections = [...score.sectionScores].sort(
+    (a, b) => a.percent - b.percent
+  );
 
   for (const section of sortedSections) {
     if (selected.length >= 5) break;
     if (seenSectionIds.has(section.sectionId)) continue;
 
     const consolidationGap = buildConsolidationGap(section);
-    const key = `${consolidationGap.section}|${consolidationGap.title}`.toLowerCase();
+    const key =
+      `${consolidationGap.section}|${consolidationGap.title}`.toLowerCase();
     if (seenTitles.has(key)) continue;
 
     selected.push(consolidationGap);
@@ -174,10 +193,14 @@ function ensureFiveTopGaps(criticalTopGaps: ReportGap[], score: ScoreResult) {
 }
 function computeHighlights(result: ScoreResult): string[] {
   const highlights: string[] = [];
-  const best = [...result.sectionScores].sort((a, b) => b.percent - a.percent).slice(0, 2);
+  const best = [...result.sectionScores]
+    .sort((a, b) => b.percent - a.percent)
+    .slice(0, 2);
 
   for (const section of best) {
-    highlights.push(`${section.sectionTitle ?? section.sectionId} : ${section.percent}%`);
+    highlights.push(
+      `${section.sectionTitle ?? section.sectionId} : ${section.percent}%`
+    );
   }
 
   if (result.overallScore >= 70) {
@@ -189,14 +212,20 @@ function computeHighlights(result: ScoreResult): string[] {
 
 function computeCautions(result: ScoreResult): string[] {
   const cautions: string[] = [];
-  const worst = [...result.sectionScores].sort((a, b) => a.percent - b.percent).slice(0, 2);
+  const worst = [...result.sectionScores]
+    .sort((a, b) => a.percent - b.percent)
+    .slice(0, 2);
 
   for (const section of worst) {
-    cautions.push(`À renforcer : ${section.sectionTitle ?? section.sectionId} (${section.percent}%)`);
+    cautions.push(
+      `À renforcer : ${section.sectionTitle ?? section.sectionId} (${section.percent}%)`
+    );
   }
 
   if (result.overallScore < 40) {
-    cautions.push("Plusieurs bases ne sont pas en place (priorité aux actions 30 jours).");
+    cautions.push(
+      "Plusieurs bases ne sont pas en place (priorité aux actions 30 jours)."
+    );
   }
 
   return cautions;
@@ -205,15 +234,19 @@ function computeCautions(result: ScoreResult): string[] {
 function dedupeLines(values: string[]) {
   return Array.from(
     new Set(
-      values
-        .map((value) => value.trim())
-        .filter((value) => value.length > 0)
+      values.map((value) => value.trim()).filter((value) => value.length > 0)
     )
   );
 }
 
-function answerIs(answers: AssessmentAnswers, questionId: string, expectedValues: string[]) {
-  const value = String(answers[questionId] ?? "").toLowerCase().trim();
+function answerIs(
+  answers: AssessmentAnswers,
+  questionId: string,
+  expectedValues: string[]
+) {
+  const value = String(answers[questionId] ?? "")
+    .toLowerCase()
+    .trim();
   return expectedValues.includes(value);
 }
 
@@ -226,19 +259,29 @@ function getBranchActions(answers: AssessmentAnswers) {
     );
   }
   if (answerIs(answers, "C3", ["no", "partial"])) {
-    items.push("Ajouter un avis de transparence sous chaque formulaire (finalité + lien vers la politique).");
+    items.push(
+      "Ajouter un avis de transparence sous chaque formulaire (finalité + lien vers la politique)."
+    );
   }
   if (answerIs(answers, "D1", ["no", "some"])) {
-    items.push("Activer MFA sur courriel, hébergement, CMS et CRM pour 100 % des comptes critiques.");
+    items.push(
+      "Activer MFA sur courriel, hébergement, CMS et CRM pour 100 % des comptes critiques."
+    );
   }
   if (answerIs(answers, "D3", ["no", "yes_not_tested"])) {
-    items.push("Exécuter un test de restauration (site + base de données) et consigner le résultat.");
+    items.push(
+      "Exécuter un test de restauration (site + base de données) et consigner le résultat."
+    );
   }
   if (answerIs(answers, "E1", ["no", "partial"])) {
-    items.push("Rédiger une procédure d'incident 1 page (détection, confinement, communication, journal).");
+    items.push(
+      "Rédiger une procédure d'incident 1 page (détection, confinement, communication, journal)."
+    );
   }
   if (answerIs(answers, "B2", ["no", "partial"])) {
-    items.push("Compléter la cartographie des données (source, système, responsable, conservation).");
+    items.push(
+      "Compléter la cartographie des données (source, système, responsable, conservation)."
+    );
   }
   if (answerIs(answers, "D2", ["no", "partial"])) {
     items.push("Resserrer les accès par rôles et retirer les accès obsolètes.");
@@ -256,22 +299,34 @@ function getBranchMilestones90(answers: AssessmentAnswers) {
     );
   }
   if (answerIs(answers, "C3", ["no", "partial"])) {
-    items.push("Mois 2-3 - Standardiser le texte de transparence sur 100 % des formulaires et mesurer l'adoption.");
+    items.push(
+      "Mois 2-3 - Standardiser le texte de transparence sur 100 % des formulaires et mesurer l'adoption."
+    );
   }
   if (answerIs(answers, "D1", ["no", "some"])) {
-    items.push("Mois 2-3 - Étendre MFA aux comptes secondaires et tester un scénario de récupération MFA.");
+    items.push(
+      "Mois 2-3 - Étendre MFA aux comptes secondaires et tester un scénario de récupération MFA."
+    );
   }
   if (answerIs(answers, "D3", ["no", "yes_not_tested"])) {
-    items.push("Mois 2-3 - Formaliser un test de restauration trimestriel avec temps cible et preuve datée.");
+    items.push(
+      "Mois 2-3 - Formaliser un test de restauration trimestriel avec temps cible et preuve datée."
+    );
   }
   if (answerIs(answers, "E1", ["no", "partial"])) {
-    items.push("Mois 2-3 - Réaliser un exercice table-top incident et mettre à jour la procédure selon les écarts.");
+    items.push(
+      "Mois 2-3 - Réaliser un exercice table-top incident et mettre à jour la procédure selon les écarts."
+    );
   }
   if (answerIs(answers, "B2", ["no", "partial"])) {
-    items.push("Mois 2-3 - Ajouter les flux inter-fournisseurs à la cartographie et associer une rétention.");
+    items.push(
+      "Mois 2-3 - Ajouter les flux inter-fournisseurs à la cartographie et associer une rétention."
+    );
   }
   if (answerIs(answers, "D2", ["no", "partial"])) {
-    items.push("Mois 2-3 - Automatiser une revue mensuelle des accès et conserver la preuve de retrait.");
+    items.push(
+      "Mois 2-3 - Automatiser une revue mensuelle des accès et conserver la preuve de retrait."
+    );
   }
 
   return dedupeLines(items);
@@ -347,7 +402,12 @@ function buildPlan90Days(
     "Revue trimestrielle - valider la cartographie, la rétention et les accès."
   ];
 
-  let plan = dedupeLines([...template, ...gapMilestones, ...branchMilestones, ...transversalMilestones]);
+  let plan = dedupeLines([
+    ...template,
+    ...gapMilestones,
+    ...branchMilestones,
+    ...transversalMilestones
+  ]);
 
   const minTarget = Math.max(10, Math.min(14, plan30Days.length + 3));
   const guaranteeMilestones = [
@@ -357,7 +417,10 @@ function buildPlan90Days(
   ];
 
   let guaranteeIndex = 0;
-  while (plan.length < minTarget && guaranteeIndex < guaranteeMilestones.length) {
+  while (
+    plan.length < minTarget &&
+    guaranteeIndex < guaranteeMilestones.length
+  ) {
     plan = dedupeLines([...plan, guaranteeMilestones[guaranteeIndex]]);
     guaranteeIndex += 1;
   }
@@ -371,8 +434,11 @@ function buildDiagnosticAnchors(
   topGaps: GeneratedReport["topGaps"]
 ): DiagnosticAnchor[] {
   return rawGaps.slice(0, 5).map((gap, index) => {
-    const questionLabel = wizardQuestionsById.get(gap.questionId)?.title ?? gap.title;
-    const section = gap.sectionTitle ? `Section ${gap.sectionId} - ${gap.sectionTitle}` : `Section ${gap.sectionId}`;
+    const questionLabel =
+      wizardQuestionsById.get(gap.questionId)?.title ?? gap.title;
+    const section = gap.sectionTitle
+      ? `Section ${gap.sectionId} - ${gap.sectionTitle}`
+      : `Section ${gap.sectionId}`;
 
     return {
       questionId: gap.questionId,
@@ -398,7 +464,9 @@ export function generateReport(
 
   const highlights = computeHighlights(score);
   const cautions = computeCautions(score);
-  const wizardQuestionsById = new Map<string, WizardQuestion>(wizard.questions.map((question) => [question.id, question]));
+  const wizardQuestionsById = new Map<string, WizardQuestion>(
+    wizard.questions.map((question) => [question.id, question])
+  );
 
   const criticalTopGaps: ReportGap[] = score.gaps.map((gap) => ({
     title: gap.recommendation?.title ?? gap.title,
@@ -411,12 +479,25 @@ export function generateReport(
   const topGapsBundle = ensureFiveTopGaps(criticalTopGaps, score);
   const topGaps = topGapsBundle.topGaps;
 
-  const days30Template = (wizard as { report?: { planTemplates?: { days30?: string[] } } }).report?.planTemplates?.days30;
-  const days90Template = (wizard as { report?: { planTemplates?: { days90?: string[] } } }).report?.planTemplates?.days90;
+  const days30Template = (
+    wizard as { report?: { planTemplates?: { days30?: string[] } } }
+  ).report?.planTemplates?.days30;
+  const days90Template = (
+    wizard as { report?: { planTemplates?: { days90?: string[] } } }
+  ).report?.planTemplates?.days90;
 
   const plan30Days = buildPlan30Days(topGaps, branchAnswers, days30Template);
-  const plan90Days = buildPlan90Days(topGaps, branchAnswers, plan30Days, days90Template);
-  const diagnosticAnchors = buildDiagnosticAnchors(wizardQuestionsById, score.gaps, topGaps);
+  const plan90Days = buildPlan90Days(
+    topGaps,
+    branchAnswers,
+    plan30Days,
+    days90Template
+  );
+  const diagnosticAnchors = buildDiagnosticAnchors(
+    wizardQuestionsById,
+    score.gaps,
+    topGaps
+  );
 
   return {
     summary: {

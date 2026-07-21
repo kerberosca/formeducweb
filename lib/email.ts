@@ -1,10 +1,15 @@
 import type { Assessment } from "@prisma/client";
 
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
+import { areExternalServicesDisabled } from "@/lib/external-services";
 import { getBaseUrl } from "@/lib/payments";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LiteReport } from "@/lib/reportFilters";
-import type { ContactFormInput, LeadCaptureInput, PrivacyRequestInput } from "@/lib/schemas";
+import type {
+  ContactFormInput,
+  LeadCaptureInput,
+  PrivacyRequestInput
+} from "@/lib/schemas";
 import type { ScoreResult } from "@/lib/scoring";
 
 type MailOptions = {
@@ -21,7 +26,12 @@ function sleep(ms: number) {
 }
 
 function getAdminNotificationEmail() {
-  return process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || process.env.CONTACT_TO_EMAIL || "info@formeducweb.ca";
+  return (
+    process.env.ADMIN_NOTIFICATION_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    process.env.CONTACT_TO_EMAIL ||
+    "info@formeducweb.ca"
+  );
 }
 
 function escapeHtml(value: string) {
@@ -101,7 +111,9 @@ function getWizardUrl(assessmentType: AssessmentType) {
 }
 
 function getSummaryUrl(accessToken: string, assessmentType: AssessmentType) {
-  return toAbsoluteUrl(getDiagnosticConfig(assessmentType).reportPath(accessToken));
+  return toAbsoluteUrl(
+    getDiagnosticConfig(assessmentType).reportPath(accessToken)
+  );
 }
 
 function getContactUrl(source: string) {
@@ -109,8 +121,7 @@ function getContactUrl(source: string) {
 }
 
 function getBookingUrl() {
-  const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL || "/contact?source=appel-diagnostic";
-  return toAbsoluteUrl(bookingUrl);
+  return toAbsoluteUrl("/contact?source=appel-diagnostic");
 }
 
 function renderPrimaryCta(label: string, href: string) {
@@ -165,7 +176,7 @@ async function sendMail(options: MailOptions) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
 
-  if (!apiKey || !from) {
+  if (areExternalServicesDisabled() || !apiKey || !from) {
     console.log("Email MVP fallback", {
       to: maskEmail(options.to),
       subject: options.subject
@@ -219,7 +230,10 @@ export async function sendAssessmentReceivedEmails(payload: {
   const bookingUrl = getBookingUrl();
   const contactUrl = getContactUrl(`email-resume-${diagnostic.leadSource}`);
   const prioritiesHtml = payload.liteReport.topGaps
-    .map((gap) => `<li><strong>${escapeHtml(gap.title)}</strong> - ${escapeHtml(gap.action)}</li>`)
+    .map(
+      (gap) =>
+        `<li><strong>${escapeHtml(gap.title)}</strong> - ${escapeHtml(gap.action)}</li>`
+    )
     .join("");
 
   await sendMail({
@@ -228,7 +242,7 @@ export async function sendAssessmentReceivedEmails(payload: {
     html: renderEmailLayout(
       `Votre résumé ${diagnostic.label} est prêt`,
       `
-      <p>Bonjour ${escapeHtml(payload.leadCapture.contactName)},</p>
+      <p>${payload.leadCapture.contactName ? `Bonjour ${escapeHtml(payload.leadCapture.contactName)},` : "Bonjour,"}</p>
       <p>Merci d'avoir complété l'auto-évaluation ${escapeHtml(diagnostic.label)}.</p>
       <p><strong>Score global :</strong> ${payload.scoreResult.overallScore}/100 (${escapeHtml(payload.scoreResult.level.label)})</p>
       <p>${escapeHtml(payload.scoreResult.level.tagline)}</p>
@@ -239,7 +253,7 @@ export async function sendAssessmentReceivedEmails(payload: {
       ${renderPrimaryCta("Voir mon résumé sécurisé", summaryUrl)}
       <p>Si vous préférez valider vos prochaines actions avec notre équipe:</p>
       <ul>
-        <li><a href="${bookingUrl}">Réserver un appel de 20 minutes</a></li>
+        <li><a href="${bookingUrl}">Demander un appel</a></li>
         <li><a href="${contactUrl}">Écrire à ForméducWeb</a></li>
       </ul>
       <p>Vous pouvez aussi refaire l'auto-évaluation à tout moment: <a href="${wizardUrl}">${wizardUrl}</a></p>
@@ -252,14 +266,14 @@ export async function sendAssessmentReceivedEmails(payload: {
   if (adminEmail) {
     await sendMail({
       to: adminEmail,
-      subject: `Nouveau lead ${diagnostic.label} - ${payload.leadCapture.companyName}`,
+      subject: `Nouveau diagnostic sauvegardé ${diagnostic.label} - ${payload.leadCapture.email}`,
       html: renderEmailLayout(
         `Nouveau lead ${diagnostic.label}`,
         `
         <p><strong>Assessment ID :</strong> ${payload.assessmentId}</p>
         <p><strong>Diagnostic :</strong> ${escapeHtml(diagnostic.label)}</p>
-        <p><strong>Nom :</strong> ${escapeHtml(payload.leadCapture.contactName)}</p>
-        <p><strong>Entreprise :</strong> ${escapeHtml(payload.leadCapture.companyName)}</p>
+        <p><strong>Nom :</strong> ${escapeHtml(payload.leadCapture.contactName || "Non fourni à cette étape")}</p>
+        <p><strong>Entreprise :</strong> ${escapeHtml(payload.leadCapture.companyName || "Non fournie à cette étape")}</p>
         <p><strong>Courriel :</strong> ${escapeHtml(payload.leadCapture.email)}</p>
         <p><strong>Téléphone :</strong> ${escapeHtml(payload.leadCapture.phone || "Non fourni")}</p>
         <p><strong>Consentement marketing :</strong> ${payload.leadCapture.consentMarketing ? "Oui" : "Non"}</p>
@@ -291,14 +305,14 @@ export async function sendReportUnlockedEmails(payload: {
     html: renderEmailLayout(
       "Votre rapport complet est disponible",
       `
-      <p>Bonjour ${escapeHtml(payload.assessment.contactName)},</p>
+      <p>${payload.assessment.contactName ? `Bonjour ${escapeHtml(payload.assessment.contactName)},` : "Bonjour,"}</p>
       <p>Votre paiement a été confirmé. Vous pouvez maintenant accéder à votre rapport complet ${escapeHtml(diagnostic.label)}.</p>
       ${renderPrimaryCta("Voir mon rapport complet", reportUrl)}
       <h2>Ce qui vous attend</h2>
       <ul>
         ${diagnostic.fullReportIncludes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
-      <p>Besoin d'un coup de pouce pour la suite? <a href="${bookingUrl}">Réserver un appel de 20 minutes</a> ou <a href="${contactUrl}">nous Écrire</a>.</p>
+      <p>Besoin d'un coup de pouce pour la suite? <a href="${bookingUrl}">Demander un appel</a> ou <a href="${contactUrl}">nous écrire</a>.</p>
       <p>${disclaimer}</p>
       <p style="font-size:12px;color:#5f646d;">Ce rapport aide à prioriser et implanter. Il ne constitue pas un avis professionnel personnalisé.</p>
     `
@@ -308,13 +322,13 @@ export async function sendReportUnlockedEmails(payload: {
   if (adminEmail) {
     await sendMail({
       to: adminEmail,
-      subject: `Paiement confirmé ${diagnostic.label} - ${payload.assessment.companyName}`,
+      subject: `Paiement confirmé ${diagnostic.label} - ${payload.assessment.companyName || payload.assessment.email}`,
       html: renderEmailLayout(
         "Paiement confirmé",
         `
         <p><strong>Diagnostic :</strong> ${escapeHtml(diagnostic.label)}</p>
-        <p><strong>Entreprise :</strong> ${escapeHtml(payload.assessment.companyName)}</p>
-        <p><strong>Contact :</strong> ${escapeHtml(payload.assessment.contactName)}</p>
+        <p><strong>Entreprise :</strong> ${escapeHtml(payload.assessment.companyName || "Non fournie")}</p>
+        <p><strong>Contact :</strong> ${escapeHtml(payload.assessment.contactName || "Non fourni")}</p>
         <p><strong>Courriel :</strong> ${escapeHtml(payload.assessment.email)}</p>
         <p><strong>Accès :</strong> <a href="${reportUrl}">${reportUrl}</a></p>
         <p><strong>Action suggérée :</strong> faire un suivi court (24-48h) pour proposer la prochaine étape.</p>
@@ -325,7 +339,10 @@ export async function sendReportUnlockedEmails(payload: {
 }
 
 export async function sendContactEmail(data: ContactFormInput) {
-  const adminEmail = process.env.CONTACT_TO_EMAIL || process.env.ADMIN_EMAIL || "info@formeducweb.ca";
+  const adminEmail =
+    process.env.CONTACT_TO_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    "info@formeducweb.ca";
 
   if (!adminEmail) {
     console.log("Contact MVP fallback", {
@@ -353,7 +370,9 @@ export async function sendContactEmail(data: ContactFormInput) {
   });
 }
 
-function mapPrivacyRequestType(requestType: PrivacyRequestInput["requestType"]) {
+function mapPrivacyRequestType(
+  requestType: PrivacyRequestInput["requestType"]
+) {
   switch (requestType) {
     case "access":
       return "Accès";

@@ -17,7 +17,10 @@ const globalRateLimit = globalThis as typeof globalThis & {
 
 function getStore() {
   if (!globalRateLimit.__formeducwebRateLimitStore) {
-    globalRateLimit.__formeducwebRateLimitStore = new Map<string, RateLimitEntry>();
+    globalRateLimit.__formeducwebRateLimitStore = new Map<
+      string,
+      RateLimitEntry
+    >();
   }
 
   return globalRateLimit.__formeducwebRateLimitStore;

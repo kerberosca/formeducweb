@@ -30,8 +30,12 @@ const migrationNames = readdirSync(migrationsDir, { withFileTypes: true })
   .map((entry) => entry.name)
   .sort((a, b) => a.localeCompare(b));
 
-const isAppliedStmt = database.prepare(`SELECT 1 FROM "__local_migrations" WHERE "name" = ?`);
-const markAppliedStmt = database.prepare(`INSERT INTO "__local_migrations" ("name") VALUES (?)`);
+const isAppliedStmt = database.prepare(
+  `SELECT 1 FROM "__local_migrations" WHERE "name" = ?`
+);
+const markAppliedStmt = database.prepare(
+  `INSERT INTO "__local_migrations" ("name") VALUES (?)`
+);
 
 for (const migrationName of migrationNames) {
   const migrationPath = join(migrationsDir, migrationName, "migration.sql");

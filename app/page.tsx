@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BrainCircuit, CheckCircle2, Network, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BrainCircuit,
+  CheckCircle2,
+  Network,
+  ShieldCheck
+} from "lucide-react";
 
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -8,7 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { diagnosticList } from "@/lib/diagnostics";
-import { getAbsoluteUrl } from "@/lib/seo";
+import { getReportUnlockPriceLabel } from "@/lib/payments";
+import { buildPageMetadata, getAbsoluteUrl } from "@/lib/seo";
+import { getWizardData } from "@/lib/wizard";
 
 const pageDescription =
   "Diagnostics Loi 25, cybersécurité et IA pour PME et OBNL du Québec: score, priorités et plan d'action pour améliorer votre hygiène informatique.";
@@ -20,41 +28,43 @@ const iconByType = {
 };
 
 const proofPoints = [
-  "Auto-évaluation gratuite",
-  "Score et priorités",
-  "Rapport complet optionnel",
-  "Accompagnement si utile"
+  "Environ 10 minutes",
+  "Score immédiat",
+  "3 priorités et plan 30 jours",
+  `Rapport complet optionnel à ${getReportUnlockPriceLabel()}`
 ];
 
 const howItWorks = [
   {
     title: "Répondez au diagnostic",
-    description: "Un questionnaire guidé par thème pour faire ressortir vos forces et vos angles morts."
+    description:
+      "Un questionnaire guidé par thème pour faire ressortir vos forces et vos angles morts."
   },
   {
     title: "Recevez votre résumé",
-    description: "Score global, 3 priorités et plan 30 jours avant de décider si le rapport complet est utile."
+    description:
+      "Score global, 3 priorités et plan 30 jours avant de décider si le rapport complet est utile."
   },
   {
     title: "Passez à l'action",
-    description: "Vous pouvez rester autonome, acheter le rapport complet ou demander un accompagnement."
+    description:
+      "Vous pouvez rester autonome, acheter le rapport complet ou demander un accompagnement."
   }
 ];
 
-export const metadata: Metadata = {
-  title: "Diagnostics Loi 25, cybersécurité et IA pour PME | ForméducWeb",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Diagnostics Loi 25, cybersécurité et IA pour PME",
   description: pageDescription,
-  alternates: {
-    canonical: getAbsoluteUrl("/")
-  },
-  openGraph: {
-    title: "Diagnostics Loi 25, cybersécurité et IA pour PME | ForméducWeb",
-    description: pageDescription,
-    url: getAbsoluteUrl("/")
-  }
-};
+  path: "/"
+});
 
 export default function HomePage() {
+  const diagnosticStats = Object.fromEntries(
+    diagnosticList.map((diagnostic) => [
+      diagnostic.type,
+      getWizardData(diagnostic.type).questions.length
+    ])
+  );
   const serviceSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -73,27 +83,37 @@ export default function HomePage() {
       <section className="container py-16 md:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="space-y-7">
-            <Badge variant="secondary">Diagnostics pour PME et OBNL du Québec</Badge>
+            <Badge variant="secondary">
+              Diagnostics pour PME et OBNL du Québec
+            </Badge>
             <div className="space-y-5">
-              <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-7xl">
-                Diagnostics Loi 25, cybersécurité et IA pour avancer sans vous disperser.
+              <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl md:text-7xl">
+                Évaluez vos pratiques Loi 25, cybersécurité et IA — puis passez
+                à l’action.
               </h1>
               <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
-                ForméducWeb transforme trois sujets souvent flous - Loi 25, cybersécurité et IA - en diagnostics simples,
-                priorités concrètes et plans d'action utilisables pour gagner en clarté, confiance et efficacité.
+                En environ 10 minutes, obtenez un score immédiat, vos 3
+                priorités et un plan de 30 jours pensé pour les PME et OBNL du
+                Québec. Aucun courriel n’est requis pour voir le résultat
+                gratuit.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
-                <Link href="#diagnostics">Choisir un diagnostic</Link>
+                <Link href="#diagnostics">Commencer un diagnostic gratuit</Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href="/hygiene-informatique">Comprendre l'hygiène informatique</Link>
+                <Link href="/hygiene-informatique">
+                  Comprendre l'hygiène informatique
+                </Link>
               </Button>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {proofPoints.map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-white/70 p-4">
+                <div
+                  key={item}
+                  className="flex items-center gap-3 rounded-2xl border border-border/70 bg-white/70 p-4"
+                >
                   <CheckCircle2 className="h-5 w-5 text-primary" />
                   <span className="text-sm font-medium">{item}</span>
                 </div>
@@ -107,7 +127,9 @@ export default function HomePage() {
             </div>
             <div className="space-y-5">
               <p className="eyebrow">Même démarche, trois angles</p>
-              <h2 className="font-heading text-3xl font-semibold tracking-tight">Un questionnaire, un score, un plan</h2>
+              <h2 className="font-heading text-3xl font-semibold tracking-tight">
+                Un questionnaire, un score, un plan
+              </h2>
               <div className="grid gap-4">
                 {diagnosticList.map((diagnostic) => {
                   const Icon = iconByType[diagnostic.type];
@@ -123,8 +145,12 @@ export default function HomePage() {
                           <Icon className="h-5 w-5" />
                         </span>
                         <span>
-                          <span className="block font-medium">{diagnostic.label}</span>
-                          <span className="text-sm text-muted-foreground">{diagnostic.themeLabel}</span>
+                          <span className="block font-medium">
+                            {diagnostic.label}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {diagnostic.themeLabel}
+                          </span>
                         </span>
                       </span>
                       <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-primary" />
@@ -133,15 +159,19 @@ export default function HomePage() {
                 })}
               </div>
               <p className="text-sm leading-7 text-muted-foreground">
-                Les diagnostics produisent un portrait indicatif. Ils ne remplacent pas un avis professionnel personnalisé
-                ou une certification.
+                Les diagnostics produisent un portrait indicatif. Ils ne
+                remplacent pas un avis professionnel personnalisé ou une
+                certification.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="diagnostics" className="container scroll-mt-24 py-10 md:py-14">
+      <section
+        id="diagnostics"
+        className="container scroll-mt-24 py-10 md:py-14"
+      >
         <SectionHeading
           eyebrow="Services"
           title="Trois diagnostics pour avancer dans le bon ordre"
@@ -160,10 +190,18 @@ export default function HomePage() {
                   <CardTitle>{diagnostic.label}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-1 flex-col gap-5">
-                  <p className="text-sm leading-7 text-muted-foreground">{diagnostic.content.description}</p>
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    {diagnostic.content.description}
+                  </p>
+                  <p className="rounded-2xl bg-muted/40 px-4 py-3 text-xs font-medium text-foreground/75">
+                    {diagnosticStats[diagnostic.type]} questions · environ 10
+                    min · score immédiat
+                  </p>
                   <div className="mt-auto flex flex-col gap-3">
                     <Button asChild>
-                      <Link href={diagnostic.wizardPath}>Faire l'auto-évaluation</Link>
+                      <Link href={diagnostic.wizardPath}>
+                        Faire l'auto-évaluation
+                      </Link>
                     </Button>
                     <Button asChild variant="secondary">
                       <Link href={diagnostic.path}>Voir le service</Link>
@@ -178,7 +216,7 @@ export default function HomePage() {
 
       <section className="container py-12 md:py-20">
         <SectionHeading
-          eyebrow="Comment ca marche"
+          eyebrow="Comment ça marche"
           title="Un parcours simple en 3 étapes"
           description="Pas besoin d'avoir déjà tout documenté pour commencer."
         />
@@ -191,7 +229,9 @@ export default function HomePage() {
                 </div>
                 <CardTitle>{item.title}</CardTitle>
               </CardHeader>
-              <CardContent className="text-sm leading-7 text-muted-foreground">{item.description}</CardContent>
+              <CardContent className="text-sm leading-7 text-muted-foreground">
+                {item.description}
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -206,7 +246,8 @@ export default function HomePage() {
                 Commencez par le sujet le plus pressant.
               </h2>
               <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
-                Si vous hésitez entre les trois, on peut vous aider à choisir le bon point d'entrée en quelques minutes.
+                Si vous hésitez entre les trois, on peut vous aider à choisir le
+                bon point d'entrée en quelques minutes.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
@@ -214,7 +255,9 @@ export default function HomePage() {
                 <Link href="#diagnostics">Voir les diagnostics</Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href="/contact?source=home-choix-diagnostic">Demander conseil</Link>
+                <Link href="/contact?source=home-choix-diagnostic">
+                  Demander conseil
+                </Link>
               </Button>
             </div>
           </div>

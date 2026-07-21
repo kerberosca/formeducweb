@@ -1,32 +1,38 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, RotateCcw, Save, ShieldCheck } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import {
+  ArrowLeft,
+  ArrowRight,
+  RotateCcw,
+  Save,
+  ShieldCheck
+} from "lucide-react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { LiteResultView } from "@/components/wizard/lite-result-view";
 import { QuestionField } from "@/components/wizard/question-field";
 import { WizardStepper } from "@/components/wizard/stepper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import { getFirstTouchAttribution } from "@/lib/attribution";
-import type { AssessmentApiResponse, PersistedAssessmentResult } from "@/lib/assessment-types";
+import type {
+  AssessmentApiResponse,
+  AssessmentPreviewResponse,
+  PersistedAssessmentResult,
+  SavedAssessmentState,
+  WizardResultState
+} from "@/lib/assessment-types";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
-import { assessmentAnswersSchema, leadCaptureSchema, type LeadCaptureInput } from "@/lib/schemas";
 import { deepRepairText } from "@/lib/text";
 import {
   clearWizardDraft,
   clearWizardPersistedResult,
   createEmptyDraft,
   getCompletionPercent,
-  getRequiredQuestionIds,
   getWizardSteps,
   loadWizardDraft,
   loadWizardPersistedResult,
@@ -36,41 +42,51 @@ import {
   type WizardFormDraft
 } from "@/lib/wizard";
 
-const wizardClientSchema = leadCaptureSchema.extend({
-  answers: assessmentAnswersSchema
-});
+type WizardFormValues = {
+  answers: Record<string, string | undefined>;
+};
 
-type WizardFormValues = z.infer<typeof wizardClientSchema>;
-type WizardResultState = PersistedAssessmentResult;
-
-function hasDraftContent(draft: WizardFormDraft | null) {
-  if (!draft) return false;
-
-  const hasAnswers = Object.values(draft.answers).some((value) => Boolean(value));
-  const hasLead = Boolean(draft.contactName || draft.companyName || draft.email || draft.phone);
-
-  return hasAnswers || hasLead;
+function buildDraft(
+  answers: Record<string, string | undefined>
+): WizardFormDraft {
+  return {
+    ...createEmptyDraft(),
+    answers
+  };
 }
 
-function buildDraftFromValues(values: Partial<WizardFormValues>): WizardFormDraft {
-  return {
-    answers: values.answers ?? {},
-    contactName: values.contactName ?? "",
-    companyName: values.companyName ?? "",
-    email: values.email ?? "",
-    phone: values.phone ?? "",
-    consentMarketing: values.consentMarketing ?? false
-  };
+function hasDraftContent(draft: WizardFormDraft | null) {
+  return Boolean(draft && Object.values(draft.answers).some(Boolean));
+}
+
+export function normalizeStoredResult(
+  value: unknown
+): WizardResultState | null {
+  if (!value || typeof value !== "object") return null;
+
+  const stored = value as Partial<
+    WizardResultState & PersistedAssessmentResult
+  >;
+  if (stored.kind === "preview" || stored.kind === "saved") {
+    return stored as WizardResultState;
+  }
+
+  if (
+    stored.assessmentId &&
+    stored.accessToken &&
+    stored.leadCapture &&
+    stored.answers
+  ) {
+    return { ...stored, kind: "saved" } as SavedAssessmentState;
+  }
+
+  return null;
 }
 
 function formatLastSaved(isoDate: string) {
   const savedAt = Date.parse(isoDate);
   if (!Number.isFinite(savedAt)) return "inconnue";
-
-  const diffMs = Date.now() - savedAt;
-  if (diffMs < 60 * 1000) {
-    return "à l'instant";
-  }
+  if (Date.now() - savedAt < 60 * 1000) return "à l’instant";
 
   return new Date(savedAt).toLocaleTimeString("fr-CA", {
     hour: "2-digit",
@@ -88,77 +104,54 @@ export function AssessmentWizard({
   reportUnlockPriceLabel: string;
 }) {
   const diagnostic = getDiagnosticConfig(assessmentType);
+  const steps = useMemo(() => getWizardSteps(wizard), [wizard]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [questionErrors, setQuestionErrors] = useState<Record<string, string>>({});
-  const [resultState, setResultState] = useState<WizardResultState | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [pendingDraft, setPendingDraft] = useState<WizardFormDraft | null>(null);
+  const [questionErrors, setQuestionErrors] = useState<Record<string, string>>(
+    {}
+  );
+  const [resultState, setResultState] = useState<WizardResultState | null>(
+    null
+  );
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [pendingDraft, setPendingDraft] = useState<WizardFormDraft | null>(
+    null
+  );
   const [draftReady, setDraftReady] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
 
-  const sectionSteps = useMemo(
-    () => getWizardSteps(wizard).map((step) => ({ ...step, kind: "questions" as const })),
-    [wizard]
-  );
-
-  const steps = useMemo(
-    () => [
-      ...sectionSteps,
-      {
-        id: "lead",
-        index: sectionSteps.length,
-        kind: "lead" as const,
-        title: "Coordonnées",
-        description: "Recevez votre résumé gratuit et choisissez la suite au besoin."
-      }
-    ],
-    [sectionSteps]
-  );
-
   const form = useForm<WizardFormValues>({
-    resolver: zodResolver(wizardClientSchema),
-    defaultValues: createEmptyDraft()
+    defaultValues: { answers: {} }
   });
-
   const answers = form.watch("answers") || {};
   const currentStep = steps[currentStepIndex];
-  const completionPercent = getCompletionPercent(wizard, answers, currentStepIndex);
-
-  const saveDraftSnapshot = (values?: Partial<WizardFormValues>, updateIndicator = true) => {
-    if (!draftReady || pendingDraft || resultState) return;
-
-    const draft = buildDraftFromValues(values ?? form.getValues());
-    saveWizardDraft(draft, assessmentType);
-
-    if (updateIndicator) {
-      setLastSavedAt(new Date().toISOString());
-    }
-  };
+  const completionPercent = getCompletionPercent(
+    wizard,
+    answers,
+    currentStepIndex
+  );
+  const answeredCount = wizard.questions.filter((question) =>
+    Boolean(answers[question.id])
+  ).length;
 
   useEffect(() => {
-    const restoredResult = deepRepairText(loadWizardPersistedResult<WizardResultState>(assessmentType));
+    const restoredResult = normalizeStoredResult(
+      deepRepairText(
+        loadWizardPersistedResult<
+          WizardResultState | PersistedAssessmentResult
+        >(assessmentType)
+      )
+    );
 
     if (restoredResult?.assessmentType === assessmentType) {
       setResultState(restoredResult);
-      form.reset({
-        answers: restoredResult.answers,
-        contactName: restoredResult.leadCapture.contactName,
-        companyName: restoredResult.leadCapture.companyName,
-        email: restoredResult.leadCapture.email,
-        phone: restoredResult.leadCapture.phone,
-        consentMarketing: restoredResult.leadCapture.consentMarketing
-      });
-      setLastSavedAt(null);
+      form.reset({ answers: restoredResult.answers });
       setDraftReady(true);
       return;
     }
 
     const draft = loadWizardDraft(assessmentType);
-
-    if (hasDraftContent(draft)) {
-      setPendingDraft(draft);
-    }
-
+    if (hasDraftContent(draft)) setPendingDraft(draft);
     setDraftReady(true);
   }, [assessmentType, form]);
 
@@ -166,41 +159,23 @@ export function AssessmentWizard({
     if (!draftReady || pendingDraft || resultState) return;
 
     const subscription = form.watch((values) => {
-      saveWizardDraft(buildDraftFromValues(values), assessmentType);
+      saveWizardDraft(
+        buildDraft(
+          (values.answers as Record<string, string | undefined>) ?? {}
+        ),
+        assessmentType
+      );
     });
 
     return () => subscription.unsubscribe();
-  }, [assessmentType, draftReady, pendingDraft, resultState, form]);
+  }, [assessmentType, draftReady, form, pendingDraft, resultState]);
 
   useEffect(() => {
-    if (!draftReady || pendingDraft || resultState) return;
-
-    const persist = (updateIndicator: boolean) => {
-      const draft = buildDraftFromValues(form.getValues());
-      saveWizardDraft(draft, assessmentType);
-
-      if (updateIndicator) {
-        setLastSavedAt(new Date().toISOString());
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState !== "hidden") return;
-      persist(true);
-    };
-
-    const handleBeforeUnload = () => {
-      persist(false);
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [assessmentType, draftReady, pendingDraft, resultState, form]);
+    if (!draftReady) return;
+    trackAnalyticsEvent("diagnostic_start", {
+      diagnostic_type: assessmentType
+    });
+  }, [assessmentType, draftReady]);
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
@@ -209,15 +184,7 @@ export function AssessmentWizard({
 
   const handleRestoreDraft = () => {
     if (!pendingDraft) return;
-
-    form.reset({
-      answers: pendingDraft.answers,
-      contactName: pendingDraft.contactName,
-      companyName: pendingDraft.companyName,
-      email: pendingDraft.email,
-      phone: pendingDraft.phone,
-      consentMarketing: pendingDraft.consentMarketing
-    });
+    form.reset({ answers: pendingDraft.answers });
     setPendingDraft(null);
     setLastSavedAt(new Date().toISOString());
     toast.success("Votre progression a été restaurée.");
@@ -226,7 +193,7 @@ export function AssessmentWizard({
   const handleDiscardDraft = () => {
     clearWizardDraft(assessmentType);
     clearWizardPersistedResult(assessmentType);
-    form.reset(createEmptyDraft());
+    form.reset({ answers: {} });
     setPendingDraft(null);
     setCurrentStepIndex(0);
     setQuestionErrors({});
@@ -235,105 +202,89 @@ export function AssessmentWizard({
     toast.success("La sauvegarde locale a été effacée.");
   };
 
-  const validateQuestionStep = () => {
-    if (currentStep.kind !== "questions") return true;
-
-    const missing = currentStep.questions.filter((question) => question.required && !answers[question.id]);
-
+  const validateCurrentStep = () => {
+    const missing = currentStep.questions.filter(
+      (question) => question.required && !answers[question.id]
+    );
     if (!missing.length) {
       setQuestionErrors({});
       return true;
     }
 
-    const nextErrors = Object.fromEntries(
-      missing.map((question) => [question.id, "Veuillez sélectionner une réponse pour continuer."])
+    setQuestionErrors(
+      Object.fromEntries(
+        missing.map((question) => [
+          question.id,
+          "Veuillez sélectionner une réponse pour continuer."
+        ])
+      )
     );
-    setQuestionErrors(nextErrors);
-    toast.error("Il manque quelques réponses avant de passer à l'étape suivante.");
+    toast.error("Il manque quelques réponses avant de continuer.");
+    window.setTimeout(
+      () => document.getElementById(`question-${missing[0].id}`)?.focus(),
+      0
+    );
     return false;
   };
 
-  const handleNext = async () => {
-    if (currentStep.kind === "questions") {
-      if (!validateQuestionStep()) return;
-      goToStep(Math.min(currentStepIndex + 1, steps.length - 1));
-      return;
-    }
-
-    const valid = await form.trigger(["contactName", "companyName", "email", "phone", "consentMarketing"]);
-    if (!valid) {
-      toast.error("Veuillez corriger les champs de coordonnées.");
-      return;
-    }
-
-    void onSubmit(form.getValues());
-  };
-
-  const onSubmit = async (values: WizardFormValues) => {
-    const requiredIds = getRequiredQuestionIds(wizard);
-    const missingRequired = requiredIds.filter((id) => !values.answers?.[id]);
-
-    if (missingRequired.length) {
-      const firstMissing = missingRequired[0];
-      const targetStep = sectionSteps.findIndex((step) =>
-        step.questions.some((question) => question.id === firstMissing)
-      );
-      setQuestionErrors({ [firstMissing]: "Veuillez répondre à cette question." });
-      if (targetStep >= 0) {
-        goToStep(targetStep);
-      }
-      toast.error("Le questionnaire doit être complété avant de générer le rapport.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const leadCapture: LeadCaptureInput = {
-      contactName: values.contactName,
-      companyName: values.companyName,
-      email: values.email,
-      phone: values.phone ?? "",
-      consentMarketing: values.consentMarketing ?? false
-    };
-
+  const generatePreview = async () => {
+    setGenerationError(null);
+    setIsGenerating(true);
     try {
-      const response = await fetch("/api/assessment", {
+      const response = await fetch("/api/assessment/preview", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          assessmentType,
-          leadCapture,
-          answers: values.answers,
-          attribution: getFirstTouchAttribution()
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assessmentType, answers })
       });
+      const payload = (await response.json()) as AssessmentPreviewResponse & {
+        error?: string;
+      };
 
-      const payload = (await response.json()) as AssessmentApiResponse & { error?: string };
+      if (!response.ok)
+        throw new Error(
+          payload.error ||
+            "Impossible de calculer votre résultat pour le moment."
+        );
 
-      if (!response.ok) {
-        throw new Error(payload.error || "Impossible de générer le rapport pour le moment.");
-      }
-
-      const nextResultState: WizardResultState = deepRepairText({
+      const preview: WizardResultState = deepRepairText({
+        kind: "preview",
         ...payload,
-        assessmentType,
-        leadCapture,
-        answers: values.answers
+        answers
       });
-
       clearWizardDraft(assessmentType);
-      saveWizardPersistedResult(nextResultState, assessmentType);
-      setResultState(nextResultState);
+      saveWizardPersistedResult(preview, assessmentType);
+      setResultState(preview);
       setLastSavedAt(null);
-      toast.success("Résumé gratuit généré avec succès.");
+      trackAnalyticsEvent("diagnostic_preview_generated", {
+        diagnostic_type: assessmentType,
+        score: payload.scoreResult.overallScore
+      });
+      toast.success("Votre résultat gratuit est prêt.");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Une erreur est survenue.");
+      const message =
+        error instanceof Error ? error.message : "Une erreur est survenue.";
+      setGenerationError(message);
+      toast.error(message);
     } finally {
-      setIsSubmitting(false);
+      setIsGenerating(false);
     }
+  };
+
+  const handleNext = async () => {
+    if (!validateCurrentStep()) return;
+
+    trackAnalyticsEvent("diagnostic_section_complete", {
+      diagnostic_type: assessmentType,
+      section: currentStep.id
+    });
+
+    if (currentStepIndex < steps.length - 1) {
+      goToStep(currentStepIndex + 1);
+      return;
+    }
+
+    await generatePreview();
   };
 
   const handleAnswerChange = (questionId: string, value: string) => {
@@ -348,36 +299,94 @@ export function AssessmentWizard({
     });
   };
 
-  const handleRestart = () => {
-    clearWizardDraft(assessmentType);
-    clearWizardPersistedResult(assessmentType);
-    form.reset(createEmptyDraft());
-    setQuestionErrors({});
-    setCurrentStepIndex(0);
-    setResultState(null);
-    setPendingDraft(null);
-    setLastSavedAt(null);
-    toast.success("L'assistant a été remis à zéro.");
+  const handleSavePreview = async (
+    email: string,
+    consentMarketing: boolean
+  ) => {
+    if (!resultState || resultState.kind !== "preview") return;
+
+    const response = await fetch("/api/assessment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        assessmentType,
+        email,
+        consentMarketing,
+        answers: resultState.answers,
+        attribution: getFirstTouchAttribution()
+      })
+    });
+    const payload = (await response.json()) as AssessmentApiResponse & {
+      error?: string;
+    };
+    if (!response.ok)
+      throw new Error(
+        payload.error ||
+          "Impossible de sauvegarder votre résultat pour le moment."
+      );
+
+    const saved: SavedAssessmentState = deepRepairText({
+      kind: "saved",
+      ...payload,
+      leadCapture: {
+        contactName: "",
+        companyName: "",
+        email,
+        phone: "",
+        consentMarketing
+      },
+      answers: resultState.answers
+    });
+    saveWizardPersistedResult(saved, assessmentType);
+    setResultState(saved);
+    trackAnalyticsEvent("diagnostic_saved", {
+      diagnostic_type: assessmentType
+    });
+    toast.success(
+      "Votre résultat est sauvegardé. Un lien sécurisé vous a été envoyé."
+    );
+  };
+
+  const handleProfileSaved = (contactName: string, companyName: string) => {
+    setResultState((current) => {
+      if (!current || current.kind !== "saved") return current;
+      const next: SavedAssessmentState = {
+        ...current,
+        leadCapture: { ...current.leadCapture, contactName, companyName }
+      };
+      saveWizardPersistedResult(next, assessmentType);
+      return next;
+    });
   };
 
   const handleEditResult = () => {
     clearWizardPersistedResult(assessmentType);
     setResultState(null);
     setLastSavedAt(null);
-    toast.success("Vous pouvez ajuster vos réponses et régénérer le résumé.");
+    toast.success(
+      "Vous pouvez ajuster vos réponses et recalculer votre résultat."
+    );
+  };
+
+  const handleRestart = () => {
+    clearWizardDraft(assessmentType);
+    clearWizardPersistedResult(assessmentType);
+    form.reset({ answers: {} });
+    setQuestionErrors({});
+    setCurrentStepIndex(0);
+    setResultState(null);
+    setPendingDraft(null);
+    setLastSavedAt(null);
+    toast.success("L’assistant a été remis à zéro.");
   };
 
   if (resultState) {
     return (
       <LiteResultView
-        assessmentType={assessmentType}
-        leadCapture={resultState.leadCapture}
-        scoreResult={resultState.scoreResult}
-        liteReport={resultState.liteReport}
-        assessmentId={resultState.assessmentId}
-        accessToken={resultState.accessToken}
-        paymentStatus={resultState.paymentStatus}
+        resultState={resultState}
         priceLabel={reportUnlockPriceLabel}
+        onSavePreview={handleSavePreview}
+        onProfileSaved={handleProfileSaved}
         onEdit={handleEditResult}
         onRestart={handleRestart}
         mainHeadingLevel="h2"
@@ -394,8 +403,14 @@ export function AssessmentWizard({
               <CardTitle>Progression</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Progress value={completionPercent} aria-label="Progression du questionnaire" />
-              <p className="text-sm text-muted-foreground">{completionPercent}% complété</p>
+              <Progress
+                value={completionPercent}
+                aria-label="Progression du questionnaire"
+              />
+              <p className="text-sm text-muted-foreground">
+                {answeredCount} question{answeredCount > 1 ? "s" : ""} sur{" "}
+                {wizard.questions.length}
+              </p>
             </CardContent>
           </Card>
           <WizardStepper steps={steps} currentStepIndex={currentStepIndex} />
@@ -408,16 +423,20 @@ export function AssessmentWizard({
                 <div className="space-y-2">
                   <p className="eyebrow">Sauvegarde trouvée</p>
                   <p className="text-sm leading-7 text-muted-foreground">
-                    Une progression locale a été trouvée dans ce navigateur. Vous pouvez reprendre ou repartir à neuf.
+                    Une progression locale a été trouvée dans ce navigateur.
+                    Vous pouvez la reprendre ou repartir à neuf.
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button type="button" onClick={handleRestoreDraft}>
                     Reprendre ma progression
                   </Button>
-                  <Button type="button" variant="secondary" onClick={handleDiscardDraft}>
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Recommencer
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={handleDiscardDraft}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" /> Recommencer
                   </Button>
                 </div>
               </CardContent>
@@ -425,74 +444,52 @@ export function AssessmentWizard({
           ) : null}
 
           <Card className="overflow-hidden">
-            <CardContent className="space-y-6 p-8">
+            <CardContent className="space-y-6 p-6 md:p-8">
               <div className="flex flex-wrap items-center gap-3">
-                <p className="eyebrow">{currentStep.kind === "questions" ? "Questionnaire" : "Coordonnées"}</p>
+                <p className="eyebrow">Questionnaire</p>
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <ShieldCheck className="h-3.5 w-3.5" />{" "}
                   {diagnostic.disclaimerBadge}
                 </div>
               </div>
               <div className="space-y-3">
-                <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">{currentStep.title}</h2>
+                <h2 className="font-heading text-3xl font-semibold tracking-tight md:text-4xl">
+                  {currentStep.title}
+                </h2>
                 <p className="text-lg leading-8 text-muted-foreground">
-                  {currentStep.description || "Répondez avec franchise pour obtenir un portrait plus utile."}
+                  {currentStep.description ||
+                    "Répondez avec franchise pour obtenir un portrait plus utile."}
                 </p>
               </div>
-              <div className="rounded-[24px] border border-border/70 bg-muted/30 p-5 text-sm leading-7 text-muted-foreground">
-                Vos réponses sont gardées localement dans ce navigateur pendant votre progression et expirent
-                automatiquement après 30 jours. Votre brouillon est enregistré sur cet appareil. Si vous effacez les
-                données du site, il sera perdu.
-              </div>
+              <p className="rounded-[24px] border border-border/70 bg-muted/30 p-5 text-sm leading-7 text-muted-foreground">
+                Vos réponses restent sur cet appareil pendant votre progression.
+                Aucun dossier n’est créé avant que vous choisissiez de
+                sauvegarder votre résultat par courriel.
+              </p>
             </CardContent>
           </Card>
 
-          {currentStep.kind === "questions" ? (
-            <div className="space-y-5">
-              {currentStep.questions.map((question) => (
-                <QuestionField
-                  key={question.id}
-                  question={question}
-                  value={answers[question.id]}
-                  error={questionErrors[question.id]}
-                  onChange={(value) => handleAnswerChange(question.id, value)}
-                />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="space-y-5 p-8">
-                {wizard.leadCapture.fields.map((field) => (
-                  <div key={field.id} className="space-y-2">
-                    <Label htmlFor={field.id}>{field.label}</Label>
-                    <Input id={field.id} type={field.type} {...form.register(field.id)} />
-                    {form.formState.errors[field.id] ? (
-                      <p className="text-sm text-destructive">{form.formState.errors[field.id]?.message}</p>
-                    ) : null}
-                  </div>
-                ))}
+          <div className="space-y-5" aria-live="polite">
+            {currentStep.questions.map((question) => (
+              <QuestionField
+                key={question.id}
+                question={question}
+                value={answers[question.id]}
+                error={questionErrors[question.id]}
+                onChange={(value) => handleAnswerChange(question.id, value)}
+              />
+            ))}
+          </div>
 
-                <div className="flex items-start gap-3 rounded-[24px] border border-border/80 bg-muted/40 p-4">
-                  <Controller
-                    control={form.control}
-                    name="consentMarketing"
-                    render={({ field }) => (
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={(checked) => field.onChange(Boolean(checked))}
-                        aria-label={wizard.leadCapture.consent.label}
-                      />
-                    )}
-                  />
-                  <Label className="leading-6 text-muted-foreground">{wizard.leadCapture.consent.label}</Label>
-                </div>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  En soumettant, vous confirmez avoir lu la politique de confidentialité et vous pouvez exercer vos
-                  droits via la page Demande confidentialité.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+          {generationError ? (
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
+            >
+              {generationError}
+            </div>
+          ) : null}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1 text-sm text-muted-foreground">
@@ -500,39 +497,45 @@ export function AssessmentWizard({
                 Étape {currentStepIndex + 1} sur {steps.length}
               </p>
               <p className="text-xs text-muted-foreground/80">
-                Dernière sauvegarde: {lastSavedAt ? formatLastSaved(lastSavedAt) : "pas encore"}
+                Dernière sauvegarde :{" "}
+                {lastSavedAt
+                  ? formatLastSaved(lastSavedAt)
+                  : "automatique sur cet appareil"}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               {currentStepIndex > 0 ? (
-                <Button type="button" variant="secondary" onClick={() => goToStep(currentStepIndex - 1)}>
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Retour
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => goToStep(currentStepIndex - 1)}
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Retour
                 </Button>
               ) : null}
-
               <Button
                 type="button"
                 variant="secondary"
                 onClick={() => {
-                  saveDraftSnapshot();
+                  saveWizardDraft(buildDraft(answers), assessmentType);
+                  setLastSavedAt(new Date().toISOString());
                   toast.success("Brouillon enregistré localement.");
                 }}
               >
-                <Save className="mr-2 h-4 w-4" />
-                Sauvegarder
+                <Save className="mr-2 h-4 w-4" /> Sauvegarder
               </Button>
-
-              <Button type="button" onClick={handleNext} disabled={isSubmitting}>
-                {currentStep.kind === "lead" ? (
-                  isSubmitting ? (
-                    "Generation..."
-                  ) : (
-                    "Voir mon résumé gratuit"
-                  )
+              <Button
+                type="button"
+                onClick={handleNext}
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  "Calcul en cours…"
+                ) : currentStepIndex === steps.length - 1 ? (
+                  "Voir mon score gratuit"
                 ) : (
                   <>
-                    Continuer
+                    <span>Continuer</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </>
                 )}

@@ -18,14 +18,23 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   const TitleTag = titleLevel === "h1" ? "h1" : "h2";
   return (
-    <div className={cn("space-y-4", align === "center" && "mx-auto max-w-2xl text-center")}>
+    <div
+      className={cn(
+        "space-y-4",
+        align === "center" && "mx-auto max-w-2xl text-center"
+      )}
+    >
       {eyebrow ? (
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">{eyebrow}</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+          {eyebrow}
+        </p>
       ) : null}
       <TitleTag className="font-heading text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
         {title}
       </TitleTag>
-      {description ? <p className="text-lg leading-8 text-muted-foreground">{description}</p> : null}
+      {description ? (
+        <p className="text-lg leading-8 text-muted-foreground">{description}</p>
+      ) : null}
     </div>
   );
 }

@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PurchaseTracker } from "@/components/analytics/purchase-tracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { findAssessmentById, findAssessmentByStripeSessionId, markAssessmentPaid } from "@/lib/assessment-store";
-import { getDiagnosticConfig, normalizeAssessmentType } from "@/lib/diagnostics";
+import {
+  findAssessmentById,
+  findAssessmentByStripeSessionId,
+  markAssessmentPaid
+} from "@/lib/assessment-store";
+import {
+  getDiagnosticConfig,
+  normalizeAssessmentType
+} from "@/lib/diagnostics";
+import { areExternalServicesDisabled } from "@/lib/external-services";
 import { checkoutSearchParamsSchema } from "@/lib/schemas";
 import { getStripeClient } from "@/lib/stripe";
 
@@ -18,7 +27,8 @@ type MerciPageProps = {
 };
 
 function normalizeMerciSearchParams(raw: MerciSearchParamsInput | undefined) {
-  const pick = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value);
+  const pick = (value: string | string[] | undefined) =>
+    Array.isArray(value) ? value[0] : value;
 
   return {
     session_id: pick(raw?.session_id),
@@ -39,7 +49,9 @@ export const metadata: Metadata = {
 
 export default async function MerciPage({ searchParams }: MerciPageProps) {
   const raw = await Promise.resolve(searchParams ?? {});
-  const parsed = checkoutSearchParamsSchema.safeParse(normalizeMerciSearchParams(raw));
+  const parsed = checkoutSearchParamsSchema.safeParse(
+    normalizeMerciSearchParams(raw)
+  );
   const resolved = parsed.success ? parsed.data : {};
   const isContact = resolved.source === "contact";
 
@@ -49,9 +61,12 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
         <Card className="mx-auto max-w-3xl">
           <CardContent className="space-y-6 p-10 text-center">
             <p className="eyebrow">Merci</p>
-            <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">Votre message a bien été reçu.</h1>
+            <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">
+              Votre message a bien été reçu.
+            </h1>
             <p className="text-lg leading-8 text-muted-foreground">
-              On reviendra vers vous rapidement avec une prochaine étape adaptée à votre contexte.
+              On reviendra vers vous rapidement avec une prochaine étape adaptée
+              à votre contexte.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild>
@@ -73,13 +88,27 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
   let paymentConfirmed = false;
   let customerName = "";
   let companyName = "";
+  let purchasedAssessmentType: ReturnType<
+    typeof normalizeAssessmentType
+  > | null = null;
 
-  if (resolved.session_id && process.env.STRIPE_SECRET_KEY) {
+  if (
+    resolved.session_id &&
+    process.env.STRIPE_SECRET_KEY &&
+    !areExternalServicesDisabled()
+  ) {
     try {
       const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(resolved.session_id);
-      const assessmentId = session.metadata?.assessmentId || session.client_reference_id || undefined;
-      let assessment = assessmentId ? await findAssessmentById(assessmentId) : await findAssessmentByStripeSessionId(session.id);
+      const session = await stripe.checkout.sessions.retrieve(
+        resolved.session_id
+      );
+      const assessmentId =
+        session.metadata?.assessmentId ||
+        session.client_reference_id ||
+        undefined;
+      let assessment = assessmentId
+        ? await findAssessmentById(assessmentId)
+        : await findAssessmentByStripeSessionId(session.id);
 
       if (
         assessment &&
@@ -90,18 +119,29 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
           assessmentId: assessment.id,
           stripeSessionId: session.id,
           stripePaymentIntentId:
-            typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id || null
+            typeof session.payment_intent === "string"
+              ? session.payment_intent
+              : session.payment_intent?.id || null
         });
       }
 
-      if (assessment && (assessment.paymentStatus === "paid" || session.payment_status === "paid")) {
-        const diagnostic = getDiagnosticConfig(normalizeAssessmentType(assessment.assessmentType));
+      if (
+        assessment &&
+        (assessment.paymentStatus === "paid" ||
+          session.payment_status === "paid")
+      ) {
+        const diagnostic = getDiagnosticConfig(
+          normalizeAssessmentType(assessment.assessmentType)
+        );
+        purchasedAssessmentType = normalizeAssessmentType(
+          assessment.assessmentType
+        );
         paymentConfirmed = true;
         reportHref = diagnostic.reportPath(assessment.accessToken);
         serviceHref = diagnostic.path;
         serviceLabel = diagnostic.label;
-        customerName = assessment.contactName;
-        companyName = assessment.companyName;
+        customerName = assessment.contactName || "";
+        companyName = assessment.companyName || "";
       }
     } catch (error) {
       console.error("Merci page Stripe error", error);
@@ -110,11 +150,16 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
 
   return (
     <section className="container py-16 md:py-24">
+      {paymentConfirmed && purchasedAssessmentType ? (
+        <PurchaseTracker assessmentType={purchasedAssessmentType} />
+      ) : null}
       <Card className="mx-auto max-w-3xl">
         <CardContent className="space-y-6 p-10 text-center">
           <p className="eyebrow">Merci</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-5xl">
-            {paymentConfirmed ? "Paiement confirmé" : "Votre paiement est en cours de validation"}
+            {paymentConfirmed
+              ? "Paiement confirmé"
+              : "Votre paiement est en cours de validation"}
           </h1>
           <p className="text-lg leading-8 text-muted-foreground">
             {paymentConfirmed
@@ -128,7 +173,9 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
               </Button>
             ) : (
               <Button asChild>
-                <Link href="/contact?source=paiement-diagnostic">Nous joindre</Link>
+                <Link href="/contact?source=paiement-diagnostic">
+                  Nous joindre
+                </Link>
               </Button>
             )}
             <Button asChild variant="secondary">

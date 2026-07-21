@@ -27,22 +27,32 @@ export function ServicePageTemplate({
       <section className="container py-16 md:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
           <div className="space-y-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">{eyebrow}</p>
-            <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">{title}</h1>
-            <p className="max-w-2xl text-lg leading-8 text-muted-foreground">{intro}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+              {eyebrow}
+            </p>
+            <h1 className="font-heading text-4xl font-semibold tracking-tight md:text-6xl">
+              {title}
+            </h1>
+            <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+              {intro}
+            </p>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild>
                 <Link href="/contact">Demander une proposition</Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link href="/loi-25/wizard">Faire mon auto-évaluation Loi 25</Link>
+                <Link href="/loi-25/wizard">
+                  Faire mon auto-évaluation Loi 25
+                </Link>
               </Button>
             </div>
           </div>
 
           <Card className="bg-white/85">
             <CardContent className="space-y-4 p-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Ce qu’on travaille</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+                Ce qu’on travaille
+              </p>
               <ul className="space-y-3 text-sm leading-7 text-muted-foreground">
                 {bullets.map((item) => (
                   <li key={item} className="flex gap-3">

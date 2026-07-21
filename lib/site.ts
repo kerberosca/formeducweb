@@ -1,12 +1,13 @@
 export const siteConfig = {
   name: "ForméducWeb",
-  description: "Diagnostics Loi 25, cybersécurité et IA pour améliorer l'hygiène informatique des PME et OBNL du Québec.",
+  description:
+    "Diagnostics Loi 25, cybersécurité et IA pour améliorer l'hygiène informatique des PME et OBNL du Québec.",
   locale: "fr-CA",
-  territory: "Base au Québec",
+  territory: "Basé au Québec",
   email: "info@formeducweb.ca",
   phone: "",
   address: "101-5121 av. Chauveau Ouest, Québec (Québec) G2E 5A6, Canada",
-  bookingUrl: process.env.NEXT_PUBLIC_BOOKING_URL || "/contact?source=appel-diagnostic"
+  bookingUrl: "/contact?source=appel-diagnostic"
 };
 
 export const mainNavigation = [

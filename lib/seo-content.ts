@@ -53,7 +53,8 @@ export const seoSupportPages: SeoSupportPage[] = [
     slug: "10-gestes",
     path: "/hygiene-informatique/10-gestes",
     eyebrow: "Hygiène informatique",
-    title: "Sécurité informatique PME: 10 gestes simples pour protéger vos données",
+    title:
+      "Sécurité informatique PME: 10 gestes simples pour protéger vos données",
     shortTitle: "10 gestes essentiels",
     description:
       "Dix gestes simples pour améliorer la sécurité informatique d'une PME: données, accès, sauvegardes, courriels, IA et confiance client.",
@@ -116,7 +117,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Choisir un diagnostic",
     secondaryCtaHref: "/contact?source=seo-hygiene-10-gestes",
     secondaryCtaLabel: "Parler de mon contexte",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/cybersecurite/mfa-pme", "/intelligence-artificielle/charte-ia-pme"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/cybersecurite/mfa-pme",
+      "/intelligence-artificielle/charte-ia-pme"
+    ]
   },
   {
     theme: "hygiene",
@@ -180,14 +185,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Obtenir mon score",
     secondaryCtaHref: "/contact?source=seo-score-hygiene",
     secondaryCtaLabel: "Demander conseil",
-    relatedPaths: ["/hygiene-informatique/10-gestes", "/cybersecurite/sauvegardes-restauration", "/loi-25/resume-loi-25"]
+    relatedPaths: [
+      "/hygiene-informatique/10-gestes",
+      "/cybersecurite/sauvegardes-restauration",
+      "/loi-25/resume-loi-25"
+    ]
   },
   {
     theme: "hygiene",
     slug: "confiance-client",
     path: "/hygiene-informatique/confiance-client",
     eyebrow: "Confiance",
-    title: "Protection des données clients: un avantage de confiance pour les PME",
+    title:
+      "Protection des données clients: un avantage de confiance pour les PME",
     shortTitle: "Confiance client",
     description:
       "Pourquoi la protection des données clients aide les PME à inspirer confiance, répondre plus vite et mieux gérer les informations confiées.",
@@ -240,7 +250,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer ma base numérique",
     secondaryCtaHref: "/contact?source=seo-confiance-client",
     secondaryCtaLabel: "Parler à ForméducWeb",
-    relatedPaths: ["/loi-25/formulaires-web", "/intelligence-artificielle/donnees-sensibles-outils-ia", "/cybersecurite/courriels-frauduleux"]
+    relatedPaths: [
+      "/loi-25/formulaires-web",
+      "/intelligence-artificielle/donnees-sensibles-outils-ia",
+      "/cybersecurite/courriels-frauduleux"
+    ]
   },
   {
     theme: "loi25",
@@ -305,7 +319,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Faire mon diagnostic Loi 25",
     secondaryCtaHref: "/contact?source=seo-resume-loi25",
     secondaryCtaLabel: "Parler de la Loi 25",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/loi-25/formulaires-web", "/loi-25/conservation-suppression-donnees"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/loi-25/formulaires-web",
+      "/loi-25/conservation-suppression-donnees"
+    ]
   },
   {
     theme: "loi25",
@@ -369,7 +387,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer mes pratiques Loi 25",
     secondaryCtaHref: "/contact?source=seo-inventaire-donnees",
     secondaryCtaLabel: "Demander de l'aide",
-    relatedPaths: ["/loi-25/resume-loi-25", "/loi-25/formulaires-web", "/cybersecurite/acces-employes"]
+    relatedPaths: [
+      "/loi-25/resume-loi-25",
+      "/loi-25/formulaires-web",
+      "/cybersecurite/acces-employes"
+    ]
   },
   {
     theme: "loi25",
@@ -433,14 +455,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Vérifier mes formulaires",
     secondaryCtaHref: "/contact?source=seo-formulaires-loi25",
     secondaryCtaLabel: "Parler de mes formulaires",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/hygiene-informatique/confiance-client", "/services/site-web"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/hygiene-informatique/confiance-client",
+      "/services/site-web"
+    ]
   },
   {
     theme: "loi25",
     slug: "conservation-suppression-donnees",
     path: "/loi-25/conservation-suppression-donnees",
     eyebrow: "Conservation",
-    title: "Conservation des données personnelles: supprimer sans perdre le contrôle",
+    title:
+      "Conservation des données personnelles: supprimer sans perdre le contrôle",
     shortTitle: "Conservation des données",
     description:
       "Comment une PME peut aborder la conservation et la suppression des données personnelles avec une approche simple et positive.",
@@ -492,7 +519,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Prioriser mon ménage Loi 25",
     secondaryCtaHref: "/contact?source=seo-conservation-donnees",
     secondaryCtaLabel: "Valider mes priorités",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/cybersecurite/acces-employes", "/hygiene-informatique/10-gestes"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/cybersecurite/acces-employes",
+      "/hygiene-informatique/10-gestes"
+    ]
   },
   {
     theme: "loi25",
@@ -551,14 +582,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Tester ma préparation",
     secondaryCtaHref: "/demande-confidentialite",
     secondaryCtaLabel: "Voir le parcours de demande",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/loi-25/resume-loi-25", "/politique-confidentialite"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/loi-25/resume-loi-25",
+      "/politique-confidentialite"
+    ]
   },
   {
     theme: "cybersecurity",
     slug: "mfa-pme",
     path: "/cybersecurite/mfa-pme",
     eyebrow: "Accès",
-    title: "Authentification multifacteur MFA pour PME: protéger les comptes importants",
+    title:
+      "Authentification multifacteur MFA pour PME: protéger les comptes importants",
     shortTitle: "MFA pour PME",
     description:
       "Pourquoi activer l'authentification multifacteur MFA sur les comptes importants améliore rapidement la cybersécurité d'une PME.",
@@ -611,14 +647,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer ma posture cyber",
     secondaryCtaHref: "/contact?source=seo-mfa-pme",
     secondaryCtaLabel: "Planifier la MFA",
-    relatedPaths: ["/cybersecurite/acces-employes", "/cybersecurite/courriels-frauduleux", "/hygiene-informatique/10-gestes"]
+    relatedPaths: [
+      "/cybersecurite/acces-employes",
+      "/cybersecurite/courriels-frauduleux",
+      "/hygiene-informatique/10-gestes"
+    ]
   },
   {
     theme: "cybersecurity",
     slug: "sauvegardes-restauration",
     path: "/cybersecurite/sauvegardes-restauration",
     eyebrow: "Sauvegardes",
-    title: "Sauvegarde informatique PME: tester la restauration avant l'urgence",
+    title:
+      "Sauvegarde informatique PME: tester la restauration avant l'urgence",
     shortTitle: "Sauvegardes",
     description:
       "Comment vérifier la sauvegarde informatique d'une PME et tester la restauration pour réduire les risques opérationnels.",
@@ -671,14 +712,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Vérifier mes sauvegardes",
     secondaryCtaHref: "/contact?source=seo-sauvegardes",
     secondaryCtaLabel: "Préparer un test",
-    relatedPaths: ["/cybersecurite/procedure-incident", "/cybersecurite/mises-a-jour", "/hygiene-informatique/score-hygiene-informatique-pme"]
+    relatedPaths: [
+      "/cybersecurite/procedure-incident",
+      "/cybersecurite/mises-a-jour",
+      "/hygiene-informatique/score-hygiene-informatique-pme"
+    ]
   },
   {
     theme: "cybersecurity",
     slug: "acces-employes",
     path: "/cybersecurite/acces-employes",
     eyebrow: "Accès",
-    title: "Gestion des accès employés: sécuriser les comptes et les données PME",
+    title:
+      "Gestion des accès employés: sécuriser les comptes et les données PME",
     shortTitle: "Accès employés",
     description:
       "Bonnes pratiques simples pour gérer les accès employés, comptes partagés, départs et droits administrateurs dans une PME.",
@@ -730,7 +776,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Diagnostiquer mes accès",
     secondaryCtaHref: "/contact?source=seo-acces-employes",
     secondaryCtaLabel: "Revoir les accès",
-    relatedPaths: ["/loi-25/inventaire-donnees", "/cybersecurite/mfa-pme", "/loi-25/conservation-suppression-donnees"]
+    relatedPaths: [
+      "/loi-25/inventaire-donnees",
+      "/cybersecurite/mfa-pme",
+      "/loi-25/conservation-suppression-donnees"
+    ]
   },
   {
     theme: "cybersecurity",
@@ -789,7 +839,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer mes réflexes cyber",
     secondaryCtaHref: "/contact?source=seo-courriels-frauduleux",
     secondaryCtaLabel: "Préparer une procédure",
-    relatedPaths: ["/cybersecurite/procedure-incident", "/cybersecurite/mfa-pme", "/hygiene-informatique/confiance-client"]
+    relatedPaths: [
+      "/cybersecurite/procedure-incident",
+      "/cybersecurite/mfa-pme",
+      "/hygiene-informatique/confiance-client"
+    ]
   },
   {
     theme: "cybersecurity",
@@ -849,7 +903,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Vérifier ma routine",
     secondaryCtaHref: "/contact?source=seo-mises-a-jour",
     secondaryCtaLabel: "Structurer la maintenance",
-    relatedPaths: ["/cybersecurite/sauvegardes-restauration", "/services/site-web", "/hygiene-informatique/10-gestes"]
+    relatedPaths: [
+      "/cybersecurite/sauvegardes-restauration",
+      "/services/site-web",
+      "/hygiene-informatique/10-gestes"
+    ]
   },
   {
     theme: "cybersecurity",
@@ -908,14 +966,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Tester ma préparation",
     secondaryCtaHref: "/contact?source=seo-procedure-incident",
     secondaryCtaLabel: "Créer ma procédure",
-    relatedPaths: ["/cybersecurite/courriels-frauduleux", "/cybersecurite/sauvegardes-restauration", "/loi-25/acces-renseignements-personnels"]
+    relatedPaths: [
+      "/cybersecurite/courriels-frauduleux",
+      "/cybersecurite/sauvegardes-restauration",
+      "/loi-25/acces-renseignements-personnels"
+    ]
   },
   {
     theme: "ai",
     slug: "charte-ia-pme",
     path: "/intelligence-artificielle/charte-ia-pme",
     eyebrow: "Gouvernance IA",
-    title: "Charte IA pour PME: encadrer l'intelligence artificielle en entreprise",
+    title:
+      "Charte IA pour PME: encadrer l'intelligence artificielle en entreprise",
     shortTitle: "Charte IA PME",
     description:
       "Créer une charte IA courte pour PME: usages permis, données sensibles, validation humaine et règles d'équipe.",
@@ -967,14 +1030,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer mes pratiques IA",
     secondaryCtaHref: "/contact?source=seo-charte-ia",
     secondaryCtaLabel: "Créer une charte IA",
-    relatedPaths: ["/intelligence-artificielle/donnees-sensibles-outils-ia", "/intelligence-artificielle/validation-humaine", "/hygiene-informatique/10-gestes"]
+    relatedPaths: [
+      "/intelligence-artificielle/donnees-sensibles-outils-ia",
+      "/intelligence-artificielle/validation-humaine",
+      "/hygiene-informatique/10-gestes"
+    ]
   },
   {
     theme: "ai",
     slug: "donnees-sensibles-outils-ia",
     path: "/intelligence-artificielle/donnees-sensibles-outils-ia",
     eyebrow: "Données IA",
-    title: "Données confidentielles et IA: quoi éviter dans les outils d'intelligence artificielle",
+    title:
+      "Données confidentielles et IA: quoi éviter dans les outils d'intelligence artificielle",
     shortTitle: "Données sensibles IA",
     description:
       "Bonnes pratiques pour éviter d'exposer des données confidentielles ou sensibles dans les outils d'intelligence artificielle.",
@@ -1026,14 +1094,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Diagnostiquer mes usages IA",
     secondaryCtaHref: "/contact?source=seo-donnees-ia",
     secondaryCtaLabel: "Encadrer les données IA",
-    relatedPaths: ["/intelligence-artificielle/charte-ia-pme", "/loi-25/inventaire-donnees", "/hygiene-informatique/confiance-client"]
+    relatedPaths: [
+      "/intelligence-artificielle/charte-ia-pme",
+      "/loi-25/inventaire-donnees",
+      "/hygiene-informatique/confiance-client"
+    ]
   },
   {
     theme: "ai",
     slug: "validation-humaine",
     path: "/intelligence-artificielle/validation-humaine",
     eyebrow: "Qualité",
-    title: "Validation humaine de l'IA en entreprise: qualité, contexte et responsabilité",
+    title:
+      "Validation humaine de l'IA en entreprise: qualité, contexte et responsabilité",
     shortTitle: "Validation humaine",
     description:
       "Pourquoi la validation humaine est essentielle dans les usages IA en entreprise: faits, ton, décisions et responsabilité.",
@@ -1085,14 +1158,19 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Évaluer mes garde-fous IA",
     secondaryCtaHref: "/contact?source=seo-validation-ia",
     secondaryCtaLabel: "Former mon équipe",
-    relatedPaths: ["/intelligence-artificielle/charte-ia-pme", "/intelligence-artificielle/cas-usage-productifs", "/hygiene-informatique/score-hygiene-informatique-pme"]
+    relatedPaths: [
+      "/intelligence-artificielle/charte-ia-pme",
+      "/intelligence-artificielle/cas-usage-productifs",
+      "/hygiene-informatique/score-hygiene-informatique-pme"
+    ]
   },
   {
     theme: "ai",
     slug: "choix-outils-ia",
     path: "/intelligence-artificielle/choix-outils-ia",
     eyebrow: "Outils IA",
-    title: "Outils IA pour PME: choisir selon les besoins, les données et les risques",
+    title:
+      "Outils IA pour PME: choisir selon les besoins, les données et les risques",
     shortTitle: "Choix des outils IA",
     description:
       "Comment choisir des outils IA pour PME en partant des besoins, des données, des risques et de l'adoption réelle.",
@@ -1144,7 +1222,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Clarifier mes besoins IA",
     secondaryCtaHref: "/contact?source=seo-choix-outils-ia",
     secondaryCtaLabel: "Choisir un outil IA",
-    relatedPaths: ["/intelligence-artificielle/cas-usage-productifs", "/intelligence-artificielle/donnees-sensibles-outils-ia", "/intelligence-artificielle/charte-ia-pme"]
+    relatedPaths: [
+      "/intelligence-artificielle/cas-usage-productifs",
+      "/intelligence-artificielle/donnees-sensibles-outils-ia",
+      "/intelligence-artificielle/charte-ia-pme"
+    ]
   },
   {
     theme: "ai",
@@ -1203,7 +1285,11 @@ export const seoSupportPages: SeoSupportPage[] = [
     primaryCtaLabel: "Trouver mes cas d'usage",
     secondaryCtaHref: "/contact?source=seo-cas-usage-ia",
     secondaryCtaLabel: "Faire un atelier IA",
-    relatedPaths: ["/intelligence-artificielle/choix-outils-ia", "/intelligence-artificielle/validation-humaine", "/hygiene-informatique/confiance-client"]
+    relatedPaths: [
+      "/intelligence-artificielle/choix-outils-ia",
+      "/intelligence-artificielle/validation-humaine",
+      "/hygiene-informatique/confiance-client"
+    ]
   }
 ];
 
@@ -1219,7 +1305,8 @@ export const pillarSeoContent: Record<
 > = {
   loi25: {
     eyebrow: "Réponse rapide",
-    title: "La Loi 25 est un bon point de départ pour améliorer l'hygiène informatique.",
+    title:
+      "La Loi 25 est un bon point de départ pour améliorer l'hygiène informatique.",
     answer:
       "Pour une PME, la Loi 25 ne devrait pas être seulement une obligation. Elle peut servir à mieux connaître les données, rendre les formulaires plus clairs, réduire les accès inutiles et inspirer confiance aux clients.",
     bullets: [
@@ -1231,7 +1318,8 @@ export const pillarSeoContent: Record<
   },
   cybersecurity: {
     eyebrow: "Réponse rapide",
-    title: "La cybersécurité PME commence par une hygiène informatique réaliste.",
+    title:
+      "La cybersécurité PME commence par une hygiène informatique réaliste.",
     answer:
       "Avant d'acheter des outils, une PME gagne à vérifier les bases: MFA, sauvegardes, accès employés, courriels suspects, mises à jour et procédure d'incident. Ces gestes réduisent les risques et rendent l'équipe plus confiante.",
     bullets: [
@@ -1243,7 +1331,8 @@ export const pillarSeoContent: Record<
   },
   ai: {
     eyebrow: "Réponse rapide",
-    title: "Une bonne hygiène IA permet d'adopter l'intelligence artificielle avec plus de confiance.",
+    title:
+      "Une bonne hygiène IA permet d'adopter l'intelligence artificielle avec plus de confiance.",
     answer:
       "L'IA peut aider une PME à gagner du temps, mais elle doit être encadrée: données sensibles, cas d'usage utiles, validation humaine et choix d'outils. Le but est de rendre l'IA productive sans exposer l'entreprise.",
     bullets: [
@@ -1260,7 +1349,11 @@ export function getSeoSupportPagesByTheme(theme: SeoSupportTheme) {
 }
 
 export function getSeoSupportPage(theme: SeoSupportTheme, slug: string) {
-  return seoSupportPages.find((page) => page.theme === theme && page.slug === slug) ?? null;
+  return (
+    seoSupportPages.find(
+      (page) => page.theme === theme && page.slug === slug
+    ) ?? null
+  );
 }
 
 export function getSeoSupportPageByPath(path: string) {
@@ -1270,11 +1363,18 @@ export function getSeoSupportPageByPath(path: string) {
 export function getRelatedSeoPages(page: SeoSupportPage) {
   const explicitPages = page.relatedPaths
     .map((path) => getSeoSupportPageByPath(path))
-    .filter((relatedPage): relatedPage is SeoSupportPage => Boolean(relatedPage));
+    .filter((relatedPage): relatedPage is SeoSupportPage =>
+      Boolean(relatedPage)
+    );
 
   if (explicitPages.length > 0) {
     return explicitPages;
   }
 
-  return seoSupportPages.filter((candidate) => candidate.theme === page.theme && candidate.path !== page.path).slice(0, 3);
+  return seoSupportPages
+    .filter(
+      (candidate) =>
+        candidate.theme === page.theme && candidate.path !== page.path
+    )
+    .slice(0, 3);
 }

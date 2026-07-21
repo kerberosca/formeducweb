@@ -2,7 +2,13 @@
 import type { LucideIcon } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 
 type ServiceCardProps = {
   title: string;
@@ -11,7 +17,12 @@ type ServiceCardProps = {
   icon: LucideIcon;
 };
 
-export function ServiceCard({ title, description, href, icon: Icon }: ServiceCardProps) {
+export function ServiceCard({
+  title,
+  description,
+  href,
+  icon: Icon
+}: ServiceCardProps) {
   return (
     <Card className="group h-full border-border/60 transition duration-300 hover:-translate-y-1 hover:border-primary/30">
       <CardHeader>
@@ -22,7 +33,10 @@ export function ServiceCard({ title, description, href, icon: Icon }: ServiceCar
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <Link href={href} className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+        <Link
+          href={href}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
+        >
           Découvrir le service
           <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
         </Link>
@@ -30,4 +44,3 @@ export function ServiceCard({ title, description, href, icon: Icon }: ServiceCar
     </Card>
   );
 }
-

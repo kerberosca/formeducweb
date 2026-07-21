@@ -1,14 +1,21 @@
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
+import { areExternalServicesDisabled } from "@/lib/external-services";
 
 const DEFAULT_BASE_URL = "http://localhost:3000";
 
 export function getBaseUrl() {
-  return process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_BASE_URL;
+  return (
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    DEFAULT_BASE_URL
+  );
 }
 
 export function getReportUnlockPriceCents() {
   const rawValue = Number(process.env.STRIPE_PRICE_CENTS ?? "2900");
-  return Number.isFinite(rawValue) && rawValue > 0 ? Math.round(rawValue) : 2900;
+  return Number.isFinite(rawValue) && rawValue > 0
+    ? Math.round(rawValue)
+    : 2900;
 }
 
 export function getReportUnlockPriceLabel() {
@@ -24,5 +31,7 @@ export function getStripeProductName(assessmentType: AssessmentType = "loi25") {
 }
 
 export function isStripeConfigured() {
-  return Boolean(process.env.STRIPE_SECRET_KEY);
+  return (
+    !areExternalServicesDisabled() && Boolean(process.env.STRIPE_SECRET_KEY)
+  );
 }

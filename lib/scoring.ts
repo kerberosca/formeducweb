@@ -90,7 +90,11 @@ export function getAnswerScore(question: WizardQuestion, answer: any): number {
   }
 
   // Typical selection values are strings
-  if (typeof answer === "string" || typeof answer === "number" || typeof answer === "boolean") {
+  if (
+    typeof answer === "string" ||
+    typeof answer === "number" ||
+    typeof answer === "boolean"
+  ) {
     const key = String(answer);
     const mapped = question.scoreMap?.[key];
     if (typeof mapped === "number") return clamp(mapped, 0, 4);
@@ -104,7 +108,10 @@ export function getAnswerScore(question: WizardQuestion, answer: any): number {
  * sum(answerScore/4 * weight) / sum(weight) * 100
  * Only weights > 0 are counted.
  */
-export function computeScore(wizard: WizardData, answers: AssessmentAnswers): ScoreResult {
+export function computeScore(
+  wizard: WizardData,
+  answers: AssessmentAnswers
+): ScoreResult {
   const notes: string[] = [];
   const scoredQuestions = wizard.questions.filter((q) => (q.weight ?? 0) > 0);
 
@@ -180,19 +187,24 @@ export function computeScore(wizard: WizardData, answers: AssessmentAnswers): Sc
     }
   }
 
-  const overallScore = weightedMax > 0 ? Math.round((weightedEarned / weightedMax) * 100) : 0;
+  const overallScore =
+    weightedMax > 0 ? Math.round((weightedEarned / weightedMax) * 100) : 0;
 
   // levels
   const level =
-    wizard.scoring.levels.find((lvl) => overallScore >= lvl.min && overallScore <= lvl.max) ??
-    wizard.scoring.levels[wizard.scoring.levels.length - 1];
+    wizard.scoring.levels.find(
+      (lvl) => overallScore >= lvl.min && overallScore <= lvl.max
+    ) ?? wizard.scoring.levels[wizard.scoring.levels.length - 1];
 
   // per-section percents
   const sectionScores = Object.values(sectionMap)
     .filter((s) => s.rawWeightedMax > 0)
     .map((s) => ({
       ...s,
-      percent: s.rawWeightedMax > 0 ? Math.round((s.rawWeightedEarned / s.rawWeightedMax) * 100) : 0
+      percent:
+        s.rawWeightedMax > 0
+          ? Math.round((s.rawWeightedEarned / s.rawWeightedMax) * 100)
+          : 0
     }))
     .sort((a, b) => a.sectionId.localeCompare(b.sectionId));
 
@@ -200,7 +212,7 @@ export function computeScore(wizard: WizardData, answers: AssessmentAnswers): Sc
   // sort by weight desc, then severity desc
   const topGapsCount = wizard.scoring.recommendationSelection.topGapsCount ?? 5;
   const gaps = gapCandidates
-    .sort((a, b) => (b.weight - a.weight) || (b.severity - a.severity))
+    .sort((a, b) => b.weight - a.weight || b.severity - a.severity)
     .slice(0, topGapsCount);
 
   // notes
@@ -209,8 +221,14 @@ export function computeScore(wizard: WizardData, answers: AssessmentAnswers): Sc
       "Plusieurs questions n’ont pas été répondues. Le score est indicatif et pourrait changer avec un questionnaire complété."
     );
   }
-  if (overallScore < 40) notes.push("Priorité: mettre en place les bases (inventaire, politique, accès, sauvegardes, registre).");
-  if (overallScore >= 70) notes.push("Bon niveau de préparation. Assurez-vous de maintenir et documenter vos pratiques.");
+  if (overallScore < 40)
+    notes.push(
+      "Priorité: mettre en place les bases (inventaire, politique, accès, sauvegardes, registre)."
+    );
+  if (overallScore >= 70)
+    notes.push(
+      "Bon niveau de préparation. Assurez-vous de maintenir et documenter vos pratiques."
+    );
 
   return {
     overallScore,

@@ -2,7 +2,8 @@ import { z } from "zod";
 
 import { assessmentTypes } from "@/lib/diagnostics";
 
-const optionalAttributionText = (maxLength: number) => z.string().trim().min(1).max(maxLength).optional();
+const optionalAttributionText = (maxLength: number) =>
+  z.string().trim().min(1).max(maxLength).optional();
 
 export const assessmentTypeSchema = z.enum(assessmentTypes);
 
@@ -18,23 +19,42 @@ export const attributionSchema = z.object({
 });
 
 export const leadCaptureSchema = z.object({
-  contactName: z.string().min(2, "Veuillez entrer votre nom."),
-  companyName: z.string().min(2, "Veuillez entrer le nom de votre entreprise."),
+  contactName: z.string().trim().max(120).optional().default(""),
+  companyName: z.string().trim().max(160).optional().default(""),
   email: z
     .string()
     .email("Veuillez entrer un courriel valide.")
     .transform((value) => value.trim().toLowerCase()),
-  phone: z.string().optional().default(""),
+  phone: z.string().trim().optional().default(""),
   consentMarketing: z.boolean().default(false)
 });
 
-export const assessmentAnswersSchema = z.record(z.string(), z.string().optional());
+export const assessmentAnswersSchema = z.record(
+  z.string(),
+  z.string().optional()
+);
 
 export const assessmentPayloadSchema = z.object({
   assessmentType: assessmentTypeSchema.default("loi25"),
-  leadCapture: leadCaptureSchema,
+  email: leadCaptureSchema.shape.email,
+  consentMarketing: z.boolean().default(false),
   answers: assessmentAnswersSchema,
   attribution: attributionSchema.optional()
+});
+
+export const assessmentPreviewPayloadSchema = z.object({
+  assessmentType: assessmentTypeSchema.default("loi25"),
+  answers: assessmentAnswersSchema
+});
+
+export const assessmentProfileSchema = z.object({
+  accessToken: z.string().min(16, "Token invalide."),
+  contactName: z.string().trim().min(2, "Veuillez entrer votre nom.").max(120),
+  companyName: z
+    .string()
+    .trim()
+    .min(2, "Veuillez entrer le nom de votre entreprise.")
+    .max(160)
 });
 
 export const checkoutSessionPayloadSchema = z
@@ -63,8 +83,10 @@ export const contactFormSchema = z.object({
     .email("Veuillez entrer un courriel valide.")
     .transform((value) => value.trim().toLowerCase()),
   phone: z.string().optional().default(""),
-  reason: z.string().min(2, "Veuillez selectionner un motif."),
-  message: z.string().min(10, "Veuillez preciser votre besoin en quelques mots."),
+  reason: z.string().min(2, "Veuillez sélectionner un motif."),
+  message: z
+    .string()
+    .min(10, "Veuillez préciser votre besoin en quelques mots."),
   consentMarketing: z.boolean().default(false),
   attribution: attributionSchema.optional()
 });
@@ -76,16 +98,29 @@ export const privacyRequestSchema = z.object({
     .email("Veuillez entrer un courriel valide.")
     .transform((value) => value.trim().toLowerCase()),
   companyName: z.string().optional().default(""),
-  requestType: z.enum(["access", "rectification", "deletion", "withdrawal", "question"], {
-    errorMap: () => ({ message: "Veuillez choisir un type de demande valide." })
-  }),
-  message: z.string().min(20, "Veuillez ajouter quelques details pour traiter votre demande.")
+  requestType: z.enum(
+    ["access", "rectification", "deletion", "withdrawal", "question"],
+    {
+      errorMap: () => ({
+        message: "Veuillez choisir un type de demande valide."
+      })
+    }
+  ),
+  message: z
+    .string()
+    .min(20, "Veuillez ajouter quelques détails pour traiter votre demande.")
 });
 
 export type LeadCaptureInput = z.infer<typeof leadCaptureSchema>;
 export type AttributionInput = z.infer<typeof attributionSchema>;
 export type AssessmentTypeInput = z.infer<typeof assessmentTypeSchema>;
 export type AssessmentPayloadInput = z.infer<typeof assessmentPayloadSchema>;
-export type CheckoutSessionPayloadInput = z.infer<typeof checkoutSessionPayloadSchema>;
+export type AssessmentPreviewPayloadInput = z.infer<
+  typeof assessmentPreviewPayloadSchema
+>;
+export type AssessmentProfileInput = z.infer<typeof assessmentProfileSchema>;
+export type CheckoutSessionPayloadInput = z.infer<
+  typeof checkoutSessionPayloadSchema
+>;
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 export type PrivacyRequestInput = z.infer<typeof privacyRequestSchema>;

@@ -4,7 +4,10 @@ import type { Assessment, Prisma } from "@prisma/client";
 
 import { db } from "@/lib/db";
 import { mapAttributionToDb } from "@/lib/attribution-server";
-import { normalizeAssessmentType, type AssessmentType } from "@/lib/diagnostics";
+import {
+  normalizeAssessmentType,
+  type AssessmentType
+} from "@/lib/diagnostics";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LiteReport } from "@/lib/reportFilters";
 import type { AttributionInput, LeadCaptureInput } from "@/lib/schemas";
@@ -27,7 +30,9 @@ function createAccessToken() {
 }
 
 function cleanAnswers(answers: AssessmentAnswers) {
-  return Object.fromEntries(Object.entries(answers).filter(([, value]) => value !== undefined));
+  return Object.fromEntries(
+    Object.entries(answers).filter(([, value]) => value !== undefined)
+  );
 }
 
 export async function createAssessmentRecord(input: {
@@ -45,8 +50,8 @@ export async function createAssessmentRecord(input: {
   return db.assessment.create({
     data: {
       assessmentType: input.assessmentType,
-      contactName: input.leadCapture.contactName,
-      companyName: input.leadCapture.companyName,
+      contactName: input.leadCapture.contactName || null,
+      companyName: input.leadCapture.companyName || null,
       email: input.leadCapture.email,
       phone: input.leadCapture.phone || null,
       consentMarketing: input.leadCapture.consentMarketing ?? false,
@@ -77,11 +82,28 @@ export async function findAssessmentByToken(accessToken: string) {
   return db.assessment.findUnique({ where: { accessToken } });
 }
 
+export async function updateAssessmentProfileByToken(input: {
+  accessToken: string;
+  contactName: string;
+  companyName: string;
+}) {
+  return db.assessment.update({
+    where: { accessToken: input.accessToken },
+    data: {
+      contactName: input.contactName,
+      companyName: input.companyName
+    }
+  });
+}
+
 export async function findAssessmentByStripeSessionId(stripeSessionId: string) {
   return db.assessment.findFirst({ where: { stripeSessionId } });
 }
 
-export async function attachCheckoutSession(assessmentId: string, stripeSessionId: string) {
+export async function attachCheckoutSession(
+  assessmentId: string,
+  stripeSessionId: string
+) {
   return db.assessment.update({
     where: { id: assessmentId },
     data: { stripeSessionId }
@@ -103,7 +125,9 @@ export async function markAssessmentPaid(input: {
   });
 }
 
-export async function markAssessmentRefundedByPaymentIntent(stripePaymentIntentId: string) {
+export async function markAssessmentRefundedByPaymentIntent(
+  stripePaymentIntentId: string
+) {
   return db.assessment.updateMany({
     where: { stripePaymentIntent: stripePaymentIntentId },
     data: {
@@ -124,11 +148,16 @@ export function hydrateAssessment(assessment: Assessment): HydratedAssessment {
     answers,
     scoreResult,
     liteReport: deepRepairText(assessment.reportLite as unknown as LiteReport),
-    fullReport: deepRepairText(assessment.reportFull as unknown as GeneratedReport)
+    fullReport: deepRepairText(
+      assessment.reportFull as unknown as GeneratedReport
+    )
   };
 }
 
-function getRetentionDays(envKey: "ASSESSMENT_RETENTION_UNPAID_DAYS" | "ASSESSMENT_RETENTION_PAID_DAYS", fallback: number) {
+function getRetentionDays(
+  envKey: "ASSESSMENT_RETENTION_UNPAID_DAYS" | "ASSESSMENT_RETENTION_PAID_DAYS",
+  fallback: number
+) {
   const value = Number(process.env[envKey]);
   return Number.isFinite(value) && value >= 30 ? Math.round(value) : fallback;
 }
@@ -161,6 +190,3 @@ export async function cleanupAssessmentRetention() {
     }
   });
 }
-
-
-

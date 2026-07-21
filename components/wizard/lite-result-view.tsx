@@ -1,31 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { FileText, LockKeyhole, MessageCircle, RotateCcw, ShieldCheck, SquarePen } from "lucide-react";
+import { type FormEvent, useState } from "react";
+import {
+  FileText,
+  LockKeyhole,
+  MessageCircle,
+  RotateCcw,
+  ShieldCheck,
+  SquarePen
+} from "lucide-react";
 
 import { UnlockReportButton } from "@/components/wizard/unlock-report-button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { AssessmentPaymentStatus } from "@/lib/assessment-types";
-import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
-import type { LiteReport } from "@/lib/reportFilters";
-import type { LeadCaptureInput } from "@/lib/schemas";
-import type { ScoreResult } from "@/lib/scoring";
-import { siteConfig } from "@/lib/site";
+import type { WizardResultState } from "@/lib/assessment-types";
+import { getDiagnosticConfig } from "@/lib/diagnostics";
 
 type LiteResultViewProps = {
-  assessmentType: AssessmentType;
-  leadCapture: LeadCaptureInput;
-  scoreResult: ScoreResult;
-  liteReport: LiteReport;
-  assessmentId: string;
-  accessToken: string;
-  paymentStatus: AssessmentPaymentStatus;
+  resultState: WizardResultState;
   priceLabel: string;
+  onSavePreview?: (email: string, consentMarketing: boolean) => Promise<void>;
+  onProfileSaved?: (contactName: string, companyName: string) => void;
   onEdit?: () => void;
   onRestart?: () => void;
   mainHeadingLevel?: "h1" | "h2";
@@ -45,33 +52,73 @@ function IncludedList({ items }: { items: string[] }) {
 }
 
 export function LiteResultView({
-  assessmentType,
-  leadCapture,
-  scoreResult,
-  liteReport,
-  assessmentId,
-  accessToken,
-  paymentStatus,
+  resultState,
   priceLabel,
+  onSavePreview,
+  onProfileSaved,
   onEdit,
   onRestart,
   mainHeadingLevel = "h1"
 }: LiteResultViewProps) {
+  const { assessmentType, scoreResult, liteReport } = resultState;
   const diagnostic = getDiagnosticConfig(assessmentType);
   const [activeTab, setActiveTab] = useState("lite");
-  const isPaid = paymentStatus === "paid";
-  const fullReportHref = diagnostic.reportPath(accessToken);
+  const [email, setEmail] = useState("");
+  const [consentMarketing, setConsentMarketing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const isSaved = resultState.kind === "saved";
+  const isPaid = isSaved && resultState.paymentStatus === "paid";
+  const profileComplete = Boolean(
+    isSaved &&
+    resultState.leadCapture.contactName.trim() &&
+    resultState.leadCapture.companyName.trim()
+  );
+  const fullReportHref = isSaved
+    ? diagnostic.reportPath(resultState.accessToken)
+    : "#save-result";
   const MainHeading = mainHeadingLevel;
+
+  const handleSave = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSaveError(null);
+    setIsSaving(true);
+    try {
+      if (!onSavePreview) throw new Error("Ce résultat est déjà sauvegardé.");
+      await onSavePreview(email, consentMarketing);
+    } catch (error) {
+      setSaveError(
+        error instanceof Error
+          ? error.message
+          : "Impossible de sauvegarder votre résultat."
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const focusSaveForm = () => {
+    setActiveTab("lite");
+    window.setTimeout(
+      () => document.getElementById("save-result-email")?.focus(),
+      0
+    );
+  };
 
   return (
     <section className="container py-12 md:py-16">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <p className="eyebrow">Résultat gratuit</p>
-          <MainHeading className="font-heading text-4xl font-semibold tracking-tight">{diagnostic.resultTitle}</MainHeading>
+          <MainHeading className="font-heading text-4xl font-semibold tracking-tight">
+            {diagnostic.resultTitle}
+          </MainHeading>
           <p className="mt-3 max-w-3xl text-lg leading-8 text-muted-foreground">
-            Résumé préparé pour {leadCapture.companyName}. Vous obtenez ici un portrait rapide, vos 3 priorités et un
-            plan d'action 30 jours pour amorcer la suite.
+            {resultState.kind === "saved" && profileComplete
+              ? `Résumé préparé pour ${resultState.leadCapture.companyName}. `
+              : "Votre résultat est prêt. "}
+            Vous obtenez ici un portrait rapide, vos 3 priorités et un plan
+            d’action de 30 jours pour amorcer la suite.
           </p>
         </div>
 
@@ -97,10 +144,16 @@ export function LiteResultView({
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList>
           <TabsTrigger value="lite">Résumé gratuit</TabsTrigger>
-          <TabsTrigger value="full">Rapport complet {isPaid ? "" : "(verrouillé)"}</TabsTrigger>
+          <TabsTrigger value="full">
+            Rapport complet {isPaid ? "" : "(verrouillé)"}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="lite" className="space-y-8">
@@ -109,18 +162,110 @@ export function LiteResultView({
               <div className="space-y-4">
                 <Badge>{scoreResult.level.label}</Badge>
                 <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">Score global</p>
-                  <p className="font-heading text-6xl font-semibold text-primary">{scoreResult.overallScore}/100</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
+                    Score global
+                  </p>
+                  <p className="font-heading text-6xl font-semibold text-primary">
+                    {scoreResult.overallScore}/100
+                  </p>
                 </div>
-                <p className="max-w-2xl text-lg leading-8 text-muted-foreground">{scoreResult.level.tagline}</p>
+                <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
+                  {scoreResult.level.tagline}
+                </p>
               </div>
 
               <div className="rounded-[28px] border border-primary/20 bg-primary/5 p-6">
-                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Ce que vous avez déjà</p>
-                <IncludedList items={diagnostic.content.freeDeliverables.slice(0, 4)} />
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+                  Ce que vous avez déjà
+                </p>
+                <IncludedList
+                  items={diagnostic.content.freeDeliverables.slice(0, 4)}
+                />
               </div>
             </CardContent>
           </Card>
+
+          {isSaved ? (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-medium text-foreground">
+                    Résultat sauvegardé
+                  </p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Un lien sécurisé a été envoyé à{" "}
+                    {resultState.leadCapture.email}.
+                  </p>
+                </div>
+                <Badge variant="secondary">Courriel confirmé</Badge>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card
+              id="save-result"
+              className="scroll-mt-28 border-primary/25 bg-primary/5"
+            >
+              <CardHeader>
+                <CardTitle>Sauvegarder ce résultat</CardTitle>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  Entrez uniquement votre courriel pour recevoir un lien
+                  sécurisé. Votre nom et votre entreprise ne seront demandés que
+                  si vous choisissez le rapport complet.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <form className="space-y-4" onSubmit={handleSave} noValidate>
+                  <div className="space-y-2">
+                    <Label htmlFor="save-result-email">Courriel</Label>
+                    <Input
+                      id="save-result-email"
+                      type="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      required
+                      aria-invalid={Boolean(saveError)}
+                      aria-describedby={
+                        saveError ? "save-result-error" : "save-result-help"
+                      }
+                    />
+                    <p
+                      id="save-result-help"
+                      className="text-xs leading-5 text-muted-foreground"
+                    >
+                      Le résultat anonyme n’est enregistré sur le serveur
+                      qu’après cette étape.
+                    </p>
+                  </div>
+                  <label className="flex items-start gap-3 rounded-2xl border border-border/80 bg-background/70 p-4">
+                    <Checkbox
+                      checked={consentMarketing}
+                      onCheckedChange={(checked) =>
+                        setConsentMarketing(Boolean(checked))
+                      }
+                      aria-label="Consentement marketing facultatif"
+                    />
+                    <span className="text-sm leading-6 text-muted-foreground">
+                      J’accepte de recevoir des conseils et nouvelles de
+                      ForméducWeb. Ce choix est facultatif.
+                    </span>
+                  </label>
+                  {saveError ? (
+                    <p
+                      id="save-result-error"
+                      role="alert"
+                      className="text-sm text-destructive"
+                    >
+                      {saveError}
+                    </p>
+                  ) : null}
+                  <Button type="submit" disabled={isSaving || !email.trim()}>
+                    {isSaving ? "Sauvegarde…" : "Recevoir mon lien sécurisé"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
             <Card>
@@ -129,7 +274,9 @@ export function LiteResultView({
               </CardHeader>
               <CardContent className="space-y-5">
                 <div>
-                  <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">Points forts</p>
+                  <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+                    Points forts
+                  </p>
                   <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                     {liteReport.summary.highlights.map((item) => (
                       <li key={item}>{item}</li>
@@ -138,7 +285,9 @@ export function LiteResultView({
                 </div>
                 {liteReport.summary.cautions.length ? (
                   <div>
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">À surveiller</p>
+                    <p className="mb-2 text-sm font-semibold uppercase tracking-[0.25em] text-primary/70">
+                      À surveiller
+                    </p>
                     <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
                       {liteReport.summary.cautions.map((item) => (
                         <li key={item}>{item}</li>
@@ -155,18 +304,27 @@ export function LiteResultView({
               </CardHeader>
               <CardContent className="space-y-4">
                 {liteReport.topGaps.map((gap) => (
-                  <div key={`${gap.section}-${gap.title}`} className="rounded-2xl border border-border/70 bg-background p-4">
+                  <div
+                    key={`${gap.section}-${gap.title}`}
+                    className="rounded-2xl border border-border/70 bg-background p-4"
+                  >
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <p className="font-medium">{gap.title}</p>
                       <Badge variant="outline">{gap.priority}</Badge>
                     </div>
-                    <p className="text-sm leading-6 text-muted-foreground">{gap.action}</p>
-                    <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/70">{gap.section}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {gap.action}
+                    </p>
+                    <p className="mt-3 text-xs uppercase tracking-[0.2em] text-primary/70">
+                      {gap.section}
+                    </p>
                   </div>
                 ))}
                 {liteReport.prioritiesContext ? (
                   <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
-                    <p className="text-sm leading-6 text-muted-foreground">{liteReport.prioritiesContext}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {liteReport.prioritiesContext}
+                    </p>
                   </div>
                 ) : null}
               </CardContent>
@@ -194,7 +352,7 @@ export function LiteResultView({
 
             <Card>
               <CardHeader>
-              <CardTitle>Et après ?</CardTitle>
+                <CardTitle>Et après ?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm leading-7 text-muted-foreground">
                 <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
@@ -207,12 +365,20 @@ export function LiteResultView({
                 </div>
                 {!isPaid ? (
                   <div className="flex flex-col gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                    <p className="text-sm font-medium text-foreground">Besoin du détail et des gabarits ?</p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      Le rapport complet ({priceLabel}) ajoute le Top 5 détaillé, le plan 90 jours, le PDF et les modèles
-                      prêts à réutiliser.
+                    <p className="text-sm font-medium text-foreground">
+                      Besoin du détail et des gabarits ?
                     </p>
-                    <Button type="button" variant="secondary" className="w-full sm:w-fit" onClick={() => setActiveTab("full")}>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      Le rapport complet ({priceLabel}) ajoute le Top 5
+                      détaillé, le plan 90 jours, le PDF et les modèles prêts à
+                      réutiliser.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="w-full sm:w-fit"
+                      onClick={() => setActiveTab("full")}
+                    >
                       <FileText className="mr-2 h-4 w-4" />
                       Voir ce que comprend le rapport complet
                     </Button>
@@ -241,29 +407,51 @@ export function LiteResultView({
             <Card className="overflow-hidden border-primary/25 bg-gradient-to-br from-primary/5 via-background to-background">
               <CardHeader>
                 <CardTitle className="flex flex-wrap items-center gap-2 text-2xl">
-                  <LockKeyhole className="h-6 w-6 shrink-0 text-primary" aria-hidden />
+                  <LockKeyhole
+                    className="h-6 w-6 shrink-0 text-primary"
+                    aria-hidden
+                  />
                   Rapport complet ({priceLabel})
                 </CardTitle>
                 <p className="text-base font-normal leading-7 text-muted-foreground">
-                  Paiement unique, accès immédiat après Stripe. Voici ce que vous obtenez en plus du résumé gratuit:
+                  Paiement unique, accès immédiat après Stripe. Voici ce que
+                  vous obtenez en plus du résumé gratuit:
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
                 <IncludedList items={diagnostic.fullReportIncludes} />
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-                  <UnlockReportButton
-                    assessmentType={assessmentType}
-                    assessmentId={assessmentId}
-                    accessToken={accessToken}
-                    label={`Débloquer mon rapport complet (${priceLabel})`}
-                    className="w-full sm:w-auto sm:min-w-[240px]"
-                  />
-                  <Button type="button" variant="ghost" className="w-full sm:w-auto" onClick={() => setActiveTab("full")}>
+                  {resultState.kind === "saved" ? (
+                    <UnlockReportButton
+                      assessmentType={assessmentType}
+                      assessmentId={resultState.assessmentId}
+                      accessToken={resultState.accessToken}
+                      profileComplete={profileComplete}
+                      onProfileSaved={onProfileSaved}
+                      label={`Débloquer mon rapport complet (${priceLabel})`}
+                      className="w-full sm:w-auto sm:min-w-[240px]"
+                    />
+                  ) : (
+                    <Button
+                      type="button"
+                      className="w-full sm:w-auto"
+                      onClick={focusSaveForm}
+                    >
+                      Sauvegarder avant de continuer
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="w-full sm:w-auto"
+                    onClick={() => setActiveTab("full")}
+                  >
                     FAQ et conditions
                   </Button>
                 </div>
                 <p className="text-xs leading-5 text-muted-foreground">
-                  Outil de diagnostic et de priorisation. Les recommandations doivent être adaptées à votre contexte.
+                  Outil de diagnostic et de priorisation. Les recommandations
+                  doivent être adaptées à votre contexte.
                 </p>
               </CardContent>
             </Card>
@@ -271,8 +459,13 @@ export function LiteResultView({
             <Card className="border-primary/20">
               <CardContent className="flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-medium">Votre rapport complet est déjà débloqué</p>
-                  <p className="text-sm text-muted-foreground">Ouvrez l'onglet Rapport complet ou accédez directement au rapport détaillé.</p>
+                  <p className="font-medium">
+                    Votre rapport complet est déjà débloqué
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Ouvrez l'onglet Rapport complet ou accédez directement au
+                    rapport détaillé.
+                  </p>
                 </div>
                 <Button asChild>
                   <Link href={fullReportHref}>Voir mon rapport complet</Link>
@@ -295,7 +488,8 @@ export function LiteResultView({
                     Débloquez votre rapport complet ({priceLabel})
                   </h2>
                   <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
-                    Paiement unique, accès immédiat et lien sécurisé pour revenir plus tard sur votre rapport complet.
+                    Paiement unique, accès immédiat et lien sécurisé pour
+                    revenir plus tard sur votre rapport complet.
                   </p>
                 </div>
                 <IncludedList items={diagnostic.fullReportIncludes} />
@@ -305,30 +499,54 @@ export function LiteResultView({
                 {isPaid ? (
                   <>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      Votre accès complet est déjà activé. Vous pouvez ouvrir votre rapport détaillé et télécharger le PDF.
+                      Votre accès complet est déjà activé. Vous pouvez ouvrir
+                      votre rapport détaillé et télécharger le PDF.
                     </p>
                     <Button asChild>
-                      <Link href={fullReportHref}>Voir mon rapport complet</Link>
+                      <Link href={fullReportHref}>
+                        Voir mon rapport complet
+                      </Link>
                     </Button>
                   </>
                 ) : (
                   <>
-                    <UnlockReportButton
-                      assessmentType={assessmentType}
-                      assessmentId={assessmentId}
-                      accessToken={accessToken}
-                      label={`Débloquer mon rapport complet (${priceLabel})`}
-                      className="w-full"
-                    />
-                    <p className="text-sm text-muted-foreground">Paiement sécurisé Stripe - Accès immédiat - Téléchargement PDF</p>
+                    {resultState.kind === "saved" ? (
+                      <UnlockReportButton
+                        assessmentType={assessmentType}
+                        assessmentId={resultState.assessmentId}
+                        accessToken={resultState.accessToken}
+                        profileComplete={profileComplete}
+                        onProfileSaved={onProfileSaved}
+                        label={`Débloquer mon rapport complet (${priceLabel})`}
+                        className="w-full"
+                      />
+                    ) : (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={focusSaveForm}
+                      >
+                        Recevoir mon lien avant de continuer
+                      </Button>
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      Paiement sécurisé Stripe - Accès immédiat - Téléchargement
+                      PDF
+                    </p>
                   </>
                 )}
                 <div className="text-sm leading-6 text-muted-foreground">
-                  <Link href="/conditions-utilisation" className="underline underline-offset-4">
+                  <Link
+                    href="/conditions-utilisation"
+                    className="underline underline-offset-4"
+                  >
                     Conditions d'utilisation
                   </Link>{" "}
                   et{" "}
-                  <Link href="/politique-confidentialite" className="underline underline-offset-4">
+                  <Link
+                    href="/politique-confidentialite"
+                    className="underline underline-offset-4"
+                  >
                     politique de confidentialité
                   </Link>
                 </div>
@@ -343,23 +561,33 @@ export function LiteResultView({
             <CardContent>
               <Accordion type="single" collapsible>
                 <AccordionItem value="a">
-                  <AccordionTrigger>Qu'est-ce qui change entre le gratuit et le complet ?</AccordionTrigger>
+                  <AccordionTrigger>
+                    Qu'est-ce qui change entre le gratuit et le complet ?
+                  </AccordionTrigger>
                   <AccordionContent>
-                    Le gratuit donne un portrait utile pour démarrer. Le complet ajoute le Top 5 détaillé, le plan 90 jours,
-                    le PDF et les gabarits prêts à utiliser.
+                    Le gratuit donne un portrait utile pour démarrer. Le complet
+                    ajoute le Top 5 détaillé, le plan 90 jours, le PDF et les
+                    gabarits prêts à utiliser.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="b">
-                  <AccordionTrigger>Quand est-ce que j'obtiens l'accès ?</AccordionTrigger>
+                  <AccordionTrigger>
+                    Quand est-ce que j'obtiens l'accès ?
+                  </AccordionTrigger>
                   <AccordionContent>
-                    Immédiatement après la confirmation du paiement. Vous êtes redirigé vers une page merci avec un lien sécurisé.
+                    Immédiatement après la confirmation du paiement. Vous êtes
+                    redirigé vers une page merci avec un lien sécurisé.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="c">
-                  <AccordionTrigger>Est-ce que le rapport complet remplace un avis professionnel ?</AccordionTrigger>
+                  <AccordionTrigger>
+                    Est-ce que le rapport complet remplace un avis professionnel
+                    ?
+                  </AccordionTrigger>
                   <AccordionContent>
-                    Non. Le rapport sert au diagnostic, à l'alignement et à la priorisation. Une validation externe peut rester
-                    pertinente selon votre contexte.
+                    Non. Le rapport sert au diagnostic, à l'alignement et à la
+                    priorisation. Une validation externe peut rester pertinente
+                    selon votre contexte.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -369,13 +597,20 @@ export function LiteResultView({
           <Card className="border-border/70 bg-muted/20">
             <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="font-medium">Besoin d'un accompagnement humain ?</p>
+                <p className="font-medium">
+                  Besoin d'un accompagnement humain ?
+                </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  Si vous préférez valider vos priorités avec nous avant de débloquer le rapport, on peut faire un appel rapide.
+                  Si vous préférez valider vos priorités avec nous avant de
+                  débloquer le rapport, on peut faire un appel rapide.
                 </p>
               </div>
               <Button asChild variant="secondary">
-                <a href={siteConfig.bookingUrl}>Planifier un appel 20 min</a>
+                <Link
+                  href={`/contact?source=${diagnostic.leadSource}-resultat-appel`}
+                >
+                  Demander un appel
+                </Link>
               </Button>
             </CardContent>
           </Card>
