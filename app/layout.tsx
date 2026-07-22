@@ -5,10 +5,9 @@ import { Suspense } from "react";
 import { CookieConsentBanner } from "@/components/cookies/cookie-consent-banner";
 import { OptionalTrackers } from "@/components/cookies/optional-trackers";
 import { JsonLd } from "@/components/seo/json-ld";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
 import { AttributionBootstrap } from "@/components/analytics/attribution-bootstrap";
 import { AppToaster } from "@/components/ui/sonner";
+import { LayoutShell } from "@/components/layout-shell";
 import { getAbsoluteUrl, getSiteUrl } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
@@ -96,24 +95,7 @@ export default function RootLayout({
       className={`${headingFont.variable} ${bodyFont.variable}`}
     >
       <body>
-        <a
-          href="#contenu-principal"
-          className="sr-only z-[100] rounded-full bg-primary px-5 py-3 font-semibold text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-        >
-          Aller au contenu
-        </a>
-        <div className="relative flex min-h-screen flex-col">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] bg-[radial-gradient(circle_at_top,rgba(21,113,212,0.16),transparent_50%)]" />
-          <SiteHeader />
-          <main
-            id="contenu-principal"
-            tabIndex={-1}
-            className="relative z-10 flex-1"
-          >
-            {children}
-          </main>
-          <SiteFooter />
-        </div>
+        <LayoutShell>{children}</LayoutShell>
         <Suspense fallback={null}>
           <OptionalTrackers />
         </Suspense>
