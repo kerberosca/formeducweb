@@ -4,6 +4,7 @@ import {
   buildMonthCells,
   eventsOnDate,
   formatEventDate,
+  formatLongDate,
   type PublicEvent,
 } from "@/lib/demo839/calendar";
 
@@ -114,20 +115,40 @@ export function MonthCalendar({
           const primary = dayEvents[0];
           const style = primary ? { "--day-color": primary.categoryColor } as CSSProperties : undefined;
           const title = dayEvents.map((event) => `${event.title}${event.status === "cancelled" ? " — Annulée" : ""}`).join("; ");
+          const tooltipId = `calendar-${cell.date}`;
           return (
             <div
               className={`month-day ${cell.isCurrentMonth ? "" : "is-outside"} ${primary ? "has-event" : ""} ${primary?.status === "cancelled" ? "is-cancelled" : ""}`}
               style={style}
               key={cell.date}
               title={title || undefined}
+              tabIndex={!print && dayEvents.length > 0 ? 0 : undefined}
+              aria-label={title ? `${formatLongDate(cell.date)} : ${title}` : undefined}
+              aria-describedby={!print && title ? tooltipId : undefined}
             >
-              <span>{cell.day}</span>
+              <span className="month-day__number">{cell.day}</span>
               {!print && dayEvents.length > 0 && (
-                <div className="day-markers" aria-label={title}>
-                  {dayEvents.slice(0, 3).map((event) => (
-                    <i key={event.id} style={{ backgroundColor: event.categoryColor }} />
-                  ))}
-                </div>
+                <>
+                  <div className="day-event-labels" aria-hidden="true">
+                    {dayEvents.slice(0, 2).map((event) => (
+                      <span key={event.id} className={event.status === "cancelled" ? "is-cancelled" : ""}>
+                        <i style={{ backgroundColor: event.categoryColor }} />
+                        <b>{event.title}</b>
+                      </span>
+                    ))}
+                    {dayEvents.length > 2 && <small>+{dayEvents.length - 2} autre{dayEvents.length > 3 ? "s" : ""}</small>}
+                  </div>
+                  <div className="day-tooltip" id={tooltipId} role="tooltip">
+                    <strong>{formatLongDate(cell.date)}</strong>
+                    {dayEvents.map((event) => (
+                      <span key={event.id}>
+                        <i style={{ backgroundColor: event.categoryColor }} />
+                        <b>{event.title}</b>
+                        {event.status === "cancelled" && <em>Annulée</em>}
+                      </span>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           );
