@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Download, FileText, PhoneCall } from "lucide-react";
+import { Download, FileSpreadsheet, FileText, PhoneCall } from "lucide-react";
 
 import { CopySnippetButton } from "@/components/wizard/copy-snippet-button";
+import { UnlockReportButton } from "@/components/wizard/unlock-report-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import {
   getBonusAssetLabels
 } from "@/lib/bonus-assets";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
+import { getKitAssetsForType } from "@/lib/kit-assets";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
 import type { GeneratedReport } from "@/lib/recommendations";
 import type { LeadCaptureInput } from "@/lib/schemas";
@@ -23,6 +25,7 @@ type ReportViewProps = {
   scoreResult: ScoreResult;
   report: GeneratedReport;
   accessToken: string;
+  canUpgradeToTrio?: boolean;
 };
 
 export function ReportView({
@@ -30,10 +33,12 @@ export function ReportView({
   leadCapture,
   scoreResult,
   report,
-  accessToken
+  accessToken,
+  canUpgradeToTrio = false
 }: ReportViewProps) {
   const diagnostic = getDiagnosticConfig(assessmentType);
   const bonusLabels = getBonusAssetLabels(assessmentType);
+  const kitAssets = getKitAssetsForType(assessmentType);
   const checklistItems = buildChecklistItems(report, scoreResult);
   const procedureText = buildProcedureOnePager(
     leadCapture.companyName,
@@ -45,14 +50,14 @@ export function ReportView({
     <section className="container py-12 md:py-16">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="eyebrow">Rapport complet</p>
+          <p className="eyebrow">Kit d’exécution 90 jours</p>
           <h1 className="font-heading text-4xl font-semibold tracking-tight">
             {diagnostic.reportTitle}
           </h1>
           <p className="mt-3 max-w-2xl text-lg leading-8 text-muted-foreground">
-            Rapport détaillé préparé pour {leadCapture.companyName}. Vous avez
-            maintenant accès au plan complet, au PDF et aux gabarits associés à
-            ce diagnostic.
+            Plan détaillé préparé pour {leadCapture.companyName}. Vous avez
+            maintenant accès au PDF et aux gabarits DOCX/XLSX personnalisés
+            associés à ce diagnostic.
           </p>
         </div>
 
@@ -256,6 +261,44 @@ export function ReportView({
           </Card>
         </div>
 
+        <Card>
+          <CardHeader>
+            <CardTitle>Vos gabarits éditables personnalisés</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
+            {kitAssets.map((asset) => {
+              const isSpreadsheet = asset.contentType.includes("spreadsheet");
+              const AssetIcon = isSpreadsheet ? FileSpreadsheet : FileText;
+              return (
+                <div
+                  key={asset.id}
+                  className="flex h-full flex-col justify-between gap-4 rounded-[24px] border border-border/70 bg-background p-5"
+                >
+                  <div className="space-y-3">
+                    <AssetIcon className="h-6 w-6 text-primary" />
+                    <div>
+                      <p className="font-medium">{asset.label}</p>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                        {asset.description}
+                      </p>
+                    </div>
+                  </div>
+                  <Button asChild variant="secondary" className="w-full">
+                    <a
+                      href={`/api/download/kit-asset?token=${encodeURIComponent(
+                        accessToken
+                      )}&asset=${asset.id}`}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Télécharger {isSpreadsheet ? "XLSX" : "DOCX"}
+                    </a>
+                  </Button>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
           <Card>
             <CardHeader>
@@ -310,14 +353,43 @@ export function ReportView({
 
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
-            <p className="font-medium text-foreground">Valeur ajoutée</p>
+            <p className="font-medium text-foreground">Conditions du kit</p>
             <p>
-              Crédit de {getReportUnlockPriceLabel()} applicable sur un forfait
-              d'implantation si vous poursuivez avec nous. Mentionnez votre
-              achat du rapport complet lors de votre prise de contact.
+              Accès pendant 730 jours. Crédit de {getReportUnlockPriceLabel()}{" "}
+              valide 90 jours sur un accompagnement admissible. Remboursement
+              demandé dans les 7 jours avec révocation de l’accès.
             </p>
           </CardContent>
         </Card>
+
+        {canUpgradeToTrio ? (
+          <Card className="overflow-hidden border-primary/30 bg-gradient-to-br from-primary/10 via-background to-background">
+            <CardContent className="grid gap-6 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+              <div>
+                <p className="eyebrow">Amélioration réservée aux acheteurs</p>
+                <h2 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
+                  Ajoutez les deux autres kits pour 30 $ CAD
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                  Passez au Trio Hygiène numérique sans repayer ce kit. Les deux
+                  droits restants apparaîtront dans votre tableau de bord après
+                  la confirmation Stripe.
+                </p>
+              </div>
+              <UnlockReportButton
+                assessmentType={assessmentType}
+                accessToken={accessToken}
+                profileComplete={Boolean(
+                  leadCapture.contactName && leadCapture.companyName
+                )}
+                productCode="trio_upgrade"
+                value={30}
+                label="Améliorer vers le Trio (30 $)"
+                className="w-full md:w-auto"
+              />
+            </CardContent>
+          </Card>
+        ) : null}
 
         <Card>
           <CardHeader>

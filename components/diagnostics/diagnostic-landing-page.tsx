@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   BrainCircuit,
+  CheckCircle2,
   FileText,
   Layers3,
   MessageCircle,
@@ -9,6 +10,9 @@ import {
   ShieldCheck
 } from "lucide-react";
 
+import { KitPreview } from "@/components/diagnostics/kit-preview";
+import { MobileDiagnosticCta } from "@/components/diagnostics/mobile-diagnostic-cta";
+import { OfferComparison } from "@/components/diagnostics/offer-comparison";
 import { FaqList } from "@/components/marketing/faq-list";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -23,7 +27,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
-import { getReportUnlockPriceLabel } from "@/lib/payments";
 import { getSeoSupportPagesByTheme, pillarSeoContent } from "@/lib/seo-content";
 
 type DiagnosticLandingPageProps = {
@@ -36,17 +39,21 @@ function HeroDiagnosticIcon({
   assessmentType: AssessmentType;
 }) {
   if (assessmentType === "cybersecurity")
-    return <Network className="h-6 w-6" />;
-  if (assessmentType === "ai") return <BrainCircuit className="h-6 w-6" />;
-  return <ShieldCheck className="h-6 w-6" />;
+    return <Network className="h-6 w-6" aria-hidden="true" />;
+  if (assessmentType === "ai")
+    return <BrainCircuit className="h-6 w-6" aria-hidden="true" />;
+  return <ShieldCheck className="h-6 w-6" aria-hidden="true" />;
 }
 
-function BulletList({ items }: { items: string[] }) {
+function BulletList({ items }: { items: readonly string[] }) {
   return (
     <ul className="space-y-3 text-sm leading-7 text-muted-foreground">
       {items.map((item) => (
         <li key={item} className="flex gap-3">
-          <span className="mt-2 h-2 w-2 rounded-full bg-primary" />
+          <CheckCircle2
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
           <span>{item}</span>
         </li>
       ))}
@@ -78,8 +85,8 @@ export function DiagnosticLandingPage({
     <>
       <JsonLd id={`${diagnostic.slug}-faq-schema`} value={faqSchema} />
 
-      <section className="container py-16 md:py-24">
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+      <section className="container py-14 md:py-24">
+        <div className="grid gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
           <div className="space-y-6">
             <Badge>{content.badge}</Badge>
             <h1 className="font-heading text-5xl font-semibold tracking-tight md:text-6xl">
@@ -88,71 +95,61 @@ export function DiagnosticLandingPage({
             <p className="max-w-2xl text-xl leading-9 text-muted-foreground">
               {content.description}
             </p>
-            <div className="space-y-2 text-sm leading-7 text-muted-foreground">
-              <p>Pour qui: {content.audience}</p>
+            <div className="grid gap-2 text-sm leading-7 text-muted-foreground">
               <p>
-                Environ 10 minutes · score instantané · 3 priorités · plan de 30
-                jours.
+                <strong className="font-semibold text-foreground">
+                  Pour qui :
+                </strong>{" "}
+                {content.audience}
               </p>
               <p>
-                Aucun courriel requis pour voir le résultat. Rapport complet
-                optionnel à {getReportUnlockPriceLabel()}.
+                Environ 10 minutes · résultat immédiat · aucun courriel requis.
+              </p>
+              <p>
+                Le diagnostic reste gratuit. Le Kit d’exécution 90 jours est
+                offert ensuite à 29 $ CAD, seulement si vous le voulez.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href={diagnostic.wizardPath}>
-                  Faire mon auto-évaluation
+                  Faire mon diagnostic gratuit
                 </Link>
               </Button>
               <Button asChild size="lg" variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}`}>
-                  Parler de mon contexte
+                <Link href={`/exemples/${diagnostic.slug}`}>
+                  Voir un exemple fictif
                 </Link>
               </Button>
             </div>
           </div>
 
-          <Card className="bg-white/85">
+          <Card className="bg-white/90">
             <CardHeader>
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <HeroDiagnosticIcon assessmentType={assessmentType} />
               </div>
-              <CardTitle>Parcours en 3 étapes</CardTitle>
+              <CardTitle>Une décision utile en 10 minutes</CardTitle>
               <CardDescription>
-                Simple à comprendre, concret à exécuter.
+                Voyez vos priorités avant de payer quoi que ce soit.
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4 p-6">
+            <CardContent className="space-y-4 p-6 pt-0">
               {[
-                {
-                  icon: FileText,
-                  title: "1. Diagnostic",
-                  description:
-                    "Réponses guidées pour faire ressortir vos forces et vos angles morts."
-                },
-                {
-                  icon: Layers3,
-                  title: "2. Rapport",
-                  description:
-                    "Score, priorités et plan d'action utilisable dès aujourd'hui."
-                },
-                {
-                  icon: ShieldCheck,
-                  title: "3. Implantation",
-                  description:
-                    "Accompagnement progressif si vous voulez passer à l'exécution."
-                }
+                "Un score simple, sans jargon.",
+                "Trois priorités adaptées à vos réponses.",
+                "Un premier plan de 30 jours à l’écran.",
+                "La liberté de rester au gratuit ou de passer à l’exécution."
               ].map((item) => (
                 <div
-                  key={item.title}
-                  className="rounded-[20px] border border-border/70 bg-background p-5"
+                  key={item}
+                  className="flex gap-3 rounded-2xl border border-border/70 bg-background p-4 text-sm leading-6"
                 >
-                  <item.icon className="mb-3 h-5 w-5 text-primary" />
-                  <p className="font-medium">{item.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {item.description}
-                  </p>
+                  <CheckCircle2
+                    className="mt-1 h-4 w-4 shrink-0 text-primary"
+                    aria-hidden="true"
+                  />
+                  <span>{item}</span>
                 </div>
               ))}
             </CardContent>
@@ -160,7 +157,122 @@ export function DiagnosticLandingPage({
         </div>
       </section>
 
-      <section className="container py-8 md:py-14">
+      <section id="offres" className="container scroll-mt-24 py-10 md:py-16">
+        <SectionHeading
+          eyebrow="Choisissez votre niveau"
+          title="Gratuit pour comprendre. Payant pour exécuter."
+          description="La différence est concrète : le gratuit vous oriente; le kit vous remet un plan personnalisé et des documents éditables; le trio réunit les trois sujets."
+        />
+        <div className="mt-10">
+          <OfferComparison diagnostic={diagnostic} />
+        </div>
+      </section>
+
+      <section className="container py-10 md:py-16">
+        <SectionHeading
+          eyebrow="Aperçu avant achat"
+          title="Pas de boîte noire : regardez les livrables"
+          description="Les aperçus utilisent une entreprise fictive. Votre kit sera personnalisé avec le nom de votre entreprise et les réponses pertinentes de votre diagnostic."
+        />
+        <div className="mt-10">
+          <KitPreview diagnostic={diagnostic} />
+        </div>
+      </section>
+
+      <section className="container py-8 md:py-12">
+        <Card className="overflow-hidden border-primary bg-primary text-primary-foreground">
+          <CardContent className="grid gap-6 p-8 md:p-10 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="font-heading text-3xl font-semibold">
+                Commencez par le diagnostic gratuit
+              </p>
+              <p className="mt-3 max-w-2xl leading-7 text-primary-foreground/80">
+                Votre résultat apparaît immédiatement. Vous déciderez ensuite si
+                le Kit d’exécution 90 jours à 29 $ ou le trio à 59 $ vous est
+                utile.
+              </p>
+            </div>
+            <Button asChild size="lg" variant="secondary">
+              <Link href={diagnostic.wizardPath}>
+                Voir mes priorités
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="container py-10 md:py-16">
+        <SectionHeading
+          eyebrow="Méthode"
+          title="Du diagnostic aux documents prêts à adapter"
+          description="Une progression courte, pensée pour une petite équipe qui veut avancer sans lancer un projet lourd."
+        />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {[
+            {
+              icon: FileText,
+              title: "1. Diagnostiquer",
+              description:
+                "Répondez à des questions guidées pour faire ressortir vos forces et vos angles morts."
+            },
+            {
+              icon: Layers3,
+              title: "2. Prioriser",
+              description:
+                "Recevez un plan 30 jours gratuit, puis un plan 90 jours personnalisé dans le kit."
+            },
+            {
+              icon: ShieldCheck,
+              title: "3. Exécuter",
+              description:
+                "Adaptez les gabarits éditables, attribuez les actions et conservez une trace du travail."
+            }
+          ].map((item) => (
+            <Card key={item.title}>
+              <CardContent className="p-6">
+                <item.icon
+                  className="mb-4 h-6 w-6 text-primary"
+                  aria-hidden="true"
+                />
+                <h2 className="font-heading text-xl font-semibold">
+                  {item.title}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {item.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="container py-10 md:py-16">
+        <SectionHeading
+          eyebrow="Preuve interne"
+          title="ForméducWeb passe aussi son propre diagnostic"
+          description="Nous appliquons la même méthode à nos pratiques. Nous décrivons les actions de processus, sans publier de détails qui pourraient réduire notre sécurité."
+        />
+        <Card className="mt-10 border-primary/20 bg-primary/5">
+          <CardContent className="grid gap-6 p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <BulletList
+              items={[
+                "Nous avons limité l’IA aux sources officielles autorisées, sans données client, avec approbation humaine avant publication.",
+                "Chaque droit du trio est lié à son acheteur, à un seul diagnostic et à une seule utilisation; les événements Stripe sont idempotents.",
+                "Nous avons séparé les courriels transactionnels et commerciaux, puis rendu le désabonnement immédiat sur les tâches futures."
+              ]}
+            />
+            <Button asChild variant="secondary">
+              <Link href="/formeducweb-passe-son-diagnostic">
+                Lire le cas ForméducWeb
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="container py-10 md:py-16">
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="border-primary/20 bg-primary/5">
             <CardHeader>
@@ -174,8 +286,8 @@ export function DiagnosticLandingPage({
               <BulletList items={pillarSeo.bullets} />
               <Button asChild variant="secondary">
                 <Link href="/hygiene-informatique">
-                  Voir l'approche hygiène informatique
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Voir l’approche hygiène informatique
+                  <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                 </Link>
               </Button>
             </CardContent>
@@ -185,7 +297,8 @@ export function DiagnosticLandingPage({
             <CardHeader>
               <CardTitle>Guides pratiques liés</CardTitle>
               <CardDescription>
-                Des réponses courtes pour approfondir sans quitter le parcours.
+                Des réponses plus détaillées, avec un retour direct vers le
+                diagnostic.
               </CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3">
@@ -208,80 +321,11 @@ export function DiagnosticLandingPage({
         </div>
       </section>
 
-      <section className="container py-8 md:py-14">
+      <section className="container py-10 md:py-16">
         <SectionHeading
-          eyebrow="Gratuit"
-          title="Ce que vous obtenez gratuitement"
-          description="Un premier niveau de clarté avant de décider d'investir davantage."
-        />
-        <Card className="mt-8">
-          <CardContent className="grid gap-6 p-8 lg:grid-cols-[1.2fr_auto] lg:items-center">
-            <BulletList items={content.freeDeliverables} />
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Button asChild>
-                <Link href={diagnostic.wizardPath}>
-                  Voir mon résumé gratuit
-                </Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}-gratuit`}>
-                  Question rapide
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section className="container py-8 md:py-14">
-        <SectionHeading
-          eyebrow="Rapport complet"
-          title={`Ce que le rapport complet ajoute (${getReportUnlockPriceLabel()})`}
-          description="Après le résumé gratuit, vous choisissez si vous voulez le niveau de détail complet."
-        />
-        <Card className="mt-8 border-primary/20 bg-primary/5">
-          <CardContent className="grid gap-6 p-8 lg:grid-cols-[1.2fr_auto] lg:items-center">
-            <BulletList items={content.fullReportAdditions} />
-            <div className="space-y-3">
-              <Button asChild>
-                <Link href={diagnostic.wizardPath}>Commencer gratuitement</Link>
-              </Button>
-              <p className="text-xs leading-5 text-muted-foreground">
-                Paiement unique, accès immédiat. Toujours sans promesse
-                exagérée.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </section>
-
-      <section className="container py-8 md:py-14">
-        <SectionHeading
-          eyebrow="Pourquoi agir"
-          title="Pourquoi faire le point maintenant"
-          description="L'objectif n'est pas de tout faire en même temps, mais de sécuriser l'essentiel dans le bon ordre."
-        />
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {content.reasonsToAct.map((item) => (
-            <Card key={item}>
-              <CardContent className="p-6 text-sm leading-7 text-muted-foreground">
-                {item}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div className="mt-8">
-          <Button asChild variant="secondary">
-            <Link href={diagnostic.wizardPath}>Passer au diagnostic</Link>
-          </Button>
-        </div>
-      </section>
-
-      <section className="container py-8 md:py-14">
-        <SectionHeading
-          eyebrow="Cadre"
-          title="Ce que cette démarche n'est pas"
-          description="On garde un cadre clair pour éviter les attentes irréalistes."
+          eyebrow="Cadre clair"
+          title="Ce que cette démarche n’est pas"
+          description="Le diagnostic aide à prioriser et à documenter. Il ne remplace pas les expertises spécialisées dont votre situation pourrait avoir besoin."
         />
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {content.notThis.map((item) => (
@@ -296,9 +340,9 @@ export function DiagnosticLandingPage({
 
       <section className="container py-10 md:py-16">
         <SectionHeading
-          eyebrow="Suite"
-          title="Si vous voulez qu'on implante avec vous"
-          description="Après le diagnostic, vous pouvez rester autonome ou passer sur un niveau d'accompagnement adapté."
+          eyebrow="Option humaine"
+          title="L’accompagnement reste facultatif"
+          description="Le kit est conçu pour être utilisé en autonomie. Si vous voulez de l’aide, votre crédit de 29 $ demeure valable 90 jours sur un accompagnement admissible."
         />
         <div className="mt-10 rounded-[32px] border border-border/70 bg-white/85 p-6 md:p-8">
           <Tabs defaultValue={content.packages[0]?.name} className="w-full">
@@ -309,7 +353,6 @@ export function DiagnosticLandingPage({
                 </TabsTrigger>
               ))}
             </TabsList>
-
             {content.packages.map((pack) => (
               <TabsContent key={pack.name} value={pack.name}>
                 <Card className="border-none shadow-none">
@@ -332,45 +375,39 @@ export function DiagnosticLandingPage({
         </div>
       </section>
 
-      <section className="md:py-18 container py-12">
+      <section className="container py-12 md:py-16">
         <SectionHeading
           eyebrow="FAQ"
-          title={`Questions fréquentes - ${diagnostic.label}`}
+          title={`Questions fréquentes — ${diagnostic.label}`}
         />
         <div className="mt-8 rounded-[32px] border border-border/70 bg-white/80 p-6 md:p-8">
           <FaqList items={content.faq} />
         </div>
       </section>
 
-      <section className="container py-8">
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="space-y-5 p-8">
-            <div className="space-y-2">
+      <section className="container pb-28 pt-8 md:pb-12">
+        <Card>
+          <CardContent className="flex flex-col gap-5 p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div>
               <p className="font-medium text-foreground">
-                Parler avec notre équipe
+                Une question avant de commencer?
               </p>
-              <p className="text-sm leading-7 text-muted-foreground">
-                Si vous préférez valider vos priorités avec nous avant d'aller
-                plus loin, on peut faire un échange de 20 minutes orienté
-                actions.
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Écrivez à ForméducWeb. Le contact humain est disponible, jamais
+                obligatoire pour voir votre résultat.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button asChild>
-                <Link href={`/contact?source=${diagnostic.leadSource}-appel`}>
-                  <MessageCircle className="mr-2 h-4 w-4" />
-                  Demander un appel
-                </Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href={`/contact?source=${diagnostic.leadSource}-humain`}>
-                  Écrire à ForméducWeb
-                </Link>
-              </Button>
-            </div>
+            <Button asChild variant="secondary">
+              <Link href={`/contact?source=${diagnostic.leadSource}-humain`}>
+                <MessageCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+                Écrire à ForméducWeb
+              </Link>
+            </Button>
           </CardContent>
         </Card>
       </section>
+
+      <MobileDiagnosticCta href={diagnostic.wizardPath} />
     </>
   );
 }

@@ -6,6 +6,7 @@ import {
   findAssessmentByToken,
   hydrateAssessment
 } from "@/lib/assessment-store";
+import { hasActiveAssessmentAccess } from "@/lib/commerce";
 import { AssessmentReportPdfDocument } from "@/lib/report-pdf";
 import { filenameFromCompany } from "@/lib/report-pdf-shared";
 import { tokenSearchParamSchema } from "@/lib/schemas";
@@ -40,11 +41,11 @@ export async function GET(request: Request) {
       );
     }
 
-    if (assessment.paymentStatus !== "paid") {
+    if (!(await hasActiveAssessmentAccess(assessment))) {
       return NextResponse.json(
         {
           error:
-            "Le rapport complet doit être débloqué avant le téléchargement PDF."
+            "Le Kit d’exécution 90 jours doit être débloqué avant le téléchargement PDF."
         },
         { status: 403 }
       );

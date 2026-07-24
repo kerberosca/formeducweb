@@ -9,9 +9,15 @@ import { getWizardData } from "@/lib/wizard";
 
 type WizardPageShellProps = {
   assessmentType: AssessmentType;
+  entitlementToken?: string;
+  preferredOffer?: "trio";
 };
 
-export function WizardPageShell({ assessmentType }: WizardPageShellProps) {
+export function WizardPageShell({
+  assessmentType,
+  entitlementToken,
+  preferredOffer
+}: WizardPageShellProps) {
   const diagnostic = getDiagnosticConfig(assessmentType);
   const wizard = getWizardData(assessmentType);
   const scoredQuestions = wizard.questions.filter(
@@ -31,7 +37,10 @@ export function WizardPageShell({ assessmentType }: WizardPageShellProps) {
         <p className="mt-3 max-w-3xl text-lg leading-8 text-muted-foreground">
           En environ 10 minutes, obtenez sans courriel votre score, vos trois
           priorités et un plan d'action de 30 jours. Vous pourrez ensuite
-          sauvegarder le résultat ou choisir le rapport complet.
+          sauvegarder le résultat ou choisir{" "}
+          {preferredOffer === "trio"
+            ? "le Trio Hygiène numérique à 59 $."
+            : "le Kit d’exécution 90 jours à 29 $."}
         </p>
       </section>
       <section className="container pt-8">
@@ -74,6 +83,8 @@ export function WizardPageShell({ assessmentType }: WizardPageShellProps) {
         assessmentType={assessmentType}
         wizard={wizard}
         reportUnlockPriceLabel={getReportUnlockPriceLabel()}
+        entitlementToken={entitlementToken}
+        preferredOffer={preferredOffer}
       />
     </>
   );

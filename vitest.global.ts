@@ -38,6 +38,21 @@ export default function setup() {
   );
 
   return () => {
-    if (existsSync(databasePath)) rmSync(databasePath, { force: true });
+    if (!existsSync(databasePath)) return;
+
+    try {
+      rmSync(databasePath, { force: true });
+    } catch (error) {
+      // SQLite can remain locked until the Vitest worker exits on Windows.
+      // The next setup removes the stale file before applying migrations.
+      if (
+        !error ||
+        typeof error !== "object" ||
+        !("code" in error) ||
+        !["EBUSY", "EPERM"].includes(String(error.code))
+      ) {
+        throw error;
+      }
+    }
   };
 }

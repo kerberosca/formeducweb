@@ -7,24 +7,24 @@ datasource db {
 }
 
 model Assessment {
-  id                  String   @id @default(cuid())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
   contactName         String?
   companyName         String?
   email               String
   phone               String?
-  consentMarketing    Boolean  @default(false)
-  assessmentType      String   @default("loi25")
+  consentMarketing    Boolean       @default(false)
+  assessmentType      String        @default("loi25")
   answers             Json
   score               Int
   level               String
   reportLite          Json
   reportFull          Json
-  paymentStatus       String   @default("unpaid")
+  paymentStatus       String        @default("unpaid")
   stripeSessionId     String?
   stripePaymentIntent String?
-  accessToken         String   @unique
+  accessToken         String        @unique
   pdfUrl              String?
   utmSource           String?
   utmMedium           String?
@@ -34,6 +34,8 @@ model Assessment {
   landingPath         String?
   referrerHost        String?
   firstSeenAt         DateTime?
+  orders              Order[]
+  entitlements        Entitlement[]
 
   @@index([email])
   @@index([assessmentType])
@@ -42,16 +44,16 @@ model Assessment {
 }
 
 model ContactRequest {
-  id               String   @id @default(cuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id               String    @id @default(cuid())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   name             String
   company          String
   email            String
   phone            String?
   reason           String
   message          String
-  consentMarketing Boolean  @default(false)
+  consentMarketing Boolean   @default(false)
   utmSource        String?
   utmMedium        String?
   utmCampaign      String?
@@ -64,4 +66,122 @@ model ContactRequest {
   @@index([email])
   @@index([createdAt])
   @@index([utmSource])
+}
+
+model Order {
+  id                  String        @id @default(cuid())
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  publicToken         String        @unique
+  email               String
+  contactName         String?
+  companyName         String?
+  productCode         String
+  amountCents         Int
+  currency            String        @default("cad")
+  status              String        @default("pending")
+  assessmentId        String?
+  assessment          Assessment?   @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  stripeSessionId     String?       @unique
+  stripePaymentIntent String?       @unique
+  paidAt              DateTime?
+  refundedAt          DateTime?
+  accessExpiresAt     DateTime?
+  upgradeFromOrderId  String?
+  upgradeFromOrder    Order?        @relation("OrderUpgrades", fields: [upgradeFromOrderId], references: [id], onDelete: SetNull)
+  upgrades            Order[]       @relation("OrderUpgrades")
+  utmSource           String?
+  utmMedium           String?
+  utmCampaign         String?
+  utmContent          String?
+  utmTerm             String?
+  landingPath         String?
+  referrerHost        String?
+  firstSeenAt         DateTime?
+  entitlements        Entitlement[]
+  emailJobs           EmailJob[]
+  stripeEvents        StripeEvent[]
+
+  @@index([email])
+  @@index([productCode])
+  @@index([status])
+  @@index([assessmentId])
+  @@index([upgradeFromOrderId])
+  @@index([createdAt])
+}
+
+model Entitlement {
+  id                   String      @id @default(cuid())
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  orderId              String
+  order                Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  assessmentId         String?
+  assessment           Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  ownerEmail           String
+  assessmentType       String
+  status               String      @default("active")
+  accessToken          String      @unique
+  ownsAssessmentAccess Boolean     @default(true)
+  expiresAt            DateTime
+  consumedAt           DateTime?
+  revokedAt            DateTime?
+
+  @@unique([orderId, assessmentType])
+  @@index([ownerEmail])
+  @@index([assessmentId])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+model Subscriber {
+  id               String     @id @default(cuid())
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  email            String     @unique
+  consentMarketing Boolean    @default(false)
+  consentSource    String?
+  consentedAt      DateTime?
+  unsubscribedAt   DateTime?
+  emailJobs        EmailJob[]
+
+  @@index([consentMarketing])
+  @@index([unsubscribedAt])
+}
+
+model EmailJob {
+  id             String      @id @default(cuid())
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  subscriberId   String?
+  subscriber     Subscriber? @relation(fields: [subscriberId], references: [id], onDelete: SetNull)
+  orderId        String?
+  order          Order?      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  toEmail        String
+  kind           String
+  status         String      @default("scheduled")
+  scheduledAt    DateTime
+  sentAt         DateTime?
+  cancelledAt    DateTime?
+  attempts       Int         @default(0)
+  lastError      String?
+  payload        Json?
+  idempotencyKey String      @unique
+
+  @@index([status, scheduledAt])
+  @@index([toEmail])
+  @@index([subscriberId])
+  @@index([orderId])
+}
+
+model StripeEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  eventType   String
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  processedAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([processedAt])
 }

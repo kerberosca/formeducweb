@@ -31,7 +31,7 @@ const proofPoints = [
   "Environ 10 minutes",
   "Score immédiat",
   "3 priorités et plan 30 jours",
-  `Rapport complet optionnel à ${getReportUnlockPriceLabel()}`
+  `Kit 90 jours optionnel à ${getReportUnlockPriceLabel()}`
 ];
 
 const howItWorks = [
@@ -43,12 +43,12 @@ const howItWorks = [
   {
     title: "Recevez votre résumé",
     description:
-      "Score global, 3 priorités et plan 30 jours avant de décider si le rapport complet est utile."
+      "Score global, 3 priorités et plan 30 jours avant de décider si le Kit d’exécution est utile."
   },
   {
     title: "Passez à l'action",
     description:
-      "Vous pouvez rester autonome, acheter le rapport complet ou demander un accompagnement."
+      "Vous pouvez rester autonome, acheter le Kit 90 jours ou demander un accompagnement."
   }
 ];
 

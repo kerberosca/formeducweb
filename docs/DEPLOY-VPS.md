@@ -15,7 +15,9 @@ git clone <votre-repo> formeducweb
 cd formeducweb
 cp .env.production.example .env.production
 nano .env.production   # URLs HTTPS (incl. EMAIL_PUBLIC_BASE_URL), Stripe, Resend, emails
-docker compose --env-file .env.production up -d --build
+docker compose --env-file .env.production build formeducweb
+docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate
+docker compose --env-file .env.production up -d
 ```
 
 Vérifier :
@@ -57,8 +59,14 @@ SQLite persistante dans le volume Docker `formeducweb_sqlite` (`/data/production
 
 ```bash
 git pull
-docker compose --env-file .env.production up -d --build
+docker compose --env-file .env.production build formeducweb
+docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate
+docker compose --env-file .env.production up -d
 ```
+
+Avant chaque migration, sauvegarder `/data/production.db` hors du volume
+Docker. La procédure détaillée et le contrôle du compte initial Demo839 sont
+décrits dans [`production-low-ticket.md`](./production-low-ticket.md).
 
 ## Revenir à l’ancien hébergement (Plesk / WordPress)
 

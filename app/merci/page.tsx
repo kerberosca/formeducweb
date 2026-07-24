@@ -2,20 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PurchaseTracker } from "@/components/analytics/purchase-tracker";
+import { PendingPaymentRefresh } from "@/components/commerce/pending-payment-refresh";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  findAssessmentById,
-  findAssessmentByStripeSessionId,
-  markAssessmentPaid
-} from "@/lib/assessment-store";
+import { findOrderByStripeSessionId } from "@/lib/commerce";
 import {
   getDiagnosticConfig,
   normalizeAssessmentType
 } from "@/lib/diagnostics";
-import { areExternalServicesDisabled } from "@/lib/external-services";
 import { checkoutSearchParamsSchema } from "@/lib/schemas";
-import { getStripeClient } from "@/lib/stripe";
 
 type MerciSearchParamsInput = {
   session_id?: string | string[];
@@ -86,50 +81,23 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
   let serviceHref = "/services";
   let serviceLabel = "services";
   let paymentConfirmed = false;
+  let actionLabel = "Voir mon kit";
   let customerName = "";
   let companyName = "";
+  let transactionId: string | undefined;
+  let productCode: string | undefined;
+  let purchaseValue: number | undefined;
+  let purchaseCurrency: string | undefined;
   let purchasedAssessmentType: ReturnType<
     typeof normalizeAssessmentType
   > | null = null;
 
-  if (
-    resolved.session_id &&
-    process.env.STRIPE_SECRET_KEY &&
-    !areExternalServicesDisabled()
-  ) {
+  if (resolved.session_id) {
     try {
-      const stripe = getStripeClient();
-      const session = await stripe.checkout.sessions.retrieve(
-        resolved.session_id
-      );
-      const assessmentId =
-        session.metadata?.assessmentId ||
-        session.client_reference_id ||
-        undefined;
-      let assessment = assessmentId
-        ? await findAssessmentById(assessmentId)
-        : await findAssessmentByStripeSessionId(session.id);
+      const order = await findOrderByStripeSessionId(resolved.session_id);
+      const assessment = order?.assessment;
 
-      if (
-        assessment &&
-        (session.payment_status === "paid" || session.status === "complete") &&
-        assessment.paymentStatus !== "paid"
-      ) {
-        assessment = await markAssessmentPaid({
-          assessmentId: assessment.id,
-          stripeSessionId: session.id,
-          stripePaymentIntentId:
-            typeof session.payment_intent === "string"
-              ? session.payment_intent
-              : session.payment_intent?.id || null
-        });
-      }
-
-      if (
-        assessment &&
-        (assessment.paymentStatus === "paid" ||
-          session.payment_status === "paid")
-      ) {
+      if (order && assessment && order.status === "paid") {
         const diagnostic = getDiagnosticConfig(
           normalizeAssessmentType(assessment.assessmentType)
         );
@@ -137,21 +105,47 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
           assessment.assessmentType
         );
         paymentConfirmed = true;
-        reportHref = diagnostic.reportPath(assessment.accessToken);
+        reportHref =
+          order.productCode === "digital_hygiene_trio" ||
+          order.productCode === "trio_upgrade"
+            ? `/trio/${order.publicToken}`
+            : diagnostic.reportPath(assessment.accessToken);
+        actionLabel =
+          order.productCode === "digital_hygiene_trio" ||
+          order.productCode === "trio_upgrade"
+            ? "Ouvrir mon tableau de bord"
+            : "Voir mon Kit d’exécution 90 jours";
         serviceHref = diagnostic.path;
         serviceLabel = diagnostic.label;
-        customerName = assessment.contactName || "";
-        companyName = assessment.companyName || "";
+        customerName = order.contactName || assessment.contactName || "";
+        companyName = order.companyName || assessment.companyName || "";
+        transactionId = order.id;
+        productCode = order.productCode;
+        purchaseValue = order.amountCents / 100;
+        purchaseCurrency = order.currency.toUpperCase();
       }
     } catch (error) {
-      console.error("Merci page Stripe error", error);
+      console.error("Merci page order error", error);
     }
   }
 
   return (
     <section className="container py-16 md:py-24">
-      {paymentConfirmed && purchasedAssessmentType ? (
-        <PurchaseTracker assessmentType={purchasedAssessmentType} />
+      {paymentConfirmed &&
+      purchasedAssessmentType &&
+      transactionId &&
+      productCode &&
+      purchaseValue !== undefined ? (
+        <PurchaseTracker
+          assessmentType={purchasedAssessmentType}
+          transactionId={transactionId}
+          productCode={productCode}
+          value={purchaseValue}
+          currency={purchaseCurrency}
+        />
+      ) : null}
+      {!paymentConfirmed && resolved.session_id ? (
+        <PendingPaymentRefresh />
       ) : null}
       <Card className="mx-auto max-w-3xl">
         <CardContent className="space-y-6 p-10 text-center">
@@ -169,7 +163,7 @@ export default async function MerciPage({ searchParams }: MerciPageProps) {
           <div className="flex flex-col justify-center gap-3 sm:flex-row">
             {reportHref ? (
               <Button asChild>
-                <Link href={reportHref}>Voir mon rapport complet</Link>
+                <Link href={reportHref}>{actionLabel}</Link>
               </Button>
             ) : (
               <Button asChild>

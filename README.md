@@ -1,6 +1,8 @@
 # ForméducWeb
 
-Site Next.js App Router pour ForméducWeb avec wizard d'auto-evaluation Loi 25, modele freemium low-ticket, Stripe Checkout, rapport Lite/Full, PDF serveur et stockage Prisma.
+Site Next.js App Router pour ForméducWeb avec diagnostics gratuits, Kits
+d’exécution 90 jours, Trio Hygiène numérique, Stripe Checkout, PDF serveur et
+stockage Prisma.
 
 ## Artefacts obligatoires reutilises
 
@@ -12,9 +14,9 @@ Ces trois fichiers restent au coeur du flux:
 
 1. le wizard collecte les reponses;
 2. `computeScore()` calcule le score et les sections;
-3. `generateReport()` produit le rapport complet;
+3. `generateReport()` produit le contenu détaillé du kit;
 4. `toLiteReport()` filtre la version gratuite;
-5. le rapport complet est debloque apres paiement Stripe.
+5. le Kit d’exécution 90 jours est débloqué après confirmation du webhook Stripe.
 
 ## Stack
 
@@ -25,8 +27,8 @@ Ces trois fichiers restent au coeur du flux:
 - React Hook Form + Zod
 - Prisma + SQLite en local
 - Stripe Checkout + webhook Stripe
-- `@react-pdf/renderer` pour le PDF complet
-- email MVP via logs console, structure Resend prete
+- `@react-pdf/renderer` pour le PDF du kit
+- Resend et file `EmailJob` pour les courriels transactionnels et consentis
 
 ## Flux low-ticket
 
@@ -100,12 +102,15 @@ STRIPE_CURRENCY=cad
 REPORT_UNLOCK_PRICE_LABEL=29 $
 DATABASE_URL=file:./prisma/dev.db
 ASSESSMENT_RETENTION_UNPAID_DAYS=180
-ASSESSMENT_RETENTION_PAID_DAYS=730
+ASSESSMENT_RETENTION_REFUNDED_DAYS=730
 ADMIN_NOTIFICATION_EMAIL=
 ADMIN_EMAIL=info@formeducweb.ca
 CONTACT_TO_EMAIL=info@formeducweb.ca
 RESEND_API_KEY=
 RESEND_FROM=ForméducWeb <noreply@example.com>
+EMAIL_UNSUBSCRIBE_SECRET=
+EMAIL_JOB_SECRET=
+EMAIL_JOB_INTERVAL_MS=300000
 ```
 
 ### Cookies et trackers optionnels
@@ -137,9 +142,12 @@ Le projet utilise Prisma avec SQLite en local.
 
 - `POST /api/stripe/create-checkout-session`
 - `POST /api/stripe/webhook`
+- `POST /api/internal/email-jobs`
 - `POST /api/privacy-request`
+- `GET /api/download/kit-asset`
 - `GET /merci?session_id=...`
 - `GET /loi-25/rapport/[token]`
+- `GET /trio/[token]`
 - `GET /demande-confidentialite`
 
 ### Tester Stripe en local
@@ -161,8 +169,12 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 5. Faire le parcours:
 
 ```text
-Wizard -> Resultat Lite -> Debloquer mon rapport complet -> Checkout -> Merci -> Rapport complet
+Wizard -> Résultat gratuit -> Kit d’exécution 90 jours -> Checkout -> Merci -> Kit
 ```
+
+Le déploiement Docker, les migrations explicites, le travailleur de courriels et
+la vérification de la migration Demo839 sont détaillés dans
+[`docs/production-low-ticket.md`](docs/production-low-ticket.md).
 
 ### Comportement du webhook
 

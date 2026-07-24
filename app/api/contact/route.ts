@@ -2,6 +2,7 @@
 
 import { createContactRequestRecord } from "@/lib/contact-request-store";
 import { sendContactEmail } from "@/lib/email";
+import { recordSubscriberConsent } from "@/lib/email-automation";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { contactFormSchema } from "@/lib/schemas";
 
@@ -43,11 +44,19 @@ export async function POST(request: Request) {
       );
     }
 
-    await createContactRequestRecord(parsed.data);
+    const contactRequest = await createContactRequestRecord(parsed.data);
+    await recordSubscriberConsent({
+      email: parsed.data.email,
+      consentMarketing: parsed.data.consentMarketing,
+      source: "contact"
+    }).catch((error) => {
+      console.error("Contact consent persistence error", error);
+    });
     await sendContactEmail(parsed.data);
 
     return NextResponse.json({
-      ok: true
+      ok: true,
+      contactRequestId: contactRequest.id
     });
   } catch (error) {
     console.error("Contact route error", error);

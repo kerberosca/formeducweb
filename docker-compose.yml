@@ -1,11 +1,21 @@
 # FormÉducWeb — VPS (port hôte 3010 → Next.js 3000 dans le conteneur)
 #
 # 1. cp .env.production.example .env.production && éditer
-# 2. docker compose --env-file .env.production up -d --build
+# 2. docker compose --env-file .env.production build formeducweb
+# 3. sauvegarder la base et suivre docs/production-low-ticket.md
+# 4. docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate
+# 5. docker compose --env-file .env.production up -d
 #
 services:
   formeducweb:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_BOOKING_URL: ${NEXT_PUBLIC_BOOKING_URL}
+        NEXT_PUBLIC_GA_MEASUREMENT_ID: ${NEXT_PUBLIC_GA_MEASUREMENT_ID}
+    image: formeducweb_app:latest
     container_name: formeducweb
     restart: unless-stopped
     ports:
@@ -16,6 +26,29 @@ services:
       DATABASE_URL: file:/data/production.db
     volumes:
       - formeducweb_sqlite:/data
+
+  email_jobs_worker:
+    image: formeducweb_app:latest
+    container_name: formeducweb_email_jobs
+    restart: unless-stopped
+    depends_on:
+      - formeducweb
+    environment:
+      EMAIL_JOB_ENDPOINT: http://formeducweb:3000/api/internal/email-jobs
+      EMAIL_JOB_INTERVAL_MS: ${EMAIL_JOB_INTERVAL_MS:-300000}
+      EMAIL_JOB_SECRET: ${EMAIL_JOB_SECRET}
+    command: ["node", "scripts/ops/email-jobs-worker.mjs"]
+
+  formeducweb_migrate:
+    profiles: ["ops"]
+    image: formeducweb_app:latest
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: file:/data/production.db
+    volumes:
+      - formeducweb_sqlite:/data
+    command: ["node", "scripts/ops/migrate-production.mjs"]
 
 volumes:
   formeducweb_sqlite:

@@ -68,10 +68,10 @@ const diagnostics = {
     storagePrefix: "formeducweb-loi25",
     leadSource: "diagnostic-loi25",
     contactSource: "diagnostic-loi25",
-    stripeProductName: "Rapport Loi 25 - Complet",
+    stripeProductName: "Kit d’exécution 90 jours — Loi 25",
     stripeDescription:
-      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits Loi 25.",
-    pdfTitle: "Rapport Loi 25",
+      "Plan personnalisé 90 jours, inventaire des données, registre d’incidents et procédure de demandes.",
+    pdfTitle: "Kit d’exécution 90 jours — Loi 25",
     pdfSubject: "Rapport d'auto-évaluation Loi 25",
     filePrefix: "rapport-loi25",
     resultTitle: "Votre diagnostic Loi 25",
@@ -79,17 +79,17 @@ const diagnostics = {
     disclaimerBadge: "Diagnostic, pas avis juridique",
     diagnosticNoun: "diagnostic Loi 25",
     fullReportIncludes: [
-      "Top 5 des écarts prioritaires, avec le pourquoi et quoi faire",
-      "Plan d'action 30 jours + 90 jours adapté à votre profil",
-      "Rapport PDF téléchargeable",
-      "Checklist de démarrage et gabarits: procédure 1 page, texte type pour formulaire",
-      "Crédit applicable sur un forfait d'implantation si vous poursuivez avec nous"
+      "Top 5 des écarts prioritaires avec le pourquoi et quoi faire",
+      "Plan d’action 90 jours personnalisé avec responsables et échéances",
+      "Inventaire des données et registre d’incidents éditables",
+      "Procédure de demandes et textes de formulaire prêts à adapter",
+      "Crédit de 29 $ valable 90 jours sur un accompagnement admissible"
     ],
     bonusAssets: {
-      procedureTitle: "Procédure 1 page",
-      snippetTitle: "Texte de formulaire",
-      procedureFilename: "procedure-1-page-loi25.txt",
-      snippetFilename: "texte-formulaire-loi25.txt"
+      procedureTitle: "Procédure de demandes",
+      snippetTitle: "Textes de formulaire",
+      procedureFilename: "procedure-demandes-loi25.txt",
+      snippetFilename: "textes-formulaire-loi25.txt"
     },
     content: {
       eyebrow: "Diagnostic Loi 25",
@@ -106,11 +106,11 @@ const diagnostics = {
         "Disclaimers clairs et prochaine étape recommandée."
       ],
       fullReportAdditions: [
-        "Top 5 des écarts prioritaires, avec impact et actions proposées.",
-        "Plan 90 jours détaillé pour passer de la lecture à l'implantation.",
-        "PDF téléchargeable pour partager en interne.",
-        "Gabarits réutilisables: procédure 1 page et texte type pour formulaire.",
-        "Crédit applicable sur un accompagnement si vous poursuivez avec nous."
+        "Top 5 des écarts avec impacts, actions, responsables et échéances.",
+        "Plan d’exécution 90 jours personnalisé et téléchargeable.",
+        "Inventaire des données et registre d’incidents éditables (XLSX).",
+        "Procédure de demandes et textes de formulaire prêts à adapter (DOCX).",
+        "Crédit de 29 $ valable 90 jours sur un accompagnement admissible."
       ],
       reasonsToAct: [
         "Savoir quelles données vous collectez, où elles se trouvent et pourquoi elles sont utiles.",
@@ -126,10 +126,10 @@ const diagnostics = {
         {
           name: "Starter",
           price: "À partir de 690 $",
-          summary: "Diagnostic + rapport + plan d'action priorisé.",
+          summary: "Diagnostic + kit + plan d’action priorisé.",
           items: [
             "Auto-évaluation guidée",
-            "Lecture du rapport avec vous",
+            "Lecture du kit avec vous",
             "Plan 30/90 jours",
             "Recommandations pour vos formulaires et pages légales"
           ]
@@ -166,9 +166,9 @@ const diagnostics = {
             "Parce qu'il permet de voir rapidement où vous avez déjà de bons réflexes et où un effort concret est requis avant d'investir partout."
         },
         {
-          question: "Le rapport remplace-t-il un avis juridique?",
+          question: "Le kit remplace-t-il un avis juridique?",
           answer:
-            "Non. Le rapport sert au diagnostic, à l'alignement et à la priorisation. Une validation juridique peut rester pertinente selon votre contexte."
+            "Non. Le kit sert au diagnostic, à l’alignement et à la priorisation. Une validation juridique peut rester pertinente selon votre contexte."
         },
         {
           question: "Pouvez-vous implanter les recommandations?",
@@ -190,10 +190,10 @@ const diagnostics = {
     storagePrefix: "formeducweb-cybersecurity",
     leadSource: "diagnostic-cybersecurite",
     contactSource: "diagnostic-cybersecurite",
-    stripeProductName: "Rapport cybersécurité PME - Complet",
+    stripeProductName: "Kit d’exécution 90 jours — Cybersécurité",
     stripeDescription:
-      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits cyber.",
-    pdfTitle: "Rapport cybersécurité PME",
+      "Plan personnalisé 90 jours, procédure d’incident, checklist accès et sauvegardes, et mémo antifraude.",
+    pdfTitle: "Kit d’exécution 90 jours — Cybersécurité",
     pdfSubject: "Rapport d'auto-évaluation cybersécurité",
     filePrefix: "rapport-cybersecurite",
     resultTitle: "Votre diagnostic cybersécurité",
@@ -201,17 +201,17 @@ const diagnostics = {
     disclaimerBadge: "Diagnostic, pas audit certifié",
     diagnosticNoun: "diagnostic cybersécurité",
     fullReportIncludes: [
-      "Top 5 des risques prioritaires, avec impact et correctif proposé",
-      "Plan d'action 30 jours + 90 jours pour réduire les risques les plus probables",
-      "Rapport PDF téléchargeable pour discussion interne ou fournisseur TI",
-      "Checklist de démarrage et procédure 1 page de signalement d'incident",
-      "Crédit applicable sur un forfait d'accompagnement si vous poursuivez avec nous"
+      "Top 5 des risques prioritaires avec impact et correctif proposé",
+      "Plan d’action 90 jours personnalisé avec responsables et échéances",
+      "Procédure d’incident éditable",
+      "Checklist accès et sauvegardes, et mémo antifraude",
+      "Crédit de 29 $ valable 90 jours sur un accompagnement admissible"
     ],
     bonusAssets: {
-      procedureTitle: "Procédure de signalement cyber",
-      snippetTitle: "Mémo équipe cyber",
-      procedureFilename: "procedure-signalement-cyber.txt",
-      snippetFilename: "memo-équipe-cyber.txt"
+      procedureTitle: "Procédure d’incident",
+      snippetTitle: "Checklist accès et sauvegardes",
+      procedureFilename: "procedure-incident-cyber.txt",
+      snippetFilename: "checklist-acces-sauvegardes.txt"
     },
     content: {
       eyebrow: "Diagnostic cybersécurité",
@@ -225,14 +225,14 @@ const diagnostics = {
         "Score global de posture cyber.",
         "3 priorités concrètes à traiter d'abord.",
         "Plan d'action 30 jours pour réduire les risques courants.",
-        "Suite recommandée: autonomie, rapport complet ou accompagnement."
+        "Suite recommandée : autonomie, kit d’exécution ou accompagnement."
       ],
       fullReportAdditions: [
-        "Top 5 des risques détaillés avec impact opérationnel.",
-        "Plan 90 jours pour accès, sauvegardes, appareils et courriels.",
-        "PDF partageable avec la direction ou le fournisseur TI.",
-        "Procédure de signalement et mémo équipe réutilisables.",
-        "Crédit applicable sur un accompagnement cyber."
+        "Top 5 des risques avec impacts, actions, responsables et échéances.",
+        "Plan d’exécution 90 jours personnalisé et téléchargeable.",
+        "Procédure d’incident prête à adapter (DOCX).",
+        "Checklist accès et sauvegardes (XLSX) et mémo antifraude (PDF).",
+        "Crédit de 29 $ valable 90 jours sur un accompagnement admissible."
       ],
       reasonsToAct: [
         "Les bases bien entretenues - MFA, mises à jour, sauvegardes - réduisent beaucoup de risques courants.",
@@ -311,28 +311,28 @@ const diagnostics = {
     storagePrefix: "formeducweb-ai",
     leadSource: "diagnostic-ia",
     contactSource: "diagnostic-ia",
-    stripeProductName: "Rapport IA en entreprise - Complet",
+    stripeProductName: "Kit d’exécution 90 jours — Intelligence artificielle",
     stripeDescription:
-      "Rapport complet PDF, Top 5 détaillé, plan 30 + 90 jours et gabarits IA.",
-    pdfTitle: "Rapport IA en entreprise",
+      "Plan personnalisé 90 jours, charte IA éditable, registre des usages et mémo d’équipe.",
+    pdfTitle: "Kit d’exécution 90 jours — Intelligence artificielle",
     pdfSubject: "Rapport d'auto-évaluation IA",
     filePrefix: "rapport-ia",
     resultTitle: "Votre diagnostic IA",
     reportTitle: "Votre diagnostic IA",
-    disclaimerBadge: "Diagnostic, pas avis legal",
+    disclaimerBadge: "Diagnostic, pas avis juridique",
     diagnosticNoun: "diagnostic IA",
     fullReportIncludes: [
-      "Top 5 des écarts IA prioritaires, avec le pourquoi et quoi faire",
-      "Plan d'action 30 jours + 90 jours pour encadrer et tester les usages",
-      "Rapport PDF téléchargeable pour la direction",
-      "Checklist de démarrage et charte IA courte reutilisable",
-      "Crédit applicable sur un forfait d'accompagnement si vous poursuivez avec nous"
+      "Top 5 des écarts IA prioritaires avec le pourquoi et quoi faire",
+      "Plan d’action 90 jours personnalisé avec responsables et échéances",
+      "Charte IA éditable",
+      "Registre des usages IA et mémo d’équipe",
+      "Crédit de 29 $ valable 90 jours sur un accompagnement admissible"
     ],
     bonusAssets: {
-      procedureTitle: "Charte IA courte",
-      snippetTitle: "Memo d'utilisation IA",
-      procedureFilename: "charte-ia-courte.txt",
-      snippetFilename: "memo-utilisation-ia.txt"
+      procedureTitle: "Charte IA éditable",
+      snippetTitle: "Registre des usages IA",
+      procedureFilename: "charte-ia.txt",
+      snippetFilename: "registre-usages-ia.txt"
     },
     content: {
       eyebrow: "Diagnostic IA",
@@ -350,11 +350,11 @@ const diagnostics = {
         "Prochaine étape recommandée selon votre maturité."
       ],
       fullReportAdditions: [
-        "Top 5 des écarts IA détaillés avec impacts et actions.",
-        "Plan 90 jours pour gouvernance, données, outils et adoption.",
-        "PDF partageable avec la direction et les responsables.",
-        "Charte IA courte et mémo équipe réutilisables.",
-        "Crédit applicable sur un accompagnement IA."
+        "Top 5 des écarts avec impacts, actions, responsables et échéances.",
+        "Plan d’exécution 90 jours personnalisé et téléchargeable.",
+        "Charte IA éditable prête à adapter (DOCX).",
+        "Registre des usages (XLSX) et mémo d’équipe (PDF).",
+        "Crédit de 29 $ valable 90 jours sur un accompagnement admissible."
       ],
       reasonsToAct: [
         "Vos équipes utilisent peut-être déjà des outils IA sans cadre commun.",

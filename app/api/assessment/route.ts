@@ -4,7 +4,11 @@ import {
   cleanupAssessmentRetention,
   createAssessmentRecord
 } from "@/lib/assessment-store";
+import { claimEntitlement } from "@/lib/commerce";
+import { db } from "@/lib/db";
 import { sendAssessmentReceivedEmails } from "@/lib/email";
+import { scheduleDiagnosticNurture } from "@/lib/email-automation";
+import { getDiagnosticConfig } from "@/lib/diagnostics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { generateReport } from "@/lib/recommendations";
 import { toLiteReport } from "@/lib/reportFilters";
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
       phone: "",
       consentMarketing: parsed.data.consentMarketing
     };
-    const assessment = await createAssessmentRecord({
+    let assessment = await createAssessmentRecord({
       assessmentType,
       leadCapture,
       answers: parsed.data.answers,
@@ -87,6 +91,47 @@ export async function POST(request: Request) {
       fullReport,
       attribution: parsed.data.attribution
     });
+
+    if (parsed.data.entitlementToken) {
+      const entitlement = await claimEntitlement({
+        accessToken: parsed.data.entitlementToken,
+        ownerEmail: assessment.email,
+        assessmentId: assessment.id,
+        assessmentType
+      });
+
+      if (!entitlement) {
+        await db.assessment.delete({ where: { id: assessment.id } });
+        return NextResponse.json(
+          {
+            code: "ENTITLEMENT_INVALID",
+            error:
+              "Ce droit d’accès est invalide, expiré, déjà utilisé ou associé à un autre courriel."
+          },
+          { status: 403 }
+        );
+      }
+
+      assessment = await db.assessment.findUniqueOrThrow({
+        where: { id: assessment.id }
+      });
+    }
+
+    if (!parsed.data.entitlementToken) {
+      await scheduleDiagnosticNurture({
+        email: assessment.email,
+        consentMarketing: parsed.data.consentMarketing,
+        source: `diagnostic-${assessmentType}`,
+        contextId: assessment.id,
+        diagnostic: assessmentType,
+        resultUrl: getDiagnosticConfig(assessmentType).reportPath(
+          assessment.accessToken
+        ),
+        companyName: assessment.companyName
+      }).catch((error) => {
+        console.error("Diagnostic nurture scheduling error", error);
+      });
+    }
 
     cleanupAssessmentRetention().catch((error) => {
       console.error("Assessment retention cleanup error", error);

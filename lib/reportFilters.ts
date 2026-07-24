@@ -122,9 +122,9 @@ export function toLiteReport(fullReport: GeneratedReport): LiteReport {
     ),
     plan30Days: fullReport.plan30Days.slice(0, 5),
     plan90DaysTeaser:
-      "Débloquez le rapport complet pour obtenir le plan 90 jours adapté à votre contexte.",
+      "Obtenez le Kit d’exécution pour recevoir le plan 90 jours adapté à votre contexte.",
     disclaimers: fullReport.disclaimers,
     upsellTeaser:
-      "Passez du diagnostic à l'implantation avec un rapport complet prêt à utiliser."
+      "Passez du diagnostic à l’implantation avec un Kit d’exécution prêt à utiliser."
   };
 }

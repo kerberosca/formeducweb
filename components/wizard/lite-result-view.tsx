@@ -36,6 +36,7 @@ type LiteResultViewProps = {
   onEdit?: () => void;
   onRestart?: () => void;
   mainHeadingLevel?: "h1" | "h2";
+  preferredOffer?: "trio";
 };
 
 function IncludedList({ items }: { items: string[] }) {
@@ -58,7 +59,8 @@ export function LiteResultView({
   onProfileSaved,
   onEdit,
   onRestart,
-  mainHeadingLevel = "h1"
+  mainHeadingLevel = "h1",
+  preferredOffer
 }: LiteResultViewProps) {
   const { assessmentType, scoreResult, liteReport } = resultState;
   const diagnostic = getDiagnosticConfig(assessmentType);
@@ -74,6 +76,18 @@ export function LiteResultView({
     resultState.leadCapture.contactName.trim() &&
     resultState.leadCapture.companyName.trim()
   );
+  const isTrioOffer = preferredOffer === "trio";
+  const offerPriceLabel = isTrioOffer ? "59 $" : priceLabel;
+  const checkoutProductCode = isTrioOffer ? "digital_hygiene_trio" : undefined;
+  const checkoutValue = isTrioOffer ? 59 : 29;
+  const offerIncludes = isTrioOffer
+    ? [
+        "Les trois diagnostics : IA, cybersécurité et Loi 25",
+        "Trois Kits d’exécution 90 jours personnalisés",
+        "Tous les gabarits DOCX, XLSX et PDF",
+        "Un tableau de bord privé pour compléter les deux autres parcours"
+      ]
+    : diagnostic.fullReportIncludes;
   const fullReportHref = isSaved
     ? diagnostic.reportPath(resultState.accessToken)
     : "#save-result";
@@ -152,7 +166,7 @@ export function LiteResultView({
         <TabsList>
           <TabsTrigger value="lite">Résumé gratuit</TabsTrigger>
           <TabsTrigger value="full">
-            Rapport complet {isPaid ? "" : "(verrouillé)"}
+            Kit 90 jours {isPaid ? "" : "(verrouillé)"}
           </TabsTrigger>
         </TabsList>
 
@@ -210,7 +224,7 @@ export function LiteResultView({
                 <p className="text-sm leading-6 text-muted-foreground">
                   Entrez uniquement votre courriel pour recevoir un lien
                   sécurisé. Votre nom et votre entreprise ne seront demandés que
-                  si vous choisissez le rapport complet.
+                  si vous choisissez le Kit d’exécution 90 jours.
                 </p>
               </CardHeader>
               <CardContent>
@@ -369,9 +383,9 @@ export function LiteResultView({
                       Besoin du détail et des gabarits ?
                     </p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      Le rapport complet ({priceLabel}) ajoute le Top 5
-                      détaillé, le plan 90 jours, le PDF et les modèles prêts à
-                      réutiliser.
+                      {isTrioOffer
+                        ? `Le Trio (${offerPriceLabel}) ajoute les trois kits, leurs gabarits et un tableau de bord privé.`
+                        : `Le Kit d’exécution 90 jours (${offerPriceLabel}) ajoute le Top 5 détaillé, le plan personnalisé, le PDF et les gabarits prêts à réutiliser.`}
                     </p>
                     <Button
                       type="button"
@@ -380,7 +394,7 @@ export function LiteResultView({
                       onClick={() => setActiveTab("full")}
                     >
                       <FileText className="mr-2 h-4 w-4" />
-                      Voir ce que comprend le rapport complet
+                      Voir ce que comprend le kit
                     </Button>
                   </div>
                 ) : null}
@@ -411,7 +425,9 @@ export function LiteResultView({
                     className="h-6 w-6 shrink-0 text-primary"
                     aria-hidden
                   />
-                  Rapport complet ({priceLabel})
+                  {isTrioOffer
+                    ? `Trio Hygiène numérique (${offerPriceLabel})`
+                    : `Kit d’exécution 90 jours (${offerPriceLabel})`}
                 </CardTitle>
                 <p className="text-base font-normal leading-7 text-muted-foreground">
                   Paiement unique, accès immédiat après Stripe. Voici ce que
@@ -419,7 +435,7 @@ export function LiteResultView({
                 </p>
               </CardHeader>
               <CardContent className="space-y-6">
-                <IncludedList items={diagnostic.fullReportIncludes} />
+                <IncludedList items={offerIncludes} />
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                   {resultState.kind === "saved" ? (
                     <UnlockReportButton
@@ -428,7 +444,13 @@ export function LiteResultView({
                       accessToken={resultState.accessToken}
                       profileComplete={profileComplete}
                       onProfileSaved={onProfileSaved}
-                      label={`Débloquer mon rapport complet (${priceLabel})`}
+                      productCode={checkoutProductCode}
+                      value={checkoutValue}
+                      label={
+                        isTrioOffer
+                          ? "Choisir le Trio (59 $)"
+                          : `Obtenir mon Kit 90 jours (${offerPriceLabel})`
+                      }
                       className="w-full sm:w-auto sm:min-w-[240px]"
                     />
                   ) : (
@@ -460,15 +482,15 @@ export function LiteResultView({
               <CardContent className="flex flex-col gap-4 p-8 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="font-medium">
-                    Votre rapport complet est déjà débloqué
+                    Votre Kit d’exécution 90 jours est déjà débloqué
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Ouvrez l'onglet Rapport complet ou accédez directement au
-                    rapport détaillé.
+                    Ouvrez l’onglet Kit 90 jours ou accédez directement à votre
+                    espace détaillé.
                   </p>
                 </div>
                 <Button asChild>
-                  <Link href={fullReportHref}>Voir mon rapport complet</Link>
+                  <Link href={fullReportHref}>Voir mon Kit 90 jours</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -481,18 +503,20 @@ export function LiteResultView({
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                   <LockKeyhole className="h-3.5 w-3.5" />
-                  Rapport complet {isPaid ? "disponible" : "verrouillé"}
+                  Kit 90 jours {isPaid ? "disponible" : "verrouillé"}
                 </div>
                 <div>
                   <h2 className="font-heading text-3xl font-semibold tracking-tight">
-                    Débloquez votre rapport complet ({priceLabel})
+                    {isTrioOffer
+                      ? `Obtenez le Trio Hygiène numérique (${offerPriceLabel})`
+                      : `Obtenez votre Kit d’exécution 90 jours (${offerPriceLabel})`}
                   </h2>
                   <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
-                    Paiement unique, accès immédiat et lien sécurisé pour
-                    revenir plus tard sur votre rapport complet.
+                    Paiement unique, accès sécurisé pendant 730 jours et
+                    gabarits personnalisés pour passer à l’action.
                   </p>
                 </div>
-                <IncludedList items={diagnostic.fullReportIncludes} />
+                <IncludedList items={offerIncludes} />
               </div>
 
               <div className="space-y-4 rounded-[28px] border border-border/70 bg-background p-6">
@@ -503,9 +527,7 @@ export function LiteResultView({
                       votre rapport détaillé et télécharger le PDF.
                     </p>
                     <Button asChild>
-                      <Link href={fullReportHref}>
-                        Voir mon rapport complet
-                      </Link>
+                      <Link href={fullReportHref}>Voir mon Kit 90 jours</Link>
                     </Button>
                   </>
                 ) : (
@@ -517,7 +539,13 @@ export function LiteResultView({
                         accessToken={resultState.accessToken}
                         profileComplete={profileComplete}
                         onProfileSaved={onProfileSaved}
-                        label={`Débloquer mon rapport complet (${priceLabel})`}
+                        productCode={checkoutProductCode}
+                        value={checkoutValue}
+                        label={
+                          isTrioOffer
+                            ? "Choisir le Trio (59 $)"
+                            : `Obtenir mon Kit 90 jours (${offerPriceLabel})`
+                        }
                         className="w-full"
                       />
                     ) : (
@@ -581,7 +609,7 @@ export function LiteResultView({
                 </AccordionItem>
                 <AccordionItem value="c">
                   <AccordionTrigger>
-                    Est-ce que le rapport complet remplace un avis professionnel
+                    Est-ce que le Kit d’exécution remplace un avis professionnel
                     ?
                   </AccordionTrigger>
                   <AccordionContent>
@@ -602,7 +630,7 @@ export function LiteResultView({
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
                   Si vous préférez valider vos priorités avec nous avant de
-                  débloquer le rapport, on peut faire un appel rapide.
+                  acheter le kit, on peut faire un appel rapide.
                 </p>
               </div>
               <Button asChild variant="secondary">

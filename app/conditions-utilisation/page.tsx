@@ -40,6 +40,14 @@ export default function ConditionsUtilisationPage() {
             body: "Les résultats reposent sur les réponses déclarées. Ils doivent être interprétés avec jugement et, au besoin, complétés par une validation professionnelle adaptée à votre contexte."
           },
           {
+            title: "Prix, accès et amélioration",
+            body: "Chaque Kit d’exécution 90 jours coûte 29 $ CAD, le Trio Hygiène numérique coûte 59 $ CAD et l’amélioration d’un kit individuel vers le trio coûte 30 $ CAD. Il s’agit de paiements uniques. Les accès payés demeurent disponibles pendant 730 jours à partir de la confirmation du paiement, sous réserve des présentes conditions."
+          },
+          {
+            title: "Crédit et remboursement",
+            body: "L’achat comprend un crédit de 29 $ CAD valable pendant 90 jours sur un accompagnement ForméducWeb admissible. Une demande de remboursement peut être présentée dans les 7 jours suivant l’achat; si elle est acceptée, l’accès au kit, aux gabarits et aux droits inutilisés du trio est révoqué."
+          },
+          {
             title: "Responsabilité",
             body: "Même si un soin raisonnable est apporté au contenu, ForméducWeb ne peut être tenu responsable d'une décision prise uniquement sur la base d'un résultat automatisé ou d'un résumé simplifié."
           },

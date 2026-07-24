@@ -12,6 +12,26 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/intelligence-artificielle/wizard"
 });
 
-export default function AiWizardPage() {
-  return <WizardPageShell assessmentType="ai" />;
+export default async function AiWizardPage({
+  searchParams
+}: {
+  searchParams?: Promise<{
+    entitlement?: string | string[];
+    offer?: string | string[];
+  }>;
+}) {
+  const resolved = await searchParams;
+  const entitlement = Array.isArray(resolved?.entitlement)
+    ? resolved.entitlement[0]
+    : resolved?.entitlement;
+  const offer = Array.isArray(resolved?.offer)
+    ? resolved.offer[0]
+    : resolved?.offer;
+  return (
+    <WizardPageShell
+      assessmentType="ai"
+      entitlementToken={entitlement}
+      preferredOffer={offer === "trio" ? "trio" : undefined}
+    />
+  );
 }

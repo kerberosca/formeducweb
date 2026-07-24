@@ -38,6 +38,7 @@ export const assessmentPayloadSchema = z.object({
   assessmentType: assessmentTypeSchema.default("loi25"),
   email: leadCaptureSchema.shape.email,
   consentMarketing: z.boolean().default(false),
+  entitlementToken: z.string().min(32).max(128).optional(),
   answers: assessmentAnswersSchema,
   attribution: attributionSchema.optional()
 });
@@ -60,7 +61,16 @@ export const assessmentProfileSchema = z.object({
 export const checkoutSessionPayloadSchema = z
   .object({
     assessmentId: z.string().cuid().optional(),
-    accessToken: z.string().min(16).optional()
+    accessToken: z.string().min(16).optional(),
+    productCode: z
+      .enum([
+        "loi25_kit",
+        "cyber_kit",
+        "ai_kit",
+        "digital_hygiene_trio",
+        "trio_upgrade"
+      ])
+      .optional()
   })
   .refine((value) => Boolean(value.assessmentId || value.accessToken), {
     message: "assessmentId ou accessToken est requis."

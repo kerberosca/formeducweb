@@ -16,6 +16,16 @@ type MailOptions = {
   to: string;
   subject: string;
   html: string;
+  idempotencyKey?: string;
+};
+
+export type CommercialMailOptions = {
+  to: string;
+  subject: string;
+  title: string;
+  contentHtml: string;
+  unsubscribeUrl: string;
+  idempotencyKey: string;
 };
 
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
@@ -106,22 +116,10 @@ function toAbsoluteUrl(pathOrUrl: string) {
   return `${base}${path}`;
 }
 
-function getWizardUrl(assessmentType: AssessmentType) {
-  return toAbsoluteUrl(getDiagnosticConfig(assessmentType).wizardPath);
-}
-
 function getSummaryUrl(accessToken: string, assessmentType: AssessmentType) {
   return toAbsoluteUrl(
     getDiagnosticConfig(assessmentType).reportPath(accessToken)
   );
-}
-
-function getContactUrl(source: string) {
-  return toAbsoluteUrl(`/contact?source=${encodeURIComponent(source)}`);
-}
-
-function getBookingUrl() {
-  return toAbsoluteUrl("/contact?source=appel-diagnostic");
 }
 
 function renderPrimaryCta(label: string, href: string) {
@@ -191,12 +189,17 @@ async function sendMail(options: MailOptions) {
   let lastErrorMessage = "";
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    const response = await resend.emails.send({
-      from,
-      to: options.to,
-      subject: options.subject,
-      html: options.html
-    });
+    const response = await resend.emails.send(
+      {
+        from,
+        to: options.to,
+        subject: options.subject,
+        html: options.html
+      },
+      options.idempotencyKey
+        ? { idempotencyKey: options.idempotencyKey }
+        : undefined
+    );
 
     if (!response.error) {
       return { skipped: false };
@@ -215,6 +218,30 @@ async function sendMail(options: MailOptions) {
   throw new Error(`Resend error: ${lastErrorMessage || "Unknown error"}`);
 }
 
+export async function sendCommercialEmail(options: CommercialMailOptions) {
+  const unsubscribeUrl = toAbsoluteUrl(options.unsubscribeUrl);
+
+  return sendMail({
+    to: options.to,
+    subject: options.subject,
+    idempotencyKey: options.idempotencyKey,
+    html: renderEmailLayout(
+      options.title,
+      `
+        ${options.contentHtml}
+        <hr style="margin:28px 0 18px;border:0;border-top:1px solid #e4e7ec;" />
+        <p style="font-size:12px;line-height:1.6;color:#667085;">
+          ForméducWeb · Québec, Canada ·
+          <a href="mailto:info@formeducweb.ca">info@formeducweb.ca</a><br />
+          Vous recevez ce message parce que vous avez expressément accepté les
+          communications de ForméducWeb.
+          <a href="${escapeHtml(unsubscribeUrl)}">Se désabonner</a>.
+        </p>
+      `
+    )
+  });
+}
+
 export async function sendAssessmentReceivedEmails(payload: {
   assessmentId: string;
   accessToken: string;
@@ -226,9 +253,6 @@ export async function sendAssessmentReceivedEmails(payload: {
   const diagnostic = getDiagnosticConfig(payload.assessmentType);
   const adminEmail = getAdminNotificationEmail();
   const summaryUrl = getSummaryUrl(payload.accessToken, payload.assessmentType);
-  const wizardUrl = getWizardUrl(payload.assessmentType);
-  const bookingUrl = getBookingUrl();
-  const contactUrl = getContactUrl(`email-resume-${diagnostic.leadSource}`);
   const prioritiesHtml = payload.liteReport.topGaps
     .map(
       (gap) =>
@@ -249,14 +273,7 @@ export async function sendAssessmentReceivedEmails(payload: {
       <h2>Vos 3 priorités</h2>
       <ul>${prioritiesHtml}</ul>
       ${payload.liteReport.prioritiesContext ? `<p>${escapeHtml(payload.liteReport.prioritiesContext)}</p>` : ""}
-      <p>${escapeHtml(payload.liteReport.upsellTeaser)}</p>
       ${renderPrimaryCta("Voir mon résumé sécurisé", summaryUrl)}
-      <p>Si vous préférez valider vos prochaines actions avec notre équipe:</p>
-      <ul>
-        <li><a href="${bookingUrl}">Demander un appel</a></li>
-        <li><a href="${contactUrl}">Écrire à ForméducWeb</a></li>
-      </ul>
-      <p>Vous pouvez aussi refaire l'auto-évaluation à tout moment: <a href="${wizardUrl}">${wizardUrl}</a></p>
       <p>${escapeHtml(payload.liteReport.disclaimers.join(" "))}</p>
       <p style="font-size:12px;color:#5f646d;">Ce courriel fournit un résumé opérationnel. Il ne constitue pas un avis professionnel personnalisé.</p>
     `
@@ -291,28 +308,35 @@ export async function sendReportUnlockedEmails(payload: {
   assessmentType: AssessmentType;
   fullReport: GeneratedReport;
   reportUrl: string;
+  productCode?: string;
 }) {
   const diagnostic = getDiagnosticConfig(payload.assessmentType);
+  const isTrio = payload.productCode === "digital_hygiene_trio";
   const adminEmail = getAdminNotificationEmail();
   const reportUrl = toAbsoluteUrl(payload.reportUrl);
-  const bookingUrl = getBookingUrl();
-  const contactUrl = getContactUrl(`email-paiement-${diagnostic.leadSource}`);
   const disclaimer = escapeHtml(payload.fullReport.disclaimers.join(" "));
 
   await sendMail({
     to: payload.assessment.email,
-    subject: `Paiement confirmé - votre rapport complet ${diagnostic.label} est prêt`,
+    subject: isTrio
+      ? "Paiement confirmé - votre Trio Hygiène numérique est prêt"
+      : `Paiement confirmé - votre Kit d’exécution 90 jours ${diagnostic.label} est prêt`,
     html: renderEmailLayout(
-      "Votre rapport complet est disponible",
+      isTrio
+        ? "Votre tableau de bord Trio est disponible"
+        : "Votre Kit d’exécution 90 jours est disponible",
       `
       <p>${payload.assessment.contactName ? `Bonjour ${escapeHtml(payload.assessment.contactName)},` : "Bonjour,"}</p>
-      <p>Votre paiement a été confirmé. Vous pouvez maintenant accéder à votre rapport complet ${escapeHtml(diagnostic.label)}.</p>
-      ${renderPrimaryCta("Voir mon rapport complet", reportUrl)}
+      <p>${
+        isTrio
+          ? "Votre paiement a été confirmé. Votre premier kit est prêt et les deux autres diagnostics sont maintenant accessibles dans votre tableau de bord privé."
+          : `Votre paiement a été confirmé. Vous pouvez maintenant accéder à votre Kit d’exécution 90 jours ${escapeHtml(diagnostic.label)}.`
+      }</p>
+      ${renderPrimaryCta(isTrio ? "Ouvrir mon tableau de bord Trio" : "Voir mon Kit 90 jours", reportUrl)}
       <h2>Ce qui vous attend</h2>
       <ul>
         ${diagnostic.fullReportIncludes.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
-      <p>Besoin d'un coup de pouce pour la suite? <a href="${bookingUrl}">Demander un appel</a> ou <a href="${contactUrl}">nous écrire</a>.</p>
       <p>${disclaimer}</p>
       <p style="font-size:12px;color:#5f646d;">Ce rapport aide à prioriser et implanter. Il ne constitue pas un avis professionnel personnalisé.</p>
     `
@@ -331,7 +355,8 @@ export async function sendReportUnlockedEmails(payload: {
         <p><strong>Contact :</strong> ${escapeHtml(payload.assessment.contactName || "Non fourni")}</p>
         <p><strong>Courriel :</strong> ${escapeHtml(payload.assessment.email)}</p>
         <p><strong>Accès :</strong> <a href="${reportUrl}">${reportUrl}</a></p>
-        <p><strong>Action suggérée :</strong> faire un suivi court (24-48h) pour proposer la prochaine étape.</p>
+        <p><strong>Consentement marketing :</strong> ${payload.assessment.consentMarketing ? "Oui" : "Non"}</p>
+        <p><strong>Suivi :</strong> ${payload.assessment.consentMarketing ? "les communications consenties peuvent suivre la séquence prévue." : "aucun suivi commercial sans nouveau consentement explicite."}</p>
       `
       )
     });

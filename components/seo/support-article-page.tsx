@@ -4,10 +4,16 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock,
-  Sparkles
+  Sparkles,
+  UserRound
 } from "lucide-react";
 
 import { FaqList } from "@/components/marketing/faq-list";
+import {
+  ArticleOfficialSources,
+  getOfficialSources
+} from "@/components/seo/article-official-sources";
+import { ArticleThemeVisual } from "@/components/seo/article-theme-visual";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +32,7 @@ type SupportArticlePageProps = {
 
 export function SupportArticlePage({ page }: SupportArticlePageProps) {
   const relatedPages = getRelatedSeoPages(page);
+  const officialSources = getOfficialSources(page.theme);
   const pageUrl = getAbsoluteUrl(page.path);
   const themeUrl = getAbsoluteUrl(seoThemeLandingPaths[page.theme]);
   const articleSchema = {
@@ -39,12 +46,14 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
     mainEntityOfPage: pageUrl,
     author: {
       "@type": "Organization",
-      name: "ForméducWeb"
+      name: "Équipe ForméducWeb",
+      url: getAbsoluteUrl("/a-propos")
     },
     publisher: {
       "@type": "Organization",
       name: "ForméducWeb"
-    }
+    },
+    citation: officialSources.map((source) => source.href)
   };
   const faqSchema = {
     "@context": "https://schema.org",
@@ -124,6 +133,14 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                   <CalendarDays className="h-4 w-4 text-primary" />
                   Mis à jour le {page.updatedAt}
                 </span>
+                <Link
+                  href="/a-propos"
+                  rel="author"
+                  className="inline-flex items-center gap-2 transition hover:text-primary"
+                >
+                  <UserRound className="h-4 w-4 text-primary" />
+                  Par l’Équipe ForméducWeb
+                </Link>
                 <span className="inline-flex items-center gap-2">
                   <Clock className="h-4 w-4 text-primary" />
                   Lecture {page.readingTime}
@@ -147,6 +164,8 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                 </Button>
               </div>
             </header>
+
+            <ArticleThemeVisual theme={page.theme} title={page.shortTitle} />
 
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="space-y-5 p-6 md:p-8">
@@ -194,6 +213,8 @@ export function SupportArticlePage({ page }: SupportArticlePageProps) {
                 </section>
               ))}
             </div>
+
+            <ArticleOfficialSources theme={page.theme} />
 
             <section className="space-y-5">
               <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground md:text-3xl">

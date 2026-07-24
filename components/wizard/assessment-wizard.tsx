@@ -17,7 +17,7 @@ import { WizardStepper } from "@/components/wizard/stepper";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import { trackAnalyticsEvent, trackAnalyticsEventOnce } from "@/lib/analytics";
 import { getFirstTouchAttribution } from "@/lib/attribution";
 import type {
   AssessmentApiResponse,
@@ -97,11 +97,15 @@ function formatLastSaved(isoDate: string) {
 export function AssessmentWizard({
   assessmentType,
   wizard,
-  reportUnlockPriceLabel
+  reportUnlockPriceLabel,
+  entitlementToken,
+  preferredOffer
 }: {
   assessmentType: AssessmentType;
   wizard: WizardDataset;
   reportUnlockPriceLabel: string;
+  entitlementToken?: string;
+  preferredOffer?: "trio";
 }) {
   const diagnostic = getDiagnosticConfig(assessmentType);
   const steps = useMemo(() => getWizardSteps(wizard), [wizard]);
@@ -135,13 +139,15 @@ export function AssessmentWizard({
   ).length;
 
   useEffect(() => {
-    const restoredResult = normalizeStoredResult(
-      deepRepairText(
-        loadWizardPersistedResult<
-          WizardResultState | PersistedAssessmentResult
-        >(assessmentType)
-      )
-    );
+    const restoredResult = entitlementToken
+      ? null
+      : normalizeStoredResult(
+          deepRepairText(
+            loadWizardPersistedResult<
+              WizardResultState | PersistedAssessmentResult
+            >(assessmentType)
+          )
+        );
 
     if (restoredResult?.assessmentType === assessmentType) {
       setResultState(restoredResult);
@@ -153,7 +159,7 @@ export function AssessmentWizard({
     const draft = loadWizardDraft(assessmentType);
     if (hasDraftContent(draft)) setPendingDraft(draft);
     setDraftReady(true);
-  }, [assessmentType, form]);
+  }, [assessmentType, entitlementToken, form]);
 
   useEffect(() => {
     if (!draftReady || pendingDraft || resultState) return;
@@ -169,13 +175,6 @@ export function AssessmentWizard({
 
     return () => subscription.unsubscribe();
   }, [assessmentType, draftReady, form, pendingDraft, resultState]);
-
-  useEffect(() => {
-    if (!draftReady) return;
-    trackAnalyticsEvent("diagnostic_start", {
-      diagnostic_type: assessmentType
-    });
-  }, [assessmentType, draftReady]);
 
   const goToStep = (index: number) => {
     setCurrentStepIndex(index);
@@ -288,6 +287,10 @@ export function AssessmentWizard({
   };
 
   const handleAnswerChange = (questionId: string, value: string) => {
+    trackAnalyticsEventOnce("diagnostic_start", assessmentType, {
+      diagnostic: assessmentType,
+      ...getFirstTouchAttribution()
+    });
     form.setValue(`answers.${questionId}`, value, {
       shouldDirty: true,
       shouldTouch: true
@@ -312,6 +315,7 @@ export function AssessmentWizard({
         assessmentType,
         email,
         consentMarketing,
+        entitlementToken,
         answers: resultState.answers,
         attribution: getFirstTouchAttribution()
       })
@@ -340,7 +344,12 @@ export function AssessmentWizard({
     saveWizardPersistedResult(saved, assessmentType);
     setResultState(saved);
     trackAnalyticsEvent("diagnostic_saved", {
-      diagnostic_type: assessmentType
+      diagnostic: assessmentType
+    });
+    trackAnalyticsEventOnce("generate_lead", payload.assessmentId, {
+      lead_type: "diagnostic",
+      diagnostic: assessmentType,
+      ...getFirstTouchAttribution()
     });
     toast.success(
       "Votre résultat est sauvegardé. Un lien sécurisé vous a été envoyé."
@@ -390,6 +399,7 @@ export function AssessmentWizard({
         onEdit={handleEditResult}
         onRestart={handleRestart}
         mainHeadingLevel="h2"
+        preferredOffer={preferredOffer}
       />
     );
   }

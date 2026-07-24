@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { trackAnalyticsEventOnce } from "@/lib/analytics";
 import { getFirstTouchAttribution } from "@/lib/attribution";
 import { contactReasons } from "@/lib/content";
 import { contactFormSchema, type ContactFormInput } from "@/lib/schemas";
@@ -60,7 +61,10 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
         })
       });
 
-      const payload = (await response.json()) as { error?: string };
+      const payload = (await response.json()) as {
+        error?: string;
+        contactRequestId?: string;
+      };
 
       if (!response.ok) {
         throw new Error(
@@ -68,6 +72,15 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
         );
       }
 
+      trackAnalyticsEventOnce(
+        "generate_lead",
+        payload.contactRequestId || `contact-${Date.now()}`,
+        {
+          lead_type: "contact",
+          reason: values.reason,
+          ...getFirstTouchAttribution()
+        }
+      );
       toast.success("Message envoyé. On vous revient rapidement.");
       form.reset();
       router.push("/merci?source=contact");

@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import { trackAnalyticsEventOnce } from "@/lib/analytics";
+import { getFirstTouchAttribution } from "@/lib/attribution";
 import type { AssessmentType } from "@/lib/diagnostics";
 
 type UnlockReportButtonProps = {
@@ -16,6 +17,8 @@ type UnlockReportButtonProps = {
   accessToken?: string;
   profileComplete?: boolean;
   onProfileSaved?: (contactName: string, companyName: string) => void;
+  productCode?: string;
+  value?: number;
   label?: string;
   variant?: "default" | "secondary" | "ghost";
   className?: string;
@@ -27,7 +30,9 @@ export function UnlockReportButton({
   accessToken,
   profileComplete = true,
   onProfileSaved,
-  label = "Débloquer mon rapport complet (29 $)",
+  productCode,
+  value = 29,
+  label = "Obtenir mon Kit 90 jours (29 $)",
   variant = "default",
   className
 }: UnlockReportButtonProps) {
@@ -47,15 +52,27 @@ export function UnlockReportButton({
     setIsLoading(true);
 
     try {
+      const resolvedProduct =
+        productCode ||
+        (assessmentType === "loi25"
+          ? "loi25_kit"
+          : assessmentType === "cybersecurity"
+            ? "cyber_kit"
+            : "ai_kit");
       const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assessmentId, accessToken })
+        body: JSON.stringify({
+          assessmentId,
+          accessToken,
+          productCode: resolvedProduct
+        })
       });
 
       const payload = (await response.json().catch(() => null)) as {
         url?: string;
         reportUrl?: string;
+        orderToken?: string;
         error?: string;
         code?: string;
       } | null;
@@ -72,9 +89,20 @@ export function UnlockReportButton({
       const nextUrl = payload?.url || payload?.reportUrl;
       if (!nextUrl) throw new Error("Aucun lien de paiement n’a été retourné.");
 
-      trackAnalyticsEvent("checkout_started", {
-        diagnostic_type: assessmentType
-      });
+      const transactionId = payload?.orderToken;
+      trackAnalyticsEventOnce(
+        "checkout_started",
+        transactionId ||
+          `${assessmentId || accessToken || assessmentType}-${resolvedProduct}`,
+        {
+          transaction_id: transactionId,
+          value,
+          currency: "CAD",
+          product: resolvedProduct,
+          diagnostic: assessmentType,
+          ...getFirstTouchAttribution()
+        }
+      );
       window.location.assign(nextUrl);
     } catch (error) {
       console.error("Stripe checkout error", error);
@@ -150,7 +178,7 @@ export function UnlockReportButton({
       >
         <div>
           <p className="font-medium text-foreground">
-            Personnaliser le rapport complet
+            Personnaliser le Kit d’exécution 90 jours
           </p>
           <p className="mt-1 text-sm leading-6 text-muted-foreground">
             Ces renseignements servent uniquement à préparer le PDF et les

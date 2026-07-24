@@ -14,11 +14,15 @@ export const metadata: Metadata = buildPageMetadata({
 const sections = [
   {
     title: "Collecte",
-    body: "Le diagnostic gratuit conserve les réponses dans votre navigateur. Si vous choisissez de sauvegarder le résultat, nous recueillons votre courriel et votre consentement marketing facultatif. Le nom et l’entreprise sont demandés seulement avant l’achat d’un rapport complet. Les informations de paiement sont gérées par Stripe."
+    body: "Le diagnostic gratuit conserve les réponses dans votre navigateur. Si vous choisissez de sauvegarder le résultat, nous recueillons votre courriel et votre consentement marketing facultatif. Le nom et l’entreprise sont demandés seulement avant l’achat d’un Kit d’exécution 90 jours. Les informations de paiement sont gérées par Stripe."
   },
   {
     title: "Finalités",
-    body: "Ces informations servent à produire votre diagnostic, gérer votre accès au rapport, assurer le support client et, si vous y consentez, envoyer des communications utiles sur nos services."
+    body: "Ces informations servent à produire votre diagnostic et vos gabarits personnalisés, gérer votre accès au kit, assurer le support client et, si vous y consentez explicitement, envoyer des communications utiles sur nos services. Sans ce consentement, seuls les messages transactionnels demandés sont envoyés."
+  },
+  {
+    title: "Communications et désabonnement",
+    body: "Chaque communication commerciale de ForméducWeb comprend un lien de désabonnement. Son utilisation retire immédiatement le consentement et annule les envois commerciaux futurs déjà planifiés. Vous pouvez donner un nouveau consentement explicite ultérieurement."
   },
   {
     title: "Cookies et technologies similaires",

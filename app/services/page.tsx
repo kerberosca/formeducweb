@@ -18,7 +18,7 @@ import { buildPageMetadata } from "@/lib/seo";
 import { getWizardData } from "@/lib/wizard";
 
 const pageDescription =
-  "Comparez les diagnostics Loi 25, cybersécurité et IA pour PME au Québec: durée, questions, résultat gratuit et rapport complet.";
+  "Comparez les diagnostics Loi 25, cybersécurité et IA pour PME au Québec: durée, résultat gratuit, Kit d’exécution 90 jours et trio.";
 
 const iconByType = {
   loi25: ShieldCheck,
@@ -40,7 +40,7 @@ export default function ServicesPage() {
       <SectionHeading
         eyebrow="Comparer les diagnostics"
         title="Choisissez le diagnostic qui répond à votre priorité actuelle"
-        description="Les trois parcours donnent un score immédiat, 3 priorités et un plan de 30 jours sans exiger de courriel. Le rapport complet reste toujours optionnel."
+        description="Les trois parcours donnent un score immédiat, 3 priorités et un plan de 30 jours sans exiger de courriel. Le Kit d’exécution 90 jours reste toujours optionnel."
         titleLevel="h1"
       />
 
@@ -79,7 +79,7 @@ export default function ServicesPage() {
                     <dd className="font-medium">{questionCount}</dd>
                   </div>
                   <div className="flex items-center justify-between gap-4">
-                    <dt className="text-muted-foreground">Rapport complet</dt>
+                    <dt className="text-muted-foreground">Kit 90 jours</dt>
                     <dd className="font-medium">{priceLabel}</dd>
                   </div>
                 </dl>

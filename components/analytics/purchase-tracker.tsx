@@ -2,21 +2,36 @@
 
 import { useEffect } from "react";
 
-import { trackAnalyticsEvent } from "@/lib/analytics";
+import { trackAnalyticsEventOnce } from "@/lib/analytics";
+import { getFirstTouchAttribution } from "@/lib/attribution";
 import type { AssessmentType } from "@/lib/diagnostics";
 
 export function PurchaseTracker({
-  assessmentType
+  assessmentType,
+  transactionId,
+  productCode,
+  value,
+  currency = "CAD"
 }: {
   assessmentType: AssessmentType;
+  transactionId?: string;
+  productCode?: string;
+  value?: number;
+  currency?: string;
 }) {
   useEffect(() => {
-    const key = `formeducweb-purchase-${assessmentType}`;
-    if (window.sessionStorage.getItem(key)) return;
+    if (!transactionId || !productCode || value === undefined) return;
 
-    trackAnalyticsEvent("purchase", { diagnostic_type: assessmentType });
-    window.sessionStorage.setItem(key, "1");
-  }, [assessmentType]);
+    const attribution = getFirstTouchAttribution();
+    trackAnalyticsEventOnce("purchase", transactionId, {
+      transaction_id: transactionId,
+      value,
+      currency,
+      product: productCode,
+      diagnostic: assessmentType,
+      ...attribution
+    });
+  }, [assessmentType, currency, productCode, transactionId, value]);
 
   return null;
 }

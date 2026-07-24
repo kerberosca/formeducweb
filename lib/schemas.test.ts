@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   assessmentPayloadSchema,
   assessmentPreviewPayloadSchema,
-  assessmentProfileSchema
+  assessmentProfileSchema,
+  checkoutSessionPayloadSchema
 } from "@/lib/schemas";
 
 describe("assessment schemas", () => {
@@ -32,6 +33,32 @@ describe("assessment schemas", () => {
         accessToken: "x".repeat(24),
         contactName: "A",
         companyName: ""
+      }).success
+    ).toBe(false);
+  });
+
+  it("accepte les cinq produits publics et refuse un code de prix inconnu", () => {
+    const accessToken = "x".repeat(48);
+    const productCodes = [
+      "loi25_kit",
+      "cyber_kit",
+      "ai_kit",
+      "digital_hygiene_trio",
+      "trio_upgrade"
+    ];
+
+    for (const productCode of productCodes) {
+      expect(
+        checkoutSessionPayloadSchema.safeParse({
+          accessToken,
+          productCode
+        }).success
+      ).toBe(true);
+    }
+    expect(
+      checkoutSessionPayloadSchema.safeParse({
+        accessToken,
+        productCode: "trio_1_dollar"
       }).success
     ).toBe(false);
   });

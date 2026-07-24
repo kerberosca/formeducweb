@@ -7,6 +7,10 @@ import {
   findAssessmentByToken,
   hydrateAssessment
 } from "@/lib/assessment-store";
+import {
+  findUpgradeOpportunity,
+  hasActiveAssessmentAccess
+} from "@/lib/commerce";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { getReportUnlockPriceLabel } from "@/lib/payments";
 import type { SavedAssessmentState } from "@/lib/assessment-types";
@@ -14,12 +18,14 @@ import type { SavedAssessmentState } from "@/lib/assessment-types";
 type DiagnosticReportAccessProps = {
   token: string;
   cancel?: string;
+  offer?: string;
   expectedType: AssessmentType;
 };
 
 export async function DiagnosticReportAccess({
   token,
   cancel,
+  offer,
   expectedType
 }: DiagnosticReportAccessProps) {
   const assessment = await findAssessmentByToken(token);
@@ -30,10 +36,19 @@ export async function DiagnosticReportAccess({
 
   const hydrated = hydrateAssessment(assessment);
   const diagnostic = getDiagnosticConfig(hydrated.assessmentType);
+  const hasPaidAccess = await hasActiveAssessmentAccess(assessment);
+  const upgradeOpportunity = hasPaidAccess
+    ? await findUpgradeOpportunity(assessment)
+    : null;
 
   if (hydrated.assessmentType !== expectedType) {
+    const query = new URLSearchParams();
+    if (cancel === "1") query.set("cancel", "1");
+    if (offer === "trio") query.set("offer", "trio");
     redirect(
-      `${diagnostic.reportPath(assessment.accessToken)}${cancel === "1" ? "?cancel=1" : ""}`
+      `${diagnostic.reportPath(assessment.accessToken)}${
+        query.size ? `?${query.toString()}` : ""
+      }`
     );
   }
 
@@ -49,7 +64,11 @@ export async function DiagnosticReportAccess({
     assessmentType: hydrated.assessmentType,
     assessmentId: assessment.id,
     accessToken: assessment.accessToken,
-    paymentStatus: assessment.paymentStatus as "unpaid" | "paid" | "refunded",
+    paymentStatus: hasPaidAccess
+      ? "paid"
+      : assessment.paymentStatus === "refunded"
+        ? "refunded"
+        : "unpaid",
     scoreResult: hydrated.scoreResult,
     liteReport: hydrated.liteReport,
     leadCapture,
@@ -69,18 +88,20 @@ export async function DiagnosticReportAccess({
         </section>
       ) : null}
 
-      {assessment.paymentStatus === "paid" ? (
+      {hasPaidAccess ? (
         <ReportView
           assessmentType={hydrated.assessmentType}
           leadCapture={leadCapture}
           scoreResult={hydrated.scoreResult}
           report={hydrated.fullReport}
           accessToken={assessment.accessToken}
+          canUpgradeToTrio={Boolean(upgradeOpportunity)}
         />
       ) : (
         <LiteResultView
           resultState={savedResult}
           priceLabel={getReportUnlockPriceLabel()}
+          preferredOffer={offer === "trio" ? "trio" : undefined}
         />
       )}
     </>

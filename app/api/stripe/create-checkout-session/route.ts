@@ -6,16 +6,18 @@ import {
   findAssessmentByToken
 } from "@/lib/assessment-store";
 import {
+  attachStripeSessionToOrder,
+  createPendingOrder,
+  getProduct,
+  hasActiveAssessmentAccess,
+  resolveProductCode,
+  validateProductForAssessment
+} from "@/lib/commerce";
+import {
   getDiagnosticConfig,
   normalizeAssessmentType
 } from "@/lib/diagnostics";
-import {
-  getBaseUrl,
-  getReportUnlockPriceCents,
-  getStripeCurrency,
-  getStripeProductName,
-  isStripeConfigured
-} from "@/lib/payments";
+import { getBaseUrl, isStripeConfigured } from "@/lib/payments";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { checkoutSessionPayloadSchema } from "@/lib/schemas";
 import { getStripeClient } from "@/lib/stripe";
@@ -88,7 +90,7 @@ export async function POST(request: Request) {
         {
           code: "PROFILE_REQUIRED",
           error:
-            "Ajoutez votre nom et votre entreprise avant de débloquer le rapport complet."
+            "Ajoutez votre nom et votre entreprise avant d’obtenir le Kit d’exécution 90 jours."
         },
         { status: 409 }
       );
@@ -96,8 +98,27 @@ export async function POST(request: Request) {
 
     const assessmentType = normalizeAssessmentType(assessment.assessmentType);
     const diagnostic = getDiagnosticConfig(assessmentType);
+    const productCode = resolveProductCode(json.productCode, assessmentType);
 
-    if (assessment.paymentStatus === "paid") {
+    try {
+      validateProductForAssessment(productCode, assessmentType);
+    } catch {
+      return NextResponse.json(
+        {
+          error:
+            "Ce produit ne correspond pas au diagnostic que vous avez complété."
+        },
+        { status: 400 }
+      );
+    }
+
+    const hasPaidAccess = await hasActiveAssessmentAccess(assessment);
+
+    if (
+      hasPaidAccess &&
+      productCode !== "digital_hygiene_trio" &&
+      productCode !== "trio_upgrade"
+    ) {
       return NextResponse.json({
         reportUrl: `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}`
       });
@@ -114,44 +135,106 @@ export async function POST(request: Request) {
     }
 
     const stripe = getStripeClient();
+    let order;
+
+    try {
+      order = await createPendingOrder({
+        assessment,
+        productCode
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message === "UPGRADE_NOT_ELIGIBLE") {
+        return NextResponse.json(
+          {
+            code: "UPGRADE_NOT_ELIGIBLE",
+            error:
+              "L’amélioration à 30 $ exige un achat individuel actif associé à ce diagnostic."
+          },
+          { status: 409 }
+        );
+      }
+      if (
+        error instanceof Error &&
+        error.message === "BUNDLE_ALREADY_PURCHASED"
+      ) {
+        return NextResponse.json(
+          {
+            code: "BUNDLE_ALREADY_PURCHASED",
+            error:
+              "Un Trio actif est déjà associé à ce courriel. Utilisez son tableau de bord."
+          },
+          { status: 409 }
+        );
+      }
+      if (
+        error instanceof Error &&
+        error.message === "BUNDLE_CHECKOUT_IN_PROGRESS"
+      ) {
+        return NextResponse.json(
+          {
+            code: "BUNDLE_CHECKOUT_IN_PROGRESS",
+            error:
+              "Un paiement Trio est déjà en cours pour ce courriel. Reprenez le premier parcours ou attendez l’expiration de sa session Stripe."
+          },
+          { status: 409 }
+        );
+      }
+
+      throw error;
+    }
+
+    const product = getProduct(productCode);
     const successUrl = `${getBaseUrl()}/merci?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}?cancel=1`;
+    const cancelUrl = `${getBaseUrl()}${diagnostic.reportPath(assessment.accessToken)}?cancel=1${
+      productCode === "digital_hygiene_trio" ? "&offer=trio" : ""
+    }`;
     const metadata = {
+      orderId: order.id,
       assessmentId: assessment.id,
       accessToken: assessment.accessToken,
-      assessmentType
+      assessmentType,
+      productCode
     };
 
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      client_reference_id: assessment.id,
-      customer_email: assessment.email,
-      locale: "fr-CA",
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: getStripeCurrency(),
-            unit_amount: getReportUnlockPriceCents(),
-            product_data: {
-              name: getStripeProductName(assessmentType),
-              description: diagnostic.stripeDescription
+    const session = await stripe.checkout.sessions.create(
+      {
+        mode: "payment",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        client_reference_id: order.id,
+        customer_email: assessment.email,
+        locale: "fr-CA",
+        line_items: [
+          {
+            quantity: 1,
+            price_data: {
+              currency: "cad",
+              unit_amount: product.amountCents,
+              product_data: {
+                name: product.name,
+                description: product.description
+              }
             }
           }
+        ],
+        metadata,
+        payment_intent_data: {
+          metadata
         }
-      ],
-      metadata,
-      payment_intent_data: {
-        metadata
+      },
+      {
+        idempotencyKey: `checkout-order-${order.id}`
       }
-    });
+    );
 
-    await attachCheckoutSession(assessment.id, session.id);
+    if (assessment.paymentStatus !== "paid") {
+      await attachCheckoutSession(assessment.id, session.id);
+    }
+    await attachStripeSessionToOrder(order.id, session.id);
 
     return NextResponse.json({
-      url: session.url
+      url: session.url,
+      orderToken: order.publicToken
     });
   } catch (error) {
     console.error("Stripe checkout session error", error);

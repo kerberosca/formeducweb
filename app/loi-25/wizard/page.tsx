@@ -12,6 +12,26 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/loi-25/wizard"
 });
 
-export default function WizardPage() {
-  return <WizardPageShell assessmentType="loi25" />;
+export default async function WizardPage({
+  searchParams
+}: {
+  searchParams?: Promise<{
+    entitlement?: string | string[];
+    offer?: string | string[];
+  }>;
+}) {
+  const resolved = await searchParams;
+  const entitlement = Array.isArray(resolved?.entitlement)
+    ? resolved.entitlement[0]
+    : resolved?.entitlement;
+  const offer = Array.isArray(resolved?.offer)
+    ? resolved.offer[0]
+    : resolved?.offer;
+  return (
+    <WizardPageShell
+      assessmentType="loi25"
+      entitlementToken={entitlement}
+      preferredOffer={offer === "trio" ? "trio" : undefined}
+    />
+  );
 }

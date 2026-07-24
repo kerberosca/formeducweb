@@ -4,7 +4,7 @@ import { DiagnosticReportAccess } from "@/components/wizard/report-access";
 
 type ReportAccessPageProps = {
   params: Promise<{ token: string }>;
-  searchParams?: Promise<{ cancel?: string }>;
+  searchParams?: Promise<{ cancel?: string; offer?: string }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -29,6 +29,7 @@ export default async function ReportAccessPage({
     <DiagnosticReportAccess
       token={token}
       cancel={resolvedSearchParams?.cancel}
+      offer={resolvedSearchParams?.offer}
       expectedType="loi25"
     />
   );

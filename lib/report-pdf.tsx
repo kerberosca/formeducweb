@@ -422,10 +422,11 @@ export function AssessmentReportPdfDocument({
         </View>
 
         <Text style={styles.footer}>
-          Rapport préparé par ForméducWeb. Ce document vise le diagnostic,
+          Kit préparé par ForméducWeb. Ce document vise le diagnostic,
           l’alignement et la priorisation d’actions. Il ne constitue pas un avis
           professionnel personnalisé. Crédit de {getReportUnlockPriceLabel()}{" "}
-          applicable sur un forfait d’implantation si vous poursuivez avec nous.
+          valable 90 jours sur un accompagnement admissible. Accès pendant 730
+          jours. Remboursement sous 7 jours avec révocation de l’accès.
         </Text>
       </Page>
     </Document>

@@ -154,20 +154,27 @@ export function hydrateAssessment(assessment: Assessment): HydratedAssessment {
   };
 }
 
-function getRetentionDays(
-  envKey: "ASSESSMENT_RETENTION_UNPAID_DAYS" | "ASSESSMENT_RETENTION_PAID_DAYS",
-  fallback: number
-) {
-  const value = Number(process.env[envKey]);
-  return Number.isFinite(value) && value >= 30 ? Math.round(value) : fallback;
+function getRetentionDays(envKeys: string[], fallback: number) {
+  for (const envKey of envKeys) {
+    const value = Number(process.env[envKey]);
+    if (Number.isFinite(value) && value >= 30) return Math.round(value);
+  }
+
+  return fallback;
 }
 
 export async function cleanupAssessmentRetention() {
-  const unpaidDays = getRetentionDays("ASSESSMENT_RETENTION_UNPAID_DAYS", 180);
-  const paidDays = getRetentionDays("ASSESSMENT_RETENTION_PAID_DAYS", 730);
+  const unpaidDays = getRetentionDays(
+    ["ASSESSMENT_RETENTION_UNPAID_DAYS"],
+    180
+  );
+  const refundedDays = getRetentionDays(
+    ["ASSESSMENT_RETENTION_REFUNDED_DAYS", "ASSESSMENT_RETENTION_PAID_DAYS"],
+    730
+  );
   const now = Date.now();
   const unpaidBefore = new Date(now - unpaidDays * 24 * 60 * 60 * 1000);
-  const paidBefore = new Date(now - paidDays * 24 * 60 * 60 * 1000);
+  const refundedBefore = new Date(now - refundedDays * 24 * 60 * 60 * 1000);
 
   return db.assessment.deleteMany({
     where: {
@@ -179,11 +186,9 @@ export async function cleanupAssessmentRetention() {
           }
         },
         {
-          paymentStatus: {
-            in: ["paid", "refunded"]
-          },
-          createdAt: {
-            lt: paidBefore
+          paymentStatus: "refunded",
+          updatedAt: {
+            lt: refundedBefore
           }
         }
       ]
