@@ -1,7 +1,11 @@
+import { request as httpRequest } from "node:http";
+import { request as httpsRequest } from "node:https";
+
 const DEFAULT_ENDPOINT = "http://formeducweb:3000/api/internal/email-jobs";
 const DEFAULT_INTERVAL_MS = 5 * 60 * 1000;
 const MIN_INTERVAL_MS = 60 * 1000;
 const MAX_INTERVAL_MS = 60 * 60 * 1000;
+const MAX_RESPONSE_BYTES = 1024 * 1024;
 
 function getConfiguration() {
   const secret = (
@@ -41,16 +45,63 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function processOnce(configuration) {
-  const response = await fetch(configuration.endpoint, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${configuration.secret}`
-    },
-    signal: AbortSignal.timeout(30_000)
+function postJson(endpoint, secret) {
+  const url = new URL(endpoint);
+  const request = url.protocol === "https:" ? httpsRequest : httpRequest;
+
+  return new Promise((resolve, reject) => {
+    const outgoingRequest = request(
+      url,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${secret}`,
+          "Content-Length": "0"
+        },
+        signal: AbortSignal.timeout(30_000)
+      },
+      (response) => {
+        let body = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk) => {
+          body += chunk;
+          if (Buffer.byteLength(body, "utf8") > MAX_RESPONSE_BYTES) {
+            response.destroy(
+              new Error("La réponse du processeur de courriels est trop grande.")
+            );
+          }
+        });
+        response.on("error", reject);
+        response.on("end", () => {
+          let payload = null;
+          try {
+            payload = body ? JSON.parse(body) : null;
+          } catch {
+            payload = null;
+          }
+
+          const status = response.statusCode || 0;
+          resolve({
+            ok: status >= 200 && status < 300,
+            status,
+            payload
+          });
+        });
+      }
+    );
+
+    outgoingRequest.on("error", reject);
+    outgoingRequest.end();
   });
-  const payload = await response.json().catch(() => null);
+}
+
+async function processOnce(configuration) {
+  const response = await postJson(
+    configuration.endpoint,
+    configuration.secret
+  );
+  const payload = response.payload;
 
   if (!response.ok) {
     throw new Error(
