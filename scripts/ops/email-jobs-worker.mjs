@@ -57,7 +57,8 @@ function postJson(endpoint, secret) {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${secret}`,
-          "Content-Length": "0"
+          "Content-Length": "0",
+          "X-Forwarded-Proto": "https"
         },
         signal: AbortSignal.timeout(30_000)
       },
