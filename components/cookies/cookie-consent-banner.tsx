@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
@@ -17,6 +18,7 @@ import {
   saveCookieConsent,
   type CookieConsentState
 } from "@/lib/cookie-consent";
+import { isHostedDemoPath } from "@/lib/hosted-demo-path";
 
 type ConsentMode = "simple" | "customize";
 type ConsentSnapshot = string | null | "server";
@@ -44,6 +46,7 @@ function getConsentServerSnapshot(): ConsentSnapshot {
 }
 
 export function CookieConsentBanner() {
+  const pathname = usePathname();
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const hasAnalyticsTracker = Boolean(trackerConfig.gaMeasurementId);
   const trackerConfigured = useMemo(() => hasOptionalTrackersConfigured(), []);
@@ -62,7 +65,7 @@ export function CookieConsentBanner() {
 
   const isVisible = trackerConfigured && consentState === null;
 
-  if (!isVisible) {
+  if (isHostedDemoPath(pathname) || !isVisible) {
     return null;
   }
 

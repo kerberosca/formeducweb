@@ -1,6 +1,12 @@
 ﻿import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import {
+  DEMO_ONATCHIWAY_COOKIE_NAME,
+  DEMO_ONATCHIWAY_PATH,
+  verifyDemoOnatchiwaySessionToken
+} from "@/lib/demo-onatchiway-session";
+
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
 
 const SECURITY_HEADERS: Record<string, string> = {
@@ -19,6 +25,8 @@ const NO_STORE_HEADERS: Record<string, string> = {
 };
 
 const DEMO_839_PATH = "/Demo839web";
+const DEMO_ONATCHIWAY_ACCESS_PATH = `${DEMO_ONATCHIWAY_PATH}/acces`;
+const DEMO_ONATCHIWAY_PUBLIC_PREVIEW = `${DEMO_ONATCHIWAY_PATH}/apercu-prive.png`;
 
 function isSensitivePath(pathname: string) {
   return (
@@ -59,6 +67,21 @@ function isDemo839Path(pathname: string) {
   return pathname === DEMO_839_PATH || pathname.startsWith(`${DEMO_839_PATH}/`);
 }
 
+function isDemoOnatchiwayPath(pathname: string) {
+  return (
+    pathname === DEMO_ONATCHIWAY_PATH ||
+    pathname.startsWith(`${DEMO_ONATCHIWAY_PATH}/`)
+  );
+}
+
+function isDemoOnatchiwayPublicPath(pathname: string) {
+  return (
+    pathname === DEMO_ONATCHIWAY_PUBLIC_PREVIEW ||
+    pathname === DEMO_ONATCHIWAY_ACCESS_PATH ||
+    pathname.startsWith(`${DEMO_ONATCHIWAY_ACCESS_PATH}/`)
+  );
+}
+
 function applySecurityHeaders(response: NextResponse) {
   Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
     response.headers.set(key, value);
@@ -71,6 +94,16 @@ function applyNoStoreHeaders(response: NextResponse) {
   });
 }
 
+function applyPrivateDemoHeaders(response: NextResponse) {
+  applySecurityHeaders(response);
+  applyNoStoreHeaders(response);
+  response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains; preload"
+  );
+}
+
 export function proxy(request: NextRequest) {
   if (!isLocalHostname(request) && getRequestProtocol(request) !== "https") {
     const redirectUrl = request.nextUrl.clone();
@@ -79,6 +112,42 @@ export function proxy(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
+
+  if (isDemoOnatchiwayPath(pathname)) {
+    if (isDemoOnatchiwayPublicPath(pathname)) {
+      const publicResponse = NextResponse.next();
+      applyPrivateDemoHeaders(publicResponse);
+      return publicResponse;
+    }
+
+    const token = request.cookies.get(DEMO_ONATCHIWAY_COOKIE_NAME)?.value;
+    const sessionSecret = process.env.DEMO_ONATCHIWAY_SESSION_SECRET ?? "";
+
+    if (verifyDemoOnatchiwaySessionToken(token, sessionSecret)) {
+      const authenticatedResponse = NextResponse.next();
+      applyPrivateDemoHeaders(authenticatedResponse);
+      return authenticatedResponse;
+    }
+
+    if (
+      (request.method === "GET" || request.method === "HEAD") &&
+      (pathname === DEMO_ONATCHIWAY_PATH ||
+        pathname === `${DEMO_ONATCHIWAY_PATH}/`)
+    ) {
+      const accessUrl = request.nextUrl.clone();
+      accessUrl.pathname = DEMO_ONATCHIWAY_ACCESS_PATH;
+      accessUrl.search = "";
+      const accessResponse = NextResponse.rewrite(accessUrl);
+      applyPrivateDemoHeaders(accessResponse);
+      return accessResponse;
+    }
+
+    const unauthorizedResponse = new NextResponse("Accès non autorisé.", {
+      status: 401
+    });
+    applyPrivateDemoHeaders(unauthorizedResponse);
+    return unauthorizedResponse;
+  }
 
   const response = NextResponse.next();
 
