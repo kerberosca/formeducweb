@@ -11,8 +11,11 @@ import {
 
 const INVALID_ACCESS_PATH = `${DEMO_ONATCHIWAY_PATH}/acces?erreur=1`;
 
-function redirect(request: NextRequest, pathname: string) {
-  return NextResponse.redirect(new URL(pathname, request.url), 303);
+function redirect(pathname: string) {
+  return new NextResponse(null, {
+    status: 303,
+    headers: { location: pathname }
+  });
 }
 
 export async function POST(request: NextRequest) {
@@ -27,10 +30,10 @@ export async function POST(request: NextRequest) {
 
   if (!isValid) {
     await new Promise((resolve) => setTimeout(resolve, 450));
-    return redirect(request, INVALID_ACCESS_PATH);
+    return redirect(INVALID_ACCESS_PATH);
   }
 
-  const response = redirect(request, DEMO_ONATCHIWAY_PATH);
+  const response = redirect(DEMO_ONATCHIWAY_PATH);
   response.cookies.set({
     name: DEMO_ONATCHIWAY_COOKIE_NAME,
     value: createDemoOnatchiwaySessionToken(sessionSecret),
