@@ -69,4 +69,14 @@ describe("protection HTTP de la démo Onatchiway", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("x-middleware-next")).toBe("1");
   });
+
+  it("laisse la page publique des services web accessible sans session", () => {
+    const response = proxy(
+      new NextRequest("https://formeducweb.ca/services/site-web")
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-next")).toBe("1");
+    expect(response.headers.get("x-robots-tag")).toBeNull();
+  });
 });

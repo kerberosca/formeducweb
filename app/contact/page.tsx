@@ -9,10 +9,10 @@ import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 
 const pageDescription =
-  "Parlez-nous de votre projet: diagnostic Loi 25, cybersécurité, IA ou accompagnement numérique pour PME au Québec.";
+  "Parlez-nous de votre projet: site web, système sur mesure, diagnostic Loi 25, cybersécurité, IA ou accompagnement numérique au Québec.";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Contact ForméducWeb | Loi 25, cybersécurité et IA",
+  title: "Contact ForméducWeb | Sites web et hygiène informatique",
   description: pageDescription,
   path: "/contact"
 });
@@ -23,20 +23,26 @@ type ContactPageProps = {
     | { source?: string | string[] };
 };
 
-export default async function ContactPage({ searchParams }: ContactPageProps) {
-  const rawSearchParams = await Promise.resolve(searchParams ?? {});
-  const source = Array.isArray(rawSearchParams.source)
-    ? rawSearchParams.source[0]
-    : rawSearchParams.source;
-  const defaultReason = source?.includes("loi25")
+export function getDefaultContactReason(source?: string) {
+  return source?.includes("loi25")
     ? "Diagnostic Loi 25"
     : source?.includes("cybersecurite")
       ? "Diagnostic cybersécurité"
       : source?.includes("diagnostic-ia")
         ? "Diagnostic IA en entreprise"
-        : source?.includes("appel")
-          ? "Accompagnement / implantation"
-          : undefined;
+        : source?.includes("site-web")
+          ? "Site web / système sur mesure"
+          : source?.includes("appel")
+            ? "Accompagnement / implantation"
+            : undefined;
+}
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const rawSearchParams = await Promise.resolve(searchParams ?? {});
+  const source = Array.isArray(rawSearchParams.source)
+    ? rawSearchParams.source[0]
+    : rawSearchParams.source;
+  const defaultReason = getDefaultContactReason(source);
 
   return (
     <section className="container py-16 md:py-24">
@@ -45,7 +51,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <SectionHeading
             eyebrow="Contact"
             title="Expliquez-nous votre besoin"
-            description="Si vous hésitez entre Loi 25, cybersécurité, IA ou accompagnement, on vous aidera à choisir la bonne prochaine étape."
+            description="Site web, système sur mesure, Loi 25, cybersécurité, IA ou accompagnement : on vous aidera à choisir la bonne prochaine étape."
             titleLevel="h1"
           />
           <Card>

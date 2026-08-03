@@ -438,6 +438,32 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <section
+          className="formeduc-credit"
+          aria-labelledby="formeduc-credit-title"
+        >
+          <div className="section-shell formeduc-credit__inner">
+            <div>
+              <span className="section-label section-label--green">
+                Conception numérique responsable
+              </span>
+              <h2 id="formeduc-credit-title">
+                Ce site de concours a été réalisé par FormeducWeb.
+              </h2>
+              <p>
+                Pages ciblées, petits sites adaptés et systèmes web sur mesure,
+                avec une approche d’hygiène informatique intégrée.
+              </p>
+            </div>
+            <a
+              className="formeduc-credit__button"
+              href="https://formeducweb.ca/services/site-web"
+            >
+              Découvrir nos services web
+            </a>
+          </div>
+        </section>
       </main>
 
       <footer className="site-footer" id="coordonnees">
@@ -487,6 +513,12 @@ export default function Home() {
         <div className="section-shell footer-bottom">
           <span>© 2026 Association Onatchiway</span>
           <span>Site informatif · Aucun paiement traité ici</span>
+          <a
+            className="footer-credit"
+            href="https://formeducweb.ca/services/site-web"
+          >
+            Conception du site : FormeducWeb
+          </a>
         </div>
       </footer>
     </>

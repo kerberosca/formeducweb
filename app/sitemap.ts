@@ -36,6 +36,11 @@ const indexableRoutes: Array<{
     changeFrequency: "weekly"
   },
   { route: "/services", priority: 0.82, changeFrequency: "monthly" },
+  {
+    route: "/services/site-web",
+    priority: 0.86,
+    changeFrequency: "monthly"
+  },
   { route: "/a-propos", priority: 0.7, changeFrequency: "monthly" },
   { route: "/contact", priority: 0.86, changeFrequency: "monthly" },
   {
