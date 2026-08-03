@@ -152,7 +152,8 @@ export default function SiteWebServicePage() {
                 </p>
                 <p className="leading-7 text-white/80">
                   La page du concours de la ZEC Onatchiway présentée sur
-                  FormeducWeb.ca a été conçue sur mesure par ForméducWeb.
+                  FormeducWeb.ca a été conçue sur mesure par ForméducWeb, qui en
+                  commandite également l’hébergement.
                 </p>
               </div>
               <div className="border-t border-white/20 pt-5 text-sm leading-7 text-white/70">

@@ -26,6 +26,9 @@ describe("page publique des services web", () => {
       screen.getByText(/La page du concours de la ZEC Onatchiway/)
     ).toBeInTheDocument();
     expect(
+      screen.getByText(/commandite également l’hébergement/)
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("link", { name: "Parler de votre projet" })
     ).toHaveAttribute("href", "/contact?source=site-web");
     expect(document.body).not.toHaveTextContent("8 168,20 $");

@@ -446,21 +446,22 @@ export default function Home() {
           <div className="section-shell formeduc-credit__inner">
             <div>
               <span className="section-label section-label--green">
-                Conception numérique responsable
+                Partenaire du projet
               </span>
               <h2 id="formeduc-credit-title">
-                Ce site de concours a été réalisé par FormeducWeb.
+                L’hébergement de ce site est commandité par ForméducWeb.
               </h2>
               <p>
-                Pages ciblées, petits sites adaptés et systèmes web sur mesure,
-                avec une approche d’hygiène informatique intégrée.
+                ForméducWeb a aussi conçu cette page et offre des sites adaptés
+                ainsi que des systèmes web sur mesure, avec une approche
+                d’hygiène informatique.
               </p>
             </div>
             <a
               className="formeduc-credit__button"
               href="https://formeducweb.ca/services/site-web"
             >
-              Découvrir nos services web
+              Découvrir les services web
             </a>
           </div>
         </section>
@@ -517,7 +518,7 @@ export default function Home() {
             className="footer-credit"
             href="https://formeducweb.ca/services/site-web"
           >
-            Conception du site : FormeducWeb
+            Hébergement commandité par ForméducWeb
           </a>
         </div>
       </footer>
