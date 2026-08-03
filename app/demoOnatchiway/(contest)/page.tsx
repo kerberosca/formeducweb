@@ -94,26 +94,39 @@ export default function Home() {
             </p>
           </div>
 
-          <aside className="hero-card" aria-label="Résumé du tirage">
-            <p className="hero-card__kicker">Gros lot potentiel</p>
-            <p className="hero-card__value">8 168,20 $</p>
-            <p className="hero-card__note">en équipements · taxes incluses</p>
-            <div className="hero-card__rule" />
-            <div className="hero-card__stats">
-              <div>
-                <strong>10 $</strong>
-                <span>le billet</span>
+          <div className="hero__side">
+            <aside className="hero-card" aria-label="Résumé du tirage">
+              <p className="hero-card__kicker">Gros lot potentiel</p>
+              <p className="hero-card__value">8 168,20 $</p>
+              <p className="hero-card__note">en équipements · taxes incluses</p>
+              <div className="hero-card__rule" />
+              <div className="hero-card__stats">
+                <div>
+                  <strong>10 $</strong>
+                  <span>le billet</span>
+                </div>
+                <div>
+                  <strong>10 000</strong>
+                  <span>billets max.</span>
+                </div>
+                <div>
+                  <strong>1</strong>
+                  <span>gagnant</span>
+                </div>
               </div>
-              <div>
-                <strong>10 000</strong>
-                <span>billets max.</span>
-              </div>
-              <div>
-                <strong>1</strong>
-                <span>gagnant</span>
-              </div>
-            </div>
-          </aside>
+            </aside>
+
+            <a
+              className="hero-sponsor"
+              href="https://formeducweb.ca/services/site-web"
+              aria-label="Hébergement commandité par ForméducWeb — Découvrir les services web"
+            >
+              <img
+                src="/demoOnatchiway/hebergement-commandite-formeducweb.svg"
+                alt=""
+              />
+            </a>
+          </div>
 
           <div className="hero__edge" aria-hidden="true">
             <span>48° 58′ N</span>

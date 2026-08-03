@@ -260,7 +260,9 @@ img {
 }
 
 .hero__content,
+.hero__side,
 .hero-card,
+.hero-sponsor,
 .hero__edge {
   position: relative;
   z-index: 2;
@@ -367,7 +369,15 @@ img {
   color: var(--lichen);
 }
 
+.hero__side {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  justify-items: end;
+}
+
 .hero-card {
+  width: 100%;
   padding: clamp(28px, 4vw, 44px);
   border: 1px solid rgba(230, 233, 218, 0.3);
   background: rgba(19, 39, 32, 0.82);
@@ -441,6 +451,33 @@ img {
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.hero-sponsor {
+  display: flex;
+  width: min(100%, 245px);
+  padding: 8px 12px;
+  border: 1px solid rgba(230, 233, 218, 0.28);
+  border-radius: 4px;
+  background: rgba(230, 233, 218, 0.96);
+  box-shadow: 0 10px 28px rgba(8, 18, 14, 0.22);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.hero-sponsor img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hero-sponsor:hover,
+.hero-sponsor:focus-visible {
+  border-color: var(--moss);
+  background: var(--white);
+  transform: translateY(-2px);
 }
 
 .hero__edge {
@@ -1220,8 +1257,9 @@ img {
     max-width: 760px;
   }
 
-  .hero-card {
+  .hero__side {
     width: min(100%, 560px);
+    justify-self: start;
   }
 
   .deadline__inner,
@@ -1353,6 +1391,10 @@ img {
 
   .hero-card__stats div:last-child {
     grid-column: 1 / -1;
+  }
+
+  .hero-sponsor {
+    width: min(72vw, 220px);
   }
 
   .hero__edge {
