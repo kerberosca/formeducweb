@@ -130,8 +130,8 @@ img {
 .site-nav {
   display: flex;
   justify-content: center;
-  gap: clamp(18px, 3vw, 42px);
-  padding-inline: 28px;
+  gap: clamp(12px, 1.7vw, 26px);
+  padding-inline: 20px;
 }
 
 .site-nav a {
@@ -159,12 +159,14 @@ img {
 }
 
 .site-nav a:hover,
-.site-nav a:focus-visible {
+.site-nav a:focus-visible,
+.site-nav a[aria-current="page"] {
   color: var(--white);
 }
 
 .site-nav a:hover::after,
-.site-nav a:focus-visible::after {
+.site-nav a:focus-visible::after,
+.site-nav a[aria-current="page"]::after {
   transform: scaleX(1);
 }
 
@@ -1086,6 +1088,7 @@ img {
 }
 
 .formeduc-credit {
+  scroll-margin-top: 88px;
   padding: 62px 0;
   border-top: 1px solid var(--line-light);
   background: var(--lichen);
@@ -1093,21 +1096,35 @@ img {
 
 .formeduc-credit__inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 760px) minmax(260px, 310px);
   gap: clamp(32px, 6vw, 84px);
   align-items: center;
+  justify-content: space-between;
+}
+
+.formeduc-credit__inner > div {
+  min-width: 0;
 }
 
 .formeduc-credit h2 {
-  max-width: 760px;
+  width: 100%;
+  max-width: none;
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.2rem, 4.3vw, 3.8rem);
+  font-size: clamp(2.15rem, 3.65vw, 3.35rem);
   font-stretch: condensed;
   font-weight: 900;
   letter-spacing: -0.025em;
-  line-height: 0.98;
+  line-height: 1;
   text-transform: uppercase;
+  text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.formeduc-credit h2 span {
+  display: block;
 }
 
 .formeduc-credit p {
@@ -1118,31 +1135,507 @@ img {
   line-height: 1.7;
 }
 
-.formeduc-credit__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 54px;
-  padding: 0 24px;
-  border: 1px solid var(--forest);
-  border-radius: 3px;
-  background: var(--forest);
-  color: var(--white);
-  font-size: 0.76rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-align: center;
-  text-transform: uppercase;
+.formeduc-credit__logo-link {
+  display: grid;
+  width: 100%;
+  max-width: 310px;
+  justify-self: end;
+  padding: 18px 22px 20px;
+  border: 1px solid rgba(19, 39, 32, 0.24);
+  border-radius: 4px;
+  background: var(--white);
+  box-shadow: 0 16px 38px rgba(19, 39, 32, 0.1);
   transition:
-    background 180ms ease,
     border-color 180ms ease,
+    box-shadow 180ms ease,
     transform 180ms ease;
 }
 
-.formeduc-credit__button:hover {
-  border-color: var(--forest-mid);
-  background: var(--forest-mid);
+.formeduc-credit__logo-link span {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-bottom: 12px;
+  color: var(--forest);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.formeduc-credit__logo-link i {
+  color: var(--moss);
+  font-size: 1.25rem;
+  font-style: normal;
+  line-height: 0.8;
+  transition: transform 180ms ease;
+}
+
+.formeduc-credit__logo-link img {
+  width: 100%;
+  height: auto;
+}
+
+.formeduc-credit__logo-link:hover,
+.formeduc-credit__logo-link:focus-visible {
+  border-color: var(--moss);
+  box-shadow: 0 20px 44px rgba(19, 39, 32, 0.16);
   transform: translateY(-2px);
+}
+
+.formeduc-credit__logo-link:hover i,
+.formeduc-credit__logo-link:focus-visible i {
+  transform: translateX(4px);
+}
+
+.yurt-page {
+  background: var(--paper);
+}
+
+.yurt-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(440px, 0.88fr);
+  min-height: calc(100svh - 78px);
+  overflow: hidden;
+  background: var(--forest-deep);
+  color: var(--white);
+}
+
+.yurt-hero::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 170px;
+  height: 10px;
+  background: var(--moss);
+  content: "";
+}
+
+.yurt-hero__photo {
+  position: relative;
+  min-height: calc(100svh - 78px);
+  overflow: hidden;
+}
+
+.yurt-hero__photo::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 66%, rgba(6, 27, 22, 0.48));
+  content: "";
+}
+
+.yurt-hero__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 54% center;
+}
+
+.yurt-hero__photo > span {
+  position: absolute;
+  z-index: 1;
+  bottom: 28px;
+  left: 30px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.yurt-hero__content {
+  position: relative;
+  z-index: 1;
+  padding: clamp(64px, 7vw, 104px) max(24px, calc((100vw - 1180px) / 2))
+    clamp(64px, 7vw, 104px) clamp(40px, 5.3vw, 92px);
+}
+
+.yurt-kicker {
+  display: inline-block;
+  margin-bottom: 22px;
+  padding: 8px 11px;
+  border-radius: 2px;
+  background: var(--moss);
+  color: var(--forest-deep);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.yurt-hero h1,
+.yurt-intro h2,
+.yurt-features h2,
+.yurt-experience h2,
+.yurt-reservation h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+.yurt-hero h1 {
+  max-width: 660px;
+  font-size: clamp(4rem, 6.25vw, 7rem);
+  line-height: 0.9;
+}
+
+.yurt-hero h1 span {
+  display: block;
+  color: var(--moss);
+}
+
+.yurt-hero__lead {
+  max-width: 530px;
+  margin: 28px 0 0;
+  color: rgba(255, 253, 245, 0.84);
+  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+  line-height: 1.55;
+}
+
+.yurt-hero__facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 570px;
+  margin: 38px 0 0;
+  border-top: 1px solid rgba(230, 233, 218, 0.22);
+  border-bottom: 1px solid rgba(230, 233, 218, 0.22);
+}
+
+.yurt-hero__facts div {
+  padding: 20px 18px 18px 0;
+}
+
+.yurt-hero__facts div + div {
+  padding-left: 18px;
+  border-left: 1px solid rgba(230, 233, 218, 0.22);
+}
+
+.yurt-hero__facts dt {
+  color: var(--moss);
+  font-family: var(--display);
+  font-size: clamp(1.65rem, 2.6vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.yurt-hero__facts dd {
+  margin: 3px 0 0;
+  color: rgba(230, 233, 218, 0.66);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.yurt-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 25px;
+  margin-top: 36px;
+}
+
+.yurt-intro {
+  padding: clamp(82px, 10vw, 142px) 0;
+}
+
+.yurt-intro__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.68fr);
+  gap: clamp(55px, 9vw, 130px);
+  align-items: end;
+}
+
+.yurt-intro h2,
+.yurt-features h2,
+.yurt-experience h2,
+.yurt-reservation h2 {
+  font-size: clamp(2.8rem, 5.6vw, 5.4rem);
+}
+
+.yurt-intro__copy {
+  padding-top: 28px;
+  border-top: 1px solid var(--line-light);
+}
+
+.yurt-intro__copy p {
+  margin: 0;
+  color: rgba(19, 39, 32, 0.72);
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.yurt-intro__copy p + p {
+  margin-top: 20px;
+}
+
+.yurt-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) repeat(2, minmax(0, 0.7fr));
+  gap: 12px;
+  margin-top: clamp(56px, 8vw, 100px);
+}
+
+.yurt-gallery figure {
+  height: 390px;
+  margin: 0;
+  overflow: hidden;
+  background: var(--lichen);
+}
+
+.yurt-gallery__large {
+  height: 510px !important;
+}
+
+.yurt-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yurt-gallery figure:nth-child(2) img {
+  object-position: center;
+}
+
+.yurt-features {
+  padding: clamp(76px, 9vw, 128px) 0;
+  background: var(--forest-mid);
+  color: var(--white);
+}
+
+.yurt-features .section-heading--split > p {
+  color: rgba(230, 233, 218, 0.72);
+}
+
+.yurt-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgba(230, 233, 218, 0.22);
+  border-left: 1px solid rgba(230, 233, 218, 0.22);
+}
+
+.yurt-feature {
+  min-height: 265px;
+  padding: 30px;
+  border-right: 1px solid rgba(230, 233, 218, 0.22);
+  border-bottom: 1px solid rgba(230, 233, 218, 0.22);
+}
+
+.yurt-feature > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--moss);
+  color: var(--forest-deep);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.yurt-feature h3 {
+  margin: 30px 0 10px;
+  color: var(--white);
+  font-family: var(--display);
+  font-size: 1.45rem;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.yurt-feature p {
+  margin: 0;
+  color: rgba(230, 233, 218, 0.7);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.yurt-practical {
+  display: grid;
+  grid-template-columns: 0.75fr 1fr 1fr;
+  gap: clamp(36px, 6vw, 90px);
+  margin-top: 72px;
+  padding-top: 46px;
+  border-top: 1px solid rgba(230, 233, 218, 0.22);
+}
+
+.yurt-practical h3 {
+  margin: 14px 0 0;
+  font-family: var(--display);
+  font-size: 2.2rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.yurt-practical ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.yurt-practical li {
+  position: relative;
+  padding: 11px 0 11px 25px;
+  border-bottom: 1px solid rgba(230, 233, 218, 0.14);
+  color: rgba(255, 253, 245, 0.83);
+  font-size: 0.9rem;
+}
+
+.yurt-practical li::before {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  color: var(--moss);
+  content: "✓";
+}
+
+.yurt-practical > p {
+  margin: 0;
+  color: rgba(230, 233, 218, 0.68);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.yurt-experience {
+  padding: clamp(78px, 10vw, 138px) 0;
+  background: var(--lichen);
+  color: var(--forest-deep);
+}
+
+.yurt-experience__heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.45fr);
+  gap: 30px clamp(50px, 8vw, 120px);
+  align-items: end;
+}
+
+.yurt-experience__heading .section-label {
+  grid-column: 1 / -1;
+}
+
+.yurt-experience__heading p {
+  margin: 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(19, 39, 32, 0.18);
+  color: rgba(19, 39, 32, 0.68);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.yurt-activity-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  margin-top: clamp(50px, 7vw, 88px);
+}
+
+.yurt-activity {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  background: var(--forest-deep);
+}
+
+.yurt-activity img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yurt-activity::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(5, 27, 21, 0.92));
+  content: "";
+}
+
+.yurt-activity > div {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 34px;
+  color: var(--white);
+}
+
+.yurt-activity span {
+  color: var(--moss);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.yurt-activity h3 {
+  margin: 10px 0 8px;
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3vw, 3.2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.yurt-activity p {
+  max-width: 610px;
+  margin: 0;
+  color: rgba(255, 253, 245, 0.75);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.yurt-reservation {
+  padding: clamp(72px, 8vw, 110px) 0;
+  background: var(--moss);
+  color: var(--forest-deep);
+}
+
+.yurt-reservation__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(42px, 8vw, 110px);
+  align-items: center;
+}
+
+.yurt-reservation h2 {
+  max-width: 760px;
+}
+
+.yurt-reservation p {
+  max-width: 690px;
+  margin: 22px 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.yurt-reservation__contact {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+
+.yurt-reservation__contact .ticket-button {
+  border-color: var(--forest);
+  background: var(--forest);
+  color: var(--white);
+}
+
+.yurt-reservation__contact > a:last-child {
+  color: var(--forest-deep);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.yurt-reservation__contact > a:nth-child(2) {
+  color: var(--forest-deep);
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 900;
 }
 
 .site-footer {
@@ -1235,6 +1728,16 @@ img {
   color: var(--moss);
 }
 
+@media (max-width: 1120px) {
+  .site-header {
+    grid-template-columns: 1fr auto;
+  }
+
+  .site-nav {
+    display: none;
+  }
+}
+
 @media (max-width: 980px) {
   .site-header {
     grid-template-columns: 1fr auto;
@@ -1268,8 +1771,70 @@ img {
     grid-template-columns: 1fr;
   }
 
-  .formeduc-credit__button {
+  .formeduc-credit__logo-link {
     justify-self: start;
+  }
+
+  .yurt-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .yurt-hero__photo {
+    min-height: 62vw;
+    max-height: 680px;
+  }
+
+  .yurt-hero__content {
+    max-width: 760px;
+    padding: 74px max(24px, calc((100vw - 760px) / 2)) 82px;
+  }
+
+  .yurt-intro__inner,
+  .yurt-experience__heading,
+  .yurt-reservation__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .yurt-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .yurt-gallery__large {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .yurt-gallery figure {
+    height: 360px;
+  }
+
+  .yurt-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .yurt-practical {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .yurt-practical > div {
+    grid-column: 1 / -1;
+  }
+
+  .yurt-experience__heading .section-label {
+    grid-column: auto;
+  }
+
+  .yurt-activity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yurt-activity {
+    min-height: 500px;
+  }
+
+  .yurt-reservation__contact {
+    justify-items: start;
   }
 
   .deadline__inner {
@@ -1340,7 +1905,7 @@ img {
   }
 
   .brand__place {
-    font-size: 0.78rem;
+    display: none;
   }
 
   .site-header .ticket-button {
@@ -1400,6 +1965,106 @@ img {
   .hero__edge {
     right: 20px;
     left: 20px;
+  }
+
+  .yurt-hero {
+    display: block;
+  }
+
+  .yurt-hero__photo {
+    min-height: 68svh;
+  }
+
+  .yurt-hero__photo > span {
+    bottom: 18px;
+    left: 18px;
+  }
+
+  .yurt-hero__content {
+    padding: 64px 20px 72px;
+  }
+
+  .yurt-kicker {
+    letter-spacing: 0.11em;
+  }
+
+  .yurt-hero h1 {
+    font-size: clamp(3.8rem, 20vw, 5.8rem);
+  }
+
+  .yurt-hero__actions {
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .yurt-hero__actions .ticket-button {
+    width: 100%;
+  }
+
+  .yurt-hero__facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .yurt-hero__facts div:last-child {
+    grid-column: 1 / -1;
+    padding-left: 0;
+    border-top: 1px solid rgba(230, 233, 218, 0.22);
+    border-left: 0;
+  }
+
+  .yurt-intro h2,
+  .yurt-features h2,
+  .yurt-experience h2,
+  .yurt-reservation h2 {
+    font-size: clamp(2.7rem, 14vw, 4.3rem);
+  }
+
+  .yurt-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .yurt-gallery__large {
+    grid-column: auto;
+    height: 360px !important;
+  }
+
+  .yurt-gallery figure {
+    height: 300px;
+  }
+
+  .yurt-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .yurt-feature {
+    min-height: 0;
+    padding: 26px;
+  }
+
+  .yurt-practical {
+    grid-template-columns: 1fr;
+    margin-top: 52px;
+  }
+
+  .yurt-practical > div {
+    grid-column: auto;
+  }
+
+  .yurt-activity {
+    min-height: 430px;
+  }
+
+  .yurt-activity > div {
+    padding: 24px;
+  }
+
+  .yurt-reservation__contact,
+  .yurt-reservation__contact .ticket-button {
+    width: 100%;
+  }
+
+  .formeduc-credit__logo-link {
+    width: min(100%, 285px);
   }
 
   .deadline {

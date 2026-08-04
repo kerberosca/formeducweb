@@ -63,7 +63,7 @@ export function TicketButton({
   if (state === "active") {
     return (
       <a
-        className={`ticket-button${compact ? "ticket-button--compact" : ""}`}
+        className={`ticket-button${compact ? " ticket-button--compact" : ""}`}
         href={ticketingUrl}
         target="_blank"
         rel="noreferrer"
@@ -76,7 +76,7 @@ export function TicketButton({
 
   return (
     <button
-      className={`ticket-button ticket-button--disabled${compact ? "ticket-button--compact" : ""}`}
+      className={`ticket-button ticket-button--disabled${compact ? " ticket-button--compact" : ""}`}
       type="button"
       disabled
     >

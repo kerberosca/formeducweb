@@ -54,7 +54,7 @@ export const contestConfig: ContestConfig = {
   contact: {
     address: "2496, rue Dubose",
     city: "Jonquière (Québec) G7S 1B4",
-    phone: "418 548-0812",
+    phone: "418-548-0812",
     phoneHref: "+14185480812",
     email: "zeconatchiway@videotron.ca",
     facebook: "https://www.facebook.com/zeconatchiway"

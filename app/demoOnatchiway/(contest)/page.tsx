@@ -4,14 +4,15 @@ import {
   contestConfig,
   getContestState,
   officialRules,
-  prizeTiers
+  prizeTiers,
 } from "../contest";
 import { Countdown, TicketButton } from "../interactive";
+import { PartnerBanner } from "../partner-banner";
 
 const currency = new Intl.NumberFormat("fr-CA", {
   style: "currency",
   currency: "CAD",
-  minimumFractionDigits: 2
+  minimumFractionDigits: 2,
 });
 
 const number = new Intl.NumberFormat("fr-CA");
@@ -20,13 +21,13 @@ export default function Home() {
   const contest = getContestState(contestConfig.soldTickets);
   const ticketButtonProps = {
     salesClose: contestConfig.salesClose,
-    ticketingUrl: contestConfig.ticketingUrl
+    ticketingUrl: contestConfig.ticketingUrl,
   };
   const legalIds = [
     contestConfig.racjLicense
       ? `Licence RACJ : ${contestConfig.racjLicense}`
       : "",
-    contestConfig.neq ? `NEQ : ${contestConfig.neq}` : ""
+    contestConfig.neq ? `NEQ : ${contestConfig.neq}` : "",
   ].filter(Boolean);
 
   return (
@@ -50,6 +51,8 @@ export default function Home() {
           <a href="#prix">Les prix</a>
           <a href="#mission">La mission</a>
           <a href="#reglement">Règlement</a>
+          <a href="#partenaire">Partenaire</a>
+          <a href="/demoOnatchiway/yourte">À découvrir : nos yourtes</a>
         </nav>
 
         <TicketButton compact {...ticketButtonProps} />
@@ -118,8 +121,8 @@ export default function Home() {
 
             <a
               className="hero-sponsor"
-              href="https://formeducweb.ca/services/site-web"
-              aria-label="Hébergement commandité par ForméducWeb — Découvrir les services web"
+              href="#partenaire"
+              aria-label="Hébergement commandité par ForméducWeb — Aller à la section partenaire"
             >
               <img
                 src="/demoOnatchiway/hebergement-commandite-formeducweb.svg"
@@ -199,11 +202,13 @@ export default function Home() {
                 {prizeTiers.slice(1).map((tier) => (
                   <span
                     className={`progress-track__marker${
-                      contest.soldTickets >= tier.minTickets ? "is-reached" : ""
+                      contest.soldTickets >= tier.minTickets
+                        ? " is-reached"
+                        : ""
                     }`}
                     key={tier.level}
                     style={{
-                      left: `${(tier.minTickets / contestConfig.maxTickets) * 100}%`
+                      left: `${(tier.minTickets / contestConfig.maxTickets) * 100}%`,
                     }}
                     title={`Palier ${tier.level} à ${number.format(tier.minTickets)} billets`}
                   />
@@ -243,8 +248,8 @@ export default function Home() {
                 const current = contest.currentTier.level === tier.level;
                 return (
                   <article
-                    className={`prize-card${unlocked ? "is-unlocked" : ""}${
-                      current ? "is-current" : ""
+                    className={`prize-card${unlocked ? " is-unlocked" : ""}${
+                      current ? " is-current" : ""
                     }`}
                     key={tier.level}
                   >
@@ -452,32 +457,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section
-          className="formeduc-credit"
-          aria-labelledby="formeduc-credit-title"
-        >
-          <div className="section-shell formeduc-credit__inner">
-            <div>
-              <span className="section-label section-label--green">
-                Partenaire du projet
-              </span>
-              <h2 id="formeduc-credit-title">
-                L’hébergement de ce site est commandité par ForméducWeb.
-              </h2>
-              <p>
-                ForméducWeb a aussi conçu cette page et offre des sites adaptés
-                ainsi que des systèmes web sur mesure, avec une approche
-                d’hygiène informatique.
-              </p>
-            </div>
-            <a
-              className="formeduc-credit__button"
-              href="https://formeducweb.ca/services/site-web"
-            >
-              Découvrir les services web
-            </a>
-          </div>
-        </section>
+        <PartnerBanner />
       </main>
 
       <footer className="site-footer" id="coordonnees">
