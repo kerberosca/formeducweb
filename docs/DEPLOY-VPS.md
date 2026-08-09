@@ -55,18 +55,43 @@ Mettre le secret dans `STRIPE_WEBHOOK_SECRET`.
 
 SQLite persistante dans le volume Docker `formeducweb_sqlite` (`/data/production.db`).
 
+## Sauvegarde F-03 et garde pré-maintenance
+
+Les sauvegardes de production sont gérées par le service root **GestionVPS**,
+hors de ce dépôt. Il produit une copie SQLite cohérente, assemble une archive
+autonome chiffrée avec `age`, la transfère vers un stockage objet verrouillé et
+n'écrit son marqueur de succès qu'après vérification distante. Le marqueur est
+signé et validé strictement par
+`/usr/local/sbin/gestion-vps-backup-guard`; aucune identité `age`, destination,
+configuration de fournisseur ou information d'authentification ne doit être
+ajoutée au dépôt FormeducWeb.
+
+Avant un build, une migration ou une recréation susceptible de modifier les
+données existantes, vérifier l'attestation FormeducWeb :
+
+```bash
+bash scripts/ops/require-recent-backup.sh
+```
+
+Le garde exige une preuve signée, vérifiée hors site et âgée d'au plus 26
+heures. Un échec bloque la maintenance : déclencher et valider une nouvelle
+sauvegarde par le workflow GestionVPS autorisé, sans contourner le garde et
+sans copier directement un fichier SQLite potentiellement en écriture.
+
 ## Mise à jour
 
 ```bash
-git pull
+git pull --ff-only
+bash scripts/ops/require-recent-backup.sh
 docker compose --env-file .env.production build formeducweb
 docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate
 docker compose --env-file .env.production up -d
 ```
 
-Avant chaque migration, sauvegarder `/data/production.db` hors du volume
-Docker. La procédure détaillée et le contrôle du compte initial Demo839 sont
-décrits dans [`production-low-ticket.md`](./production-low-ticket.md).
+La synchronisation Git en avance rapide peut précéder le garde puisqu'elle ne
+modifie pas la base. Aucun build, migration ou recréation destructive ne doit
+le précéder. La procédure détaillée et le contrôle du compte initial Demo839
+sont décrits dans [`production-low-ticket.md`](./production-low-ticket.md).
 
 ## Revenir à l’ancien hébergement (Plesk / WordPress)
 

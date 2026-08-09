@@ -12,6 +12,7 @@
     "prisma:migrate": "prisma migrate dev",
     "db:setup": "node scripts/setup-sqlite.mjs",
     "test": "vitest run",
+    "test:backup-contract": "bash scripts/ops/require-recent-backup.test.sh",
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

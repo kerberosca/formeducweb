@@ -19,21 +19,33 @@ Ne jamais réutiliser une clé Stripe comme secret de désabonnement ou de tâch
 
 ## 2. Sauvegarder et auditer les migrations
 
-1. Arrêter brièvement les écritures ou utiliser une sauvegarde SQLite cohérente.
-2. Copier `/data/production.db` vers un emplacement hors du volume Docker.
-3. Construire l’image :
+1. Déclencher le service root GestionVPS, qui utilise l'API de sauvegarde
+   SQLite pour produire une copie cohérente sans copier hasardeusement le
+   fichier actif.
+2. Attendre la création de l'archive autonome chiffrée avec `age`, sa
+   vérification sur le stockage objet verrouillé et l'émission du marqueur de
+   succès signé. Le dépôt ne contient ni destination ni secret de sauvegarde.
+3. Depuis le checkout de production, valider cette attestation avant toute
+   migration :
+
+   ```bash
+   bash scripts/ops/require-recent-backup.sh
+   ```
+
+4. Construire l’image :
 
    ```powershell
    docker compose --env-file .env.production build formeducweb
    ```
 
-4. Vérifier l’état des migrations sur la copie avant toute écriture :
+5. Vérifier l'état des migrations sur une copie de restauration isolée avant
+   toute écriture :
 
    ```powershell
    docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate npx prisma migrate status
    ```
 
-5. Porter une attention particulière à
+6. Porter une attention particulière à
    `20260722000000_add_demo839`. Cette migration antérieure crée un compte
    administrateur initial. Si elle n’est pas déjà appliquée et sécurisée sur le
    VPS, la commande refuse de poursuivre par défaut. Après validation de la
@@ -43,7 +55,8 @@ Ne jamais réutiliser une clé Stripe comme secret de désabonnement ou de tâch
    l’application soit démarrée. Le même contrôle bloque aussi un ancien
    déploiement où cette migration serait déjà enregistrée, mais où le compte et
    son secret initiaux seraient encore actifs.
-6. Tester la restauration de la sauvegarde.
+7. Tester la restauration de l'archive `age` sans modifier le volume de
+   production.
 
 ## 3. Appliquer explicitement
 

@@ -51,4 +51,29 @@ describe("production low-ticket packaging", () => {
     expect(publishedAppPorts).toEqual(["127.0.0.1:3010:3000"]);
     expect(publishedAppPorts).not.toContain("3010:3000");
   });
+
+  it("exige l'attestation GestionVPS avant une maintenance destructive", () => {
+    const guard = read("scripts/ops/require-recent-backup.sh");
+    const deploymentGuide = read("docs/DEPLOY-VPS.md");
+    const updateProcedure = deploymentGuide.slice(
+      deploymentGuide.indexOf("## Mise à jour")
+    );
+
+    expect(guard).toContain(
+      'PRODUCTION_HELPER="/usr/local/sbin/gestion-vps-backup-guard"'
+    );
+    expect(guard).toContain('--application "$APPLICATION"');
+    expect(guard).toContain("--require-remote-verified");
+    expect(guard).toContain("--require-signed-marker");
+
+    const syncIndex = updateProcedure.indexOf("git pull --ff-only");
+    const guardIndex = updateProcedure.indexOf("require-recent-backup.sh");
+    const buildIndex = updateProcedure.indexOf("build formeducweb");
+    const migrationIndex = updateProcedure.indexOf("formeducweb_migrate");
+
+    expect(syncIndex).toBeGreaterThanOrEqual(0);
+    expect(guardIndex).toBeGreaterThan(syncIndex);
+    expect(buildIndex).toBeGreaterThan(guardIndex);
+    expect(migrationIndex).toBeGreaterThan(guardIndex);
+  });
 });
