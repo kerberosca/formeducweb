@@ -40,4 +40,15 @@ describe("production low-ticket packaging", () => {
     expect(productionEnvironment).toContain("EMAIL_JOB_SECRET=");
     expect(migrationLauncher).toContain("deactivate_seeded_admin");
   });
+
+  it("publie le port de production uniquement sur l'interface locale", () => {
+    const compose = read("docker-compose.yml");
+    const publishedAppPorts = Array.from(
+      compose.matchAll(/^\s*-\s*"([^"]+:3000)"\s*$/gm),
+      ([, binding]) => binding
+    );
+
+    expect(publishedAppPorts).toEqual(["127.0.0.1:3010:3000"]);
+    expect(publishedAppPorts).not.toContain("3010:3000");
+  });
 });
