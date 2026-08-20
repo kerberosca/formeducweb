@@ -39,7 +39,8 @@ export function PrivacyRequestForm() {
       email: "",
       companyName: "",
       requestType: "access",
-      message: ""
+      message: "",
+      website: ""
     }
   });
 
@@ -70,7 +71,8 @@ export function PrivacyRequestForm() {
         email: "",
         companyName: "",
         requestType: "access",
-        message: ""
+        message: "",
+        website: ""
       });
     } catch (error) {
       const errorMessage =
@@ -98,6 +100,7 @@ export function PrivacyRequestForm() {
               <Label htmlFor="fullName">Nom complet</Label>
               <Input
                 id="fullName"
+                maxLength={120}
                 aria-invalid={Boolean(form.formState.errors.fullName)}
                 aria-describedby={
                   form.formState.errors.fullName ? "fullName-error" : undefined
@@ -120,6 +123,7 @@ export function PrivacyRequestForm() {
               <Input
                 id="email"
                 type="email"
+                maxLength={254}
                 aria-invalid={Boolean(form.formState.errors.email)}
                 aria-describedby={
                   form.formState.errors.email
@@ -142,7 +146,11 @@ export function PrivacyRequestForm() {
 
           <div className="space-y-2">
             <Label htmlFor="companyName">Entreprise (optionnel)</Label>
-            <Input id="companyName" {...form.register("companyName")} />
+            <Input
+              id="companyName"
+              maxLength={160}
+              {...form.register("companyName")}
+            />
           </div>
 
           <div className="space-y-2">
@@ -179,6 +187,7 @@ export function PrivacyRequestForm() {
             <Label htmlFor="message">Détails de votre demande</Label>
             <Textarea
               id="message"
+              maxLength={4000}
               aria-invalid={Boolean(form.formState.errors.message)}
               aria-describedby={
                 form.formState.errors.message
@@ -197,6 +206,20 @@ export function PrivacyRequestForm() {
                 {form.formState.errors.message.message}
               </p>
             ) : null}
+          </div>
+
+          <div
+            aria-hidden="true"
+            className="absolute -left-[10000px] h-px w-px overflow-hidden"
+          >
+            <Label htmlFor="privacy-website">Votre site Web</Label>
+            <Input
+              id="privacy-website"
+              maxLength={200}
+              tabIndex={-1}
+              autoComplete="off"
+              {...form.register("website")}
+            />
           </div>
 
           {submissionError ? (

@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import type { EmailJob, Prisma, Subscriber } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { sendCommercialEmail } from "@/lib/email";
+import { sendCommercialEmail, sendCourseAccessEmail } from "@/lib/email";
 
 export const MARKETING_EMAIL_KINDS = [
   "diagnostic_day_1",
@@ -11,6 +11,8 @@ export const MARKETING_EMAIL_KINDS = [
   "diagnostic_day_7",
   "trio_upgrade"
 ] as const;
+
+export const COURSE_ACCESS_EMAIL_KIND = "course_access" as const;
 
 export type MarketingEmailKind = (typeof MARKETING_EMAIL_KINDS)[number];
 
@@ -38,6 +40,7 @@ type MarketingPayload = {
   companyName?: string;
   productCode?: string;
   dashboardUrl?: string;
+  courseTitle?: string;
 };
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -296,7 +299,8 @@ function readPayload(payload: Prisma.JsonValue | null): MarketingPayload {
     resultUrl: text("resultUrl"),
     companyName: text("companyName"),
     productCode: text("productCode"),
-    dashboardUrl: text("dashboardUrl")
+    dashboardUrl: text("dashboardUrl"),
+    courseTitle: text("courseTitle")
   };
 }
 
@@ -421,37 +425,67 @@ export async function processDueEmailJobs(options?: {
     });
     if (claimed.count !== 1) continue;
 
-    if (!isMarketingKind(job.kind) || !job.subscriberId) {
-      await cancelJob(job, "Type de courriel ou abonné invalide.");
-      result.cancelled += 1;
-      continue;
-    }
-
-    const subscriber = await db.subscriber.findUnique({
-      where: { id: job.subscriberId }
-    });
-    if (
-      !subscriber ||
-      normalizeEmail(subscriber.email) !== normalizeEmail(job.toEmail) ||
-      !subscriber.consentMarketing ||
-      subscriber.unsubscribedAt
-    ) {
-      await cancelJob(job, "Consentement marketing absent ou retiré.");
-      result.cancelled += 1;
-      continue;
-    }
-
     try {
-      const message = buildMarketingEmail(
-        job.kind,
-        readPayload(job.payload),
-        subscriber
-      );
-      const delivery = await sendCommercialEmail({
-        to: subscriber.email,
-        idempotencyKey: job.idempotencyKey,
-        ...message
-      });
+      let delivery: Awaited<ReturnType<typeof sendCommercialEmail>>;
+
+      if (job.kind === COURSE_ACCESS_EMAIL_KIND) {
+        const order = job.orderId
+          ? await db.order.findFirst({
+              where: {
+                id: job.orderId,
+                kind: "course",
+                status: "paid"
+              },
+              include: { course: { select: { title: true } } }
+            })
+          : null;
+
+        if (
+          !order?.course ||
+          normalizeEmail(order.email) !== normalizeEmail(job.toEmail)
+        ) {
+          await cancelJob(job, "Commande de formation payée invalide.");
+          result.cancelled += 1;
+          continue;
+        }
+
+        delivery = await sendCourseAccessEmail({
+          email: order.email,
+          courseTitle: order.course.title,
+          orderId: order.id
+        });
+      } else {
+        if (!isMarketingKind(job.kind) || !job.subscriberId) {
+          await cancelJob(job, "Type de courriel ou abonné invalide.");
+          result.cancelled += 1;
+          continue;
+        }
+
+        const subscriber = await db.subscriber.findUnique({
+          where: { id: job.subscriberId }
+        });
+        if (
+          !subscriber ||
+          normalizeEmail(subscriber.email) !== normalizeEmail(job.toEmail) ||
+          !subscriber.consentMarketing ||
+          subscriber.unsubscribedAt
+        ) {
+          await cancelJob(job, "Consentement marketing absent ou retiré.");
+          result.cancelled += 1;
+          continue;
+        }
+
+        const message = buildMarketingEmail(
+          job.kind,
+          readPayload(job.payload),
+          subscriber
+        );
+        delivery = await sendCommercialEmail({
+          to: subscriber.email,
+          idempotencyKey: job.idempotencyKey,
+          ...message
+        });
+      }
       if (delivery.skipped) {
         throw new Error(
           "Envoi commercial non configuré; vérifiez Resend et DISABLE_EXTERNAL_SERVICES."

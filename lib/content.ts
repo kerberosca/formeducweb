@@ -9,6 +9,8 @@ import {
   Lock
 } from "lucide-react";
 
+export { contactReasons, type ContactReason } from "@/lib/contact-options";
+
 export const homeHighlights = [
   {
     title: "Loi 25",
@@ -263,15 +265,6 @@ export const legalDisclaimers = [
   "Le diagnostic Loi 25 vise l’alignement, la préparation et la priorisation d’actions.",
   "Il ne constitue pas un avis juridique et ne doit pas être présenté comme une garantie de conformité.",
   "Les recommandations doivent être adaptées à votre contexte d’affaires, vos systèmes et vos fournisseurs."
-];
-
-export const contactReasons = [
-  "Diagnostic Loi 25",
-  "Diagnostic cybersécurité",
-  "Diagnostic IA en entreprise",
-  "Site web / système sur mesure",
-  "Accompagnement / implantation",
-  "Autre besoin"
 ];
 
 export const trustSignals = [

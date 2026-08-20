@@ -43,7 +43,7 @@ const diagnostics = [
 
 export default function DigitalHygieneTrioPage() {
   return (
-    <main>
+    <section>
       <section className="container py-14 md:py-24">
         <div className="mx-auto max-w-4xl text-center">
           <Badge>Trio Hygiène numérique</Badge>
@@ -129,6 +129,6 @@ export default function DigitalHygieneTrioPage() {
           </CardContent>
         </Card>
       </section>
-    </main>
+    </section>
   );
 }

@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { getDefaultContactReason } from "./page";
+import { getContactReasonFromSource } from "@/lib/contact-options";
 
 describe("source de la page de contact", () => {
   it("présélectionne le motif des projets web", () => {
-    expect(getDefaultContactReason("site-web")).toBe(
-      "Site web / système sur mesure"
+    expect(getContactReasonFromSource("site-web")).toBe(
+      "Création ou refonte de site Web"
     );
-    expect(getDefaultContactReason("site-web-onatchiway")).toBe(
-      "Site web / système sur mesure"
+    expect(getContactReasonFromSource("site-web-onatchiway")).toBe(
+      "Création ou refonte de site Web"
     );
   });
 });

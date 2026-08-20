@@ -4,33 +4,37 @@ import { describe, expect, it } from "vitest";
 import SiteWebServicePage from "./page";
 
 describe("page publique des services web", () => {
-  it("présente les trois formats, Onatchiway et le parcours de contact", () => {
+  it("présente l'offre refondue, Onatchiway et le parcours de contact", () => {
     render(<SiteWebServicePage />);
 
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: "Du petit site efficace au système web fait sur mesure."
+        name: "Un site web utile, crédible et simple à faire évoluer"
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Page ou petit site adapté" })
+      screen.getByRole("heading", { name: "Ce qu’on peut prendre en charge" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Site structuré et évolutif" })
+      screen.getByRole("heading", { name: "Avancer sans sauter les étapes utiles" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: "Portail ou système web" })
+      screen.getByRole("heading", { name: "L’Appel d’Onatchiway" })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/La page du concours de la ZEC Onatchiway/)
+      screen.getByText(/ForméducWeb a conçu cette expérience sur mesure/)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/commandite également l’hébergement/)
+      screen.getByText(/commandite son hébergement/)
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Parler de votre projet" })
-    ).toHaveAttribute("href", "/contact?source=site-web");
+      screen.getByRole("link", { name: "Décrire mon besoin" })
+    ).toHaveAttribute("href", "/contact?source=appel-service-site-web");
+    expect(screen.getByRole("link", { name: /Voir la réalisation/ })).toHaveAttribute(
+      "href",
+      "/demoOnatchiway"
+    );
     expect(document.body).not.toHaveTextContent("8 168,20 $");
     expect(document.body).not.toHaveTextContent("18 octobre 2026");
   });

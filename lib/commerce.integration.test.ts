@@ -99,6 +99,7 @@ describe("commerce fulfillment", () => {
   });
 
   beforeEach(async () => {
+    await db.stripeRefundTombstone.deleteMany();
     await db.stripeEvent.deleteMany();
     await db.emailJob.deleteMany();
     await db.entitlement.deleteMany();

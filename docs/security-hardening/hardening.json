@@ -1,0 +1,32 @@
+{
+  "documentType": "codex-security.hardening-analysis",
+  "schemaVersion": "1.0",
+  "analysisId": "hardening_final",
+  "sourceScan": {
+    "scanId": "4febef57-4e2a-4fb8-8469-5b7387db3657",
+    "targetRevision": "e487cda3045c55ae9f9de1db358bb4fa954c6bef",
+    "snapshotDigest": "codex-security-snapshot/v1:sha256:be0f8b949ccb41d17e4c190bcb29a366c9e13c8aaa88fde79177e62170c39347",
+    "sourceDrift": "present"
+  },
+  "assessment": {
+    "outcome": "local_remediation_preferred",
+    "summary": "Les constats sont nouveaux, bien délimités et se ferment complètement par des contrôles partagés aux frontières existantes; une nouvelle architecture ou un nouveau service ajouterait plus de risque de migration que de réduction mesurable du risque."
+  },
+  "constraints": {
+    "profile": "balanced",
+    "changeHorizons": ["incremental"],
+    "nonNegotiables": [
+      "Conserver SQLite et les données historiques.",
+      "Ne jamais changer les URL, codes, prix ou jetons des diagnostics.",
+      "Garder Stripe et Resend désactivés dans le profil Docker local.",
+      "Préserver l'accès aux cours archivés pour les inscriptions actives."
+    ],
+    "assumptions": [
+      "Aucun budget de latence ou de mémoire mesuré n'a été fourni.",
+      "Le service local demeure lié à 127.0.0.1.",
+      "Un futur déploiement devra déclarer explicitement sa frontière de proxy de confiance."
+    ]
+  },
+  "opportunities": [],
+  "openQuestions": []
+}

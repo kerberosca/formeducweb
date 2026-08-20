@@ -69,7 +69,9 @@ function postJson(endpoint, secret) {
           body += chunk;
           if (Buffer.byteLength(body, "utf8") > MAX_RESPONSE_BYTES) {
             response.destroy(
-              new Error("La réponse du processeur de courriels est trop grande.")
+              new Error(
+                "La réponse du processeur de courriels est trop grande."
+              )
             );
           }
         });
@@ -98,10 +100,7 @@ function postJson(endpoint, secret) {
 }
 
 async function processOnce(configuration) {
-  const response = await postJson(
-    configuration.endpoint,
-    configuration.secret
-  );
+  const response = await postJson(configuration.endpoint, configuration.secret);
   const payload = response.payload;
 
   if (!response.ok) {

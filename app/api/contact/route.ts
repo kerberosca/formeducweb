@@ -44,7 +44,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const contactRequest = await createContactRequestRecord(parsed.data);
+    // A filled honeypot receives the same neutral confirmation as a legitimate
+    // request, but it never reaches storage, consent handling or email.
+    if (parsed.data.website) {
+      return NextResponse.json({
+        ok: true,
+        message: "Votre demande a été reçue."
+      });
+    }
+
+    await createContactRequestRecord(parsed.data);
     await recordSubscriberConsent({
       email: parsed.data.email,
       consentMarketing: parsed.data.consentMarketing,
@@ -56,7 +65,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       ok: true,
-      contactRequestId: contactRequest.id
+      message: "Votre demande a été reçue."
     });
   } catch (error) {
     console.error("Contact route error", error);

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 const DEFAULT_SITE_URL = "https://formeducweb.ca";
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
 const SITE_NAME = "ForméducWeb";
-const SOCIAL_IMAGE_PATH = "/og.png";
+const SOCIAL_IMAGE_PATH = "/hero-apprentissage-formeducweb.png";
 
 function normalizeUrl(url: string) {
   return url.endsWith("/") ? url.slice(0, -1) : url;
@@ -85,9 +85,9 @@ export function buildPageMetadata({
       images: [
         {
           url: image,
-          width: 1200,
-          height: 630,
-          alt: `${SITE_NAME} — diagnostics pour PME et OBNL`
+          width: 1730,
+          height: 909,
+          alt: `${SITE_NAME} — apprendre et avancer dans le numérique, simplement`
         }
       ]
     },

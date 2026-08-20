@@ -186,7 +186,7 @@ export function DiagnosticLandingPage({
               <p className="font-heading text-3xl font-semibold">
                 Commencez par le diagnostic gratuit
               </p>
-              <p className="mt-3 max-w-2xl leading-7 text-primary-foreground/80">
+              <p className="mt-3 max-w-2xl leading-7 text-primary-foreground">
                 Votre résultat apparaît immédiatement. Vous déciderez ensuite si
                 le Kit d’exécution 90 jours à 29 $ ou le trio à 59 $ vous est
                 utile.

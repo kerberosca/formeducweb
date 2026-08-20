@@ -1,3 +1,5 @@
+import { resolveClientIp, UNKNOWN_CLIENT_IP } from "@/lib/client-ip";
+
 type RateLimitOptions = {
   bucket: string;
   limit: number;
@@ -10,6 +12,11 @@ type RateLimitEntry = {
 };
 
 type RateLimitStore = Map<string, RateLimitEntry>;
+
+export const RATE_LIMIT_STORE_MAX_ENTRIES = 2000;
+export const UNKNOWN_CLIENT_GLOBAL_LIMIT_MINIMUM = 100;
+export const UNKNOWN_CLIENT_GLOBAL_LIMIT_MULTIPLIER = 10;
+export const UNKNOWN_CLIENT_GLOBAL_LIMIT_MAXIMUM = 1000;
 
 const globalRateLimit = globalThis as typeof globalThis & {
   __formeducwebRateLimitStore?: RateLimitStore;
@@ -26,9 +33,7 @@ function getStore() {
   return globalRateLimit.__formeducwebRateLimitStore;
 }
 
-function cleanupStore(store: RateLimitStore, now: number) {
-  if (store.size < 2000) return;
-
+function deleteExpiredEntries(store: RateLimitStore, now: number) {
   for (const [key, value] of store.entries()) {
     if (value.resetAt <= now) {
       store.delete(key);
@@ -36,25 +41,50 @@ function cleanupStore(store: RateLimitStore, now: number) {
   }
 }
 
-function getClientIp(request: Request) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
+function reserveEntry(store: RateLimitStore, now: number) {
+  if (store.size < RATE_LIMIT_STORE_MAX_ENTRIES) return;
 
-  return request.headers.get("x-real-ip") || "unknown";
+  deleteExpiredEntries(store, now);
+  while (store.size >= RATE_LIMIT_STORE_MAX_ENTRIES) {
+    const oldestKey = store.keys().next().value as string | undefined;
+    if (!oldestKey) break;
+    store.delete(oldestKey);
+  }
+}
+
+function touchEntry(store: RateLimitStore, key: string, entry: RateLimitEntry) {
+  store.delete(key);
+  store.set(key, entry);
 }
 
 export function checkRateLimit(request: Request, options: RateLimitOptions) {
   const now = Date.now();
   const store = getStore();
-  const key = `${options.bucket}:${getClientIp(request)}`;
-  const current = store.get(key);
+  const clientIp = resolveClientIp(request);
+  const isUnknownClient = clientIp === UNKNOWN_CLIENT_IP;
+  const effectiveLimit = isUnknownClient
+    ? Math.min(
+        UNKNOWN_CLIENT_GLOBAL_LIMIT_MAXIMUM,
+        Math.max(
+          UNKNOWN_CLIENT_GLOBAL_LIMIT_MINIMUM,
+          options.limit * UNKNOWN_CLIENT_GLOBAL_LIMIT_MULTIPLIER
+        )
+      )
+    : options.limit;
+  // Spoofable headers must neither rotate the identity nor turn the smaller
+  // per-IP threshold into a site-wide lockout when no transport IP is known.
+  const key = isUnknownClient
+    ? `${options.bucket}:global`
+    : `${options.bucket}:ip:${clientIp}`;
+  let current = store.get(key);
 
-  cleanupStore(store, now);
+  if (current?.resetAt && current.resetAt <= now) {
+    store.delete(key);
+    current = undefined;
+  }
 
-  if (!current || current.resetAt <= now) {
+  if (!current) {
+    reserveEntry(store, now);
     const next: RateLimitEntry = {
       count: 1,
       resetAt: now + options.windowMs
@@ -67,9 +97,9 @@ export function checkRateLimit(request: Request, options: RateLimitOptions) {
   }
 
   current.count += 1;
-  store.set(key, current);
+  touchEntry(store, key, current);
 
-  if (current.count > options.limit) {
+  if (current.count > effectiveLimit) {
     return {
       allowed: false,
       retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000))
@@ -80,4 +110,12 @@ export function checkRateLimit(request: Request, options: RateLimitOptions) {
     allowed: true,
     retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000))
   };
+}
+
+export function getRateLimitStoreSizeForTests() {
+  return getStore().size;
+}
+
+export function resetRateLimitStoreForTests() {
+  getStore().clear();
 }

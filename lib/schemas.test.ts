@@ -4,7 +4,8 @@ import {
   assessmentPayloadSchema,
   assessmentPreviewPayloadSchema,
   assessmentProfileSchema,
-  checkoutSessionPayloadSchema
+  checkoutSessionPayloadSchema,
+  privacyRequestSchema
 } from "@/lib/schemas";
 
 describe("assessment schemas", () => {
@@ -59,6 +60,44 @@ describe("assessment schemas", () => {
       checkoutSessionPayloadSchema.safeParse({
         accessToken,
         productCode: "trio_1_dollar"
+      }).success
+    ).toBe(false);
+  });
+
+  it("borne tous les champs texte d'une demande de confidentialité", () => {
+    const valid = {
+      fullName: "Marie Tremblay",
+      email: "marie@example.ca",
+      companyName: "PME Exemple",
+      requestType: "access",
+      message:
+        "Je souhaite obtenir une copie de mes renseignements personnels.",
+      website: ""
+    };
+
+    expect(privacyRequestSchema.safeParse(valid).success).toBe(true);
+    expect(
+      privacyRequestSchema.safeParse({
+        ...valid,
+        fullName: "x".repeat(121)
+      }).success
+    ).toBe(false);
+    expect(
+      privacyRequestSchema.safeParse({
+        ...valid,
+        companyName: "x".repeat(161)
+      }).success
+    ).toBe(false);
+    expect(
+      privacyRequestSchema.safeParse({
+        ...valid,
+        message: "x".repeat(4001)
+      }).success
+    ).toBe(false);
+    expect(
+      privacyRequestSchema.safeParse({
+        ...valid,
+        website: "x".repeat(201)
       }).success
     ).toBe(false);
   });

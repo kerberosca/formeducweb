@@ -1,0 +1,73 @@
+# ForméducWeb — surcouche locale pour Docker Desktop.
+# Utilisation :
+# docker compose -f docker-compose.yml -f docker-compose.local.yml build formeducweb
+# docker compose -f docker-compose.yml -f docker-compose.local.yml --profile ops run --rm formeducweb_migrate
+# docker compose -f docker-compose.yml -f docker-compose.local.yml up -d
+
+name: formeducweb-local
+
+services:
+  formeducweb:
+    image: formeducweb_app:local
+    container_name: formeducweb_local
+    build:
+      args:
+        NEXT_PUBLIC_BASE_URL: http://localhost:3010
+        NEXT_PUBLIC_SITE_URL: http://localhost:3010
+        NEXT_PUBLIC_BOOKING_URL: ""
+        NEXT_PUBLIC_GA_MEASUREMENT_ID: ""
+    ports: !override
+      - "127.0.0.1:3010:3000"
+    depends_on:
+      - mailpit
+    env_file: !override []
+    environment:
+      DATABASE_URL: file:/data/local.db
+      NEXT_PUBLIC_BASE_URL: http://localhost:3010
+      NEXT_PUBLIC_SITE_URL: http://localhost:3010
+      EMAIL_PUBLIC_BASE_URL: http://localhost:3010
+      NEXT_PUBLIC_BOOKING_URL: ""
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: ""
+      DISABLE_EXTERNAL_SERVICES: "1"
+      STRIPE_SECRET_KEY: ""
+      STRIPE_WEBHOOK_SECRET: ""
+      RESEND_API_KEY: ""
+      RESEND_FROM: ""
+      EMAIL_UNSUBSCRIBE_SECRET: ""
+      EMAIL_JOB_SECRET: local-only-email-job-secret
+      ADMIN_NOTIFICATION_EMAIL: ""
+      AUTH_URL: http://localhost:3010
+      AUTH_SECRET: local-only-formeducweb-auth-secret
+      AUTH_EMAIL_PROVIDER: nodemailer
+      AUTH_SMTP_HOST: mailpit
+      AUTH_SMTP_PORT: "1025"
+      AUTH_SMTP_SECURE: "0"
+      AUTH_SMTP_ALLOW_LOCAL: "1"
+      AUTH_SMTP_FROM: FormeducWeb <connexion@formeducweb.local>
+      LMS_BOOTSTRAP_ADMIN_EMAILS: ${LMS_BOOTSTRAP_ADMIN_EMAILS:-}
+
+  # Mailpit capture tous les liens de connexion sur la machine locale. Aucun
+  # message ne quitte Docker; seule l'interface Web est exposée sur loopback.
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: formeducweb_mailpit
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8025:8025"
+
+  # Le travailleur traite les courriels transactionnels vers Mailpit. Les
+  # services externes restent désactivés dans le conteneur applicatif.
+  email_jobs_worker:
+    image: formeducweb_app:local
+    container_name: formeducweb_email_jobs_local
+    profiles: !reset []
+    environment:
+      EMAIL_JOB_SECRET: local-only-email-job-secret
+      EMAIL_JOB_INTERVAL_MS: "60000"
+
+  formeducweb_migrate:
+    image: formeducweb_app:local
+    env_file: !override []
+    environment:
+      DATABASE_URL: file:/data/local.db
+      DISABLE_EXTERNAL_SERVICES: "1"

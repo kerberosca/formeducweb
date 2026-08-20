@@ -102,12 +102,36 @@ describe("Stripe checkout product sessions", () => {
         url: "https://checkout.stripe.test/upgrade"
       });
 
+    await db.stripeRefundTombstone.deleteMany();
     await db.stripeEvent.deleteMany();
     await db.emailJob.deleteMany();
     await db.entitlement.deleteMany();
     await db.order.deleteMany();
     await db.subscriber.deleteMany();
     await db.assessment.deleteMany();
+  });
+
+  it("rejects an assessmentId that is not accompanied by its access token", async () => {
+    const assessment = await createAssessment({
+      assessmentType: "loi25",
+      email: "checkout-id-only@example.invalid"
+    });
+
+    const response = await createCheckout(
+      request(
+        {
+          assessmentId: assessment.id,
+          productCode: "loi25_kit"
+        },
+        "203.0.113.209"
+      )
+    );
+
+    expect(response.status).toBe(400);
+    expect(stripeSessionCreate).not.toHaveBeenCalled();
+    expect(
+      await db.order.count({ where: { assessmentId: assessment.id } })
+    ).toBe(0);
   });
 
   it("creates a 59 CAD Trio session with the selected product in both metadata layers", async () => {
@@ -118,6 +142,7 @@ describe("Stripe checkout product sessions", () => {
     const response = await createCheckout(
       request(
         {
+          assessmentId: assessment.id,
           accessToken: assessment.accessToken,
           productCode: "digital_hygiene_trio"
         },

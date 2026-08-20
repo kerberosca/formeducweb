@@ -429,6 +429,175 @@ export type CommerceWebhookResult = {
   stripeEvent: StripeEvent | null;
 };
 
+async function applyRefundToOrder(
+  transaction: Prisma.TransactionClient,
+  input: {
+    orderId: string;
+    paymentIntentId: string | null;
+    stripeSessionId?: string | null;
+    refundedAt: Date;
+  }
+) {
+  const order = await transaction.order.findUnique({
+    where: { id: input.orderId },
+    include: { assessment: true }
+  });
+  if (!order) throw new Error("REFUND_ORDER_NOT_FOUND");
+  if (order.kind !== "assessment" && order.kind !== "course") {
+    throw new Error("REFUND_ORDER_KIND_INVALID");
+  }
+  if (
+    order.stripePaymentIntent &&
+    input.paymentIntentId &&
+    order.stripePaymentIntent !== input.paymentIntentId
+  ) {
+    throw new Error("REFUND_PAYMENT_INTENT_ORDER_MISMATCH");
+  }
+  if (
+    order.stripeSessionId &&
+    input.stripeSessionId &&
+    order.stripeSessionId !== input.stripeSessionId
+  ) {
+    throw new Error("REFUND_CHECKOUT_SESSION_ORDER_MISMATCH");
+  }
+
+  const refundedAt = order.refundedAt || input.refundedAt;
+  const refundedOrder = await transaction.order.update({
+    where: { id: order.id },
+    data: {
+      status: "refunded",
+      refundedAt,
+      stripePaymentIntent:
+        order.stripePaymentIntent || input.paymentIntentId || undefined,
+      stripeSessionId:
+        order.stripeSessionId || input.stripeSessionId || undefined
+    }
+  });
+
+  await transaction.entitlement.updateMany({
+    where: { orderId: order.id },
+    data: { status: "revoked", revokedAt: refundedAt }
+  });
+
+  if (order.kind === "course") {
+    const courseEnrollments = await transaction.enrollment.findMany({
+      where: { orderId: order.id },
+      select: { id: true }
+    });
+    const enrollmentIds = courseEnrollments.map((enrollment) => enrollment.id);
+
+    await transaction.enrollment.updateMany({
+      where: { id: { in: enrollmentIds } },
+      data: { status: "revoked", revokedAt: refundedAt }
+    });
+    if (enrollmentIds.length) {
+      await transaction.certificate.updateMany({
+        where: { enrollmentId: { in: enrollmentIds } },
+        data: { revokedAt: refundedAt }
+      });
+    }
+  }
+
+  const effectivePaymentIntentId =
+    order.stripePaymentIntent || input.paymentIntentId;
+  const effectiveStripeSessionId =
+    order.stripeSessionId || input.stripeSessionId;
+  const refundOwnsAssessmentAccess =
+    Boolean(
+      order.assessment?.stripePaymentIntent &&
+      order.assessment.stripePaymentIntent === effectivePaymentIntentId
+    ) ||
+    Boolean(
+      order.assessment?.stripeSessionId &&
+      order.assessment.stripeSessionId === effectiveStripeSessionId
+    );
+  const revokedEntitlements = await transaction.entitlement.findMany({
+    where: {
+      orderId: order.id,
+      assessmentId: { not: null }
+    },
+    select: {
+      assessmentId: true,
+      ownsAssessmentAccess: true
+    }
+  });
+  const assessmentIdsToRevoke = [
+    ...new Set(
+      revokedEntitlements
+        .filter((entitlement) => entitlement.ownsAssessmentAccess)
+        .map((entitlement) => entitlement.assessmentId)
+        .filter((assessmentId): assessmentId is string => {
+          if (!assessmentId) return false;
+          if (
+            assessmentId === order.assessmentId &&
+            !refundOwnsAssessmentAccess
+          ) {
+            return false;
+          }
+          return true;
+        })
+    )
+  ];
+
+  if (assessmentIdsToRevoke.length) {
+    await transaction.assessment.updateMany({
+      where: { id: { in: assessmentIdsToRevoke } },
+      data: { paymentStatus: "refunded" }
+    });
+  }
+
+  await transaction.emailJob.updateMany({
+    where: { orderId: order.id, status: "scheduled" },
+    data: { status: "canceled", cancelledAt: refundedAt }
+  });
+
+  return refundedOrder;
+}
+
+export async function blockRefundedCheckoutFulfillment(
+  transaction: Prisma.TransactionClient,
+  input: {
+    order: Pick<
+      Order,
+      "id" | "status" | "stripePaymentIntent" | "stripeSessionId" | "refundedAt"
+    >;
+    paymentIntentId: string | null;
+    stripeSessionId: string;
+  }
+) {
+  const tombstone = input.paymentIntentId
+    ? await transaction.stripeRefundTombstone.findUnique({
+        where: { paymentIntentId: input.paymentIntentId }
+      })
+    : null;
+
+  if (!tombstone && input.order.status !== "refunded") return null;
+  if (tombstone?.orderId && tombstone.orderId !== input.order.id) {
+    throw new Error("REFUND_TOMBSTONE_ORDER_MISMATCH");
+  }
+  if (
+    input.order.stripePaymentIntent &&
+    input.paymentIntentId &&
+    input.order.stripePaymentIntent !== input.paymentIntentId
+  ) {
+    throw new Error("REFUND_PAYMENT_INTENT_ORDER_MISMATCH");
+  }
+
+  if (tombstone && !tombstone.orderId) {
+    await transaction.stripeRefundTombstone.update({
+      where: { id: tombstone.id },
+      data: { orderId: input.order.id }
+    });
+  }
+
+  return applyRefundToOrder(transaction, {
+    orderId: input.order.id,
+    paymentIntentId: input.paymentIntentId,
+    stripeSessionId: input.stripeSessionId,
+    refundedAt: tombstone?.refundedAt || input.order.refundedAt || new Date()
+  });
+}
+
 export async function fulfillCheckoutSession(input: {
   eventId: string;
   eventType: string;
@@ -474,6 +643,29 @@ export async function fulfillCheckoutSession(input: {
     }
 
     const sessionPaymentIntentId = getSessionPaymentIntentId(input.session);
+    const stripeEmail = getSessionEmail(input.session);
+
+    if (
+      stripeEmail &&
+      normalizeEmail(stripeEmail) !== normalizeEmail(order.email)
+    ) {
+      throw new Error("CHECKOUT_EMAIL_MISMATCH");
+    }
+
+    const refundedOrder = await blockRefundedCheckoutFulfillment(transaction, {
+      order,
+      paymentIntentId: sessionPaymentIntentId,
+      stripeSessionId: input.session.id
+    });
+    if (refundedOrder) {
+      const stripeEvent = await recordProcessedEvent(transaction, {
+        eventId: input.eventId,
+        eventType: input.eventType,
+        orderId: order.id
+      });
+      return { duplicate: true, order: refundedOrder, stripeEvent };
+    }
+
     const isAlreadyFulfilled =
       order.status === "paid" &&
       (order.stripeSessionId === input.session.id ||
@@ -494,15 +686,6 @@ export async function fulfillCheckoutSession(input: {
         order,
         stripeEvent
       };
-    }
-
-    const stripeEmail = getSessionEmail(input.session);
-
-    if (
-      stripeEmail &&
-      normalizeEmail(stripeEmail) !== normalizeEmail(order.email)
-    ) {
-      throw new Error("CHECKOUT_EMAIL_MISMATCH");
     }
 
     const productCode = isProductCode(order.productCode)
@@ -547,7 +730,7 @@ export async function fulfillCheckoutSession(input: {
       data: {
         status: "paid",
         stripeSessionId: input.session.id,
-        stripePaymentIntent: getSessionPaymentIntentId(input.session),
+        stripePaymentIntent: sessionPaymentIntentId,
         paidAt,
         refundedAt: null,
         accessExpiresAt: expiresAt
@@ -559,9 +742,10 @@ export async function fulfillCheckoutSession(input: {
 
       await transaction.entitlement.upsert({
         where: {
-          orderId_assessmentType: {
+          orderId_resourceType_resourceKey: {
             orderId: order.id,
-            assessmentType: entitlementType
+            resourceType: "assessment",
+            resourceKey: entitlementType
           }
         },
         create: {
@@ -569,6 +753,8 @@ export async function fulfillCheckoutSession(input: {
           assessmentId:
             entitlementType === assessmentType ? order.assessment.id : null,
           ownerEmail: normalizeEmail(order.email),
+          resourceType: "assessment",
+          resourceKey: entitlementType,
           assessmentType: entitlementType,
           status: isCompletedAssessment ? "consumed" : "active",
           accessToken: createPublicToken(),
@@ -711,6 +897,7 @@ export async function refundOrderByPaymentIntent(input: {
   eventId: string;
   eventType: string;
   paymentIntentId: string;
+  orderId?: string | null;
 }): Promise<CommerceWebhookResult> {
   return db.$transaction(async (transaction) => {
     const processedEvent = await findProcessedEvent(transaction, input.eventId);
@@ -723,15 +910,63 @@ export async function refundOrderByPaymentIntent(input: {
       };
     }
 
-    const order = await transaction.order.findUnique({
-      where: {
-        stripePaymentIntent: input.paymentIntentId
-      },
-      include: {
-        upgrades: true,
-        assessment: true
-      }
-    });
+    const metadataOrderId = input.orderId?.trim() || null;
+    const [metadataOrder, paymentIntentOrder] = await Promise.all([
+      metadataOrderId
+        ? transaction.order.findUnique({ where: { id: metadataOrderId } })
+        : null,
+      transaction.order.findUnique({
+        where: { stripePaymentIntent: input.paymentIntentId }
+      })
+    ]);
+
+    if (
+      metadataOrder &&
+      paymentIntentOrder &&
+      metadataOrder.id !== paymentIntentOrder.id
+    ) {
+      throw new Error("REFUND_PAYMENT_INTENT_ORDER_MISMATCH");
+    }
+
+    const order = metadataOrder || paymentIntentOrder;
+    if (
+      order?.stripePaymentIntent &&
+      order.stripePaymentIntent !== input.paymentIntentId
+    ) {
+      throw new Error("REFUND_PAYMENT_INTENT_ORDER_MISMATCH");
+    }
+    if (order && order.kind !== "assessment" && order.kind !== "course") {
+      throw new Error("REFUND_ORDER_KIND_INVALID");
+    }
+
+    const existingTombstone =
+      await transaction.stripeRefundTombstone.findUnique({
+        where: { paymentIntentId: input.paymentIntentId }
+      });
+    if (
+      existingTombstone?.orderId &&
+      order &&
+      existingTombstone.orderId !== order.id
+    ) {
+      throw new Error("REFUND_TOMBSTONE_ORDER_MISMATCH");
+    }
+
+    const refundedAt = existingTombstone?.refundedAt || new Date();
+    if (!existingTombstone) {
+      await transaction.stripeRefundTombstone.create({
+        data: {
+          paymentIntentId: input.paymentIntentId,
+          orderId: order?.id || null,
+          firstEventId: input.eventId,
+          refundedAt
+        }
+      });
+    } else if (!existingTombstone.orderId && order) {
+      await transaction.stripeRefundTombstone.update({
+        where: { id: existingTombstone.id },
+        data: { orderId: order.id }
+      });
+    }
 
     if (!order) {
       const stripeEvent = await recordProcessedEvent(transaction, {
@@ -742,80 +977,10 @@ export async function refundOrderByPaymentIntent(input: {
       return { duplicate: false, order: null, stripeEvent };
     }
 
-    const refundedAt = new Date();
-    const revokedOrderIds = [order.id];
-    const refundedOrder = await transaction.order.update({
-      where: { id: order.id },
-      data: {
-        status: "refunded",
-        refundedAt
-      }
-    });
-
-    await transaction.entitlement.updateMany({
-      where: {
-        orderId: order.id
-      },
-      data: {
-        status: "revoked",
-        revokedAt: refundedAt
-      }
-    });
-
-    const refundOwnsAssessmentAccess =
-      Boolean(
-        order.assessment?.stripePaymentIntent &&
-        order.assessment.stripePaymentIntent === order.stripePaymentIntent
-      ) ||
-      Boolean(
-        order.assessment?.stripeSessionId &&
-        order.assessment.stripeSessionId === order.stripeSessionId
-      );
-
-    const revokedEntitlements = await transaction.entitlement.findMany({
-      where: {
-        orderId: { in: revokedOrderIds },
-        assessmentId: { not: null }
-      },
-      select: {
-        assessmentId: true,
-        ownsAssessmentAccess: true
-      }
-    });
-    const assessmentIdsToRevoke = [
-      ...new Set(
-        revokedEntitlements
-          .filter((entitlement) => entitlement.ownsAssessmentAccess)
-          .map((entitlement) => entitlement.assessmentId)
-          .filter((assessmentId): assessmentId is string => {
-            if (!assessmentId) return false;
-            if (
-              assessmentId === order.assessmentId &&
-              !refundOwnsAssessmentAccess
-            ) {
-              return false;
-            }
-            return true;
-          })
-      )
-    ];
-
-    if (assessmentIdsToRevoke.length) {
-      await transaction.assessment.updateMany({
-        where: { id: { in: assessmentIdsToRevoke } },
-        data: { paymentStatus: "refunded" }
-      });
-    }
-
-    await transaction.emailJob.updateMany({
-      where: {
-        orderId: order.id,
-        status: "scheduled"
-      },
-      data: {
-        status: "canceled",
-        cancelledAt: refundedAt
-      }
+    const refundedOrder = await applyRefundToOrder(transaction, {
+      orderId: order.id,
+      paymentIntentId: input.paymentIntentId,
+      refundedAt
     });
 
     const stripeEvent = await recordProcessedEvent(transaction, {

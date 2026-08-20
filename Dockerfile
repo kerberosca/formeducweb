@@ -54,16 +54,19 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/assets ./assets
-COPY --from=builder /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts/ops ./scripts/ops
+COPY --from=builder /app/scripts/lms ./scripts/lms
+COPY --from=builder /app/lib/training.ts ./lib/training.ts
+COPY --from=builder --chown=nextjs:nodejs /app/data/lms-resources ./lms-seed-resources
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder /app/next.config.mjs ./next.config.mjs
 COPY --from=builder /app/proxy.ts ./proxy.ts
 
-RUN mkdir -p /data && chown nextjs:nodejs /data
+RUN mkdir -p /data/lms-resources && chown -R nextjs:nodejs /data
 
 USER nextjs
 
@@ -71,5 +74,6 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV LMS_RESOURCE_ROOT="/data/lms-resources"
 
 CMD ["npx", "next", "start", "-H", "0.0.0.0", "-p", "3000"]

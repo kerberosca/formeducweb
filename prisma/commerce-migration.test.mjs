@@ -45,6 +45,9 @@ describe("low-ticket commerce migration", () => {
       database.exec(
         migrationSql("20260723010000_add_entitlement_access_ownership")
       );
+      database.exec(
+        migrationSql("20260808050000_add_stripe_refund_tombstones")
+      );
 
       const assessment = database
         .prepare(
@@ -72,7 +75,8 @@ describe("low-ticket commerce migration", () => {
           "Entitlement",
           "Subscriber",
           "EmailJob",
-          "StripeEvent"
+          "StripeEvent",
+          "StripeRefundTombstone"
         ])
       );
       expect(entitlementColumns).toContain("ownsAssessmentAccess");

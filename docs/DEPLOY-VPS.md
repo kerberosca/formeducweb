@@ -65,8 +65,8 @@ docker compose --env-file .env.production up -d
 ```
 
 Avant chaque migration, sauvegarder `/data/production.db` hors du volume
-Docker. La procédure détaillée et le contrôle du compte initial Demo839 sont
-décrits dans [`production-low-ticket.md`](./production-low-ticket.md).
+Docker. La procédure détaillée et les contrôles de migration sont décrits dans
+[`production-low-ticket.md`](./production-low-ticket.md).
 
 ## Revenir à l’ancien hébergement (Plesk / WordPress)
 

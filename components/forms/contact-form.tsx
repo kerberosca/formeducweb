@@ -21,7 +21,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { trackAnalyticsEventOnce } from "@/lib/analytics";
 import { getFirstTouchAttribution } from "@/lib/attribution";
-import { contactReasons } from "@/lib/content";
+import {
+  contactReasons,
+  defaultContactReason,
+  isContactReason
+} from "@/lib/contact-options";
 import { contactFormSchema, type ContactFormInput } from "@/lib/schemas";
 
 export function ContactForm({ defaultReason }: { defaultReason?: string }) {
@@ -36,11 +40,11 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
       company: "",
       email: "",
       phone: "",
-      reason:
-        defaultReason && contactReasons.includes(defaultReason)
-          ? defaultReason
-          : contactReasons[0],
+      reason: isContactReason(defaultReason)
+        ? defaultReason
+        : defaultContactReason,
       message: "",
+      website: "",
       consentMarketing: false
     }
   });
@@ -63,7 +67,6 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
 
       const payload = (await response.json()) as {
         error?: string;
-        contactRequestId?: string;
       };
 
       if (!response.ok) {
@@ -72,15 +75,11 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
         );
       }
 
-      trackAnalyticsEventOnce(
-        "generate_lead",
-        payload.contactRequestId || `contact-${Date.now()}`,
-        {
-          lead_type: "contact",
-          reason: values.reason,
-          ...getFirstTouchAttribution()
-        }
-      );
+      trackAnalyticsEventOnce("generate_lead", `contact-${Date.now()}`, {
+        lead_type: "contact",
+        reason: values.reason,
+        ...getFirstTouchAttribution()
+      });
       toast.success("Message envoyé. On vous revient rapidement.");
       form.reset();
       router.push("/merci?source=contact");
@@ -97,10 +96,10 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Parlons de votre projet</CardTitle>
+        <CardTitle>Parlez-nous de votre projet</CardTitle>
         <CardDescription>
-          Décrivez votre besoin et on vous répondra avec une prochaine étape
-          réaliste.
+          Quelques détails suffisent. Nous vous répondrons avec une prochaine
+          étape réaliste et adaptée à votre budget.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -110,6 +109,7 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
               <Label htmlFor="name">Nom</Label>
               <Input
                 id="name"
+                maxLength={120}
                 aria-invalid={Boolean(form.formState.errors.name)}
                 aria-describedby={
                   form.formState.errors.name ? "name-error" : undefined
@@ -128,9 +128,10 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="company">Entreprise</Label>
+              <Label htmlFor="company">Entreprise (facultatif)</Label>
               <Input
                 id="company"
+                maxLength={160}
                 aria-invalid={Boolean(form.formState.errors.company)}
                 aria-describedby={
                   form.formState.errors.company ? "company-error" : undefined
@@ -153,6 +154,7 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
               <Input
                 id="email"
                 type="email"
+                maxLength={254}
                 aria-invalid={Boolean(form.formState.errors.email)}
                 aria-describedby={
                   form.formState.errors.email ? "email-error" : undefined
@@ -172,7 +174,25 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
 
             <div className="space-y-2">
               <Label htmlFor="phone">Téléphone</Label>
-              <Input id="phone" type="tel" {...form.register("phone")} />
+              <Input
+                id="phone"
+                type="tel"
+                maxLength={40}
+                aria-invalid={Boolean(form.formState.errors.phone)}
+                aria-describedby={
+                  form.formState.errors.phone ? "phone-error" : undefined
+                }
+                {...form.register("phone")}
+              />
+              {form.formState.errors.phone ? (
+                <p
+                  id="phone-error"
+                  role="alert"
+                  className="text-sm text-destructive"
+                >
+                  {form.formState.errors.phone.message}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -208,11 +228,12 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
             <Label htmlFor="message">Votre besoin</Label>
             <Textarea
               id="message"
+              maxLength={4000}
               aria-invalid={Boolean(form.formState.errors.message)}
               aria-describedby={
                 form.formState.errors.message ? "message-error" : undefined
               }
-              placeholder="Décrivez brièvement votre contexte, votre site actuel ou votre besoin d'accompagnement."
+              placeholder="Décrivez votre contexte, ce qui vous ralentit aujourd’hui et le résultat que vous aimeriez obtenir."
               {...form.register("message")}
             />
             {form.formState.errors.message ? (
@@ -224,6 +245,19 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
                 {form.formState.errors.message.message}
               </p>
             ) : null}
+          </div>
+
+          <div
+            aria-hidden="true"
+            className="absolute -left-[10000px] h-px w-px overflow-hidden"
+          >
+            <Label htmlFor="website">Votre site Web</Label>
+            <Input
+              id="website"
+              tabIndex={-1}
+              autoComplete="off"
+              {...form.register("website")}
+            />
           </div>
 
           <div className="flex items-start gap-3 rounded-2xl border border-border/80 bg-muted/40 p-4">
@@ -262,8 +296,8 @@ export function ContactForm({ defaultReason }: { defaultReason?: string }) {
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-muted-foreground">
-              Aucune promesse de conformité n’est faite ici. On parle de
-              diagnostic, d’alignement et d’implantation. Consultez notre{" "}
+              Vos renseignements servent à répondre à votre demande. Consultez
+              notre{" "}
               <Link
                 href="/politique-confidentialite"
                 className="underline underline-offset-4"

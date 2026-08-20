@@ -1,4 +1,4 @@
-const HOSTED_DEMO_PATHS = ["/Demo839web", "/demoOnatchiway"];
+const HOSTED_DEMO_PATHS = ["/demoOnatchiway"];
 
 export function isHostedDemoPath(pathname: string) {
   return HOSTED_DEMO_PATHS.some(

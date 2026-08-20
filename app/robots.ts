@@ -16,6 +16,13 @@ export default function robots(): MetadataRoute.Robots {
           "/cybersecurite/rapport/",
           "/intelligence-artificielle/rapport/",
           "/loi-25/wizard/impression",
+          "/formations/*/apprendre",
+          "/mon-espace",
+          "/mon-espace/",
+          "/administration",
+          "/administration/",
+          "/connexion",
+          "/certificats/verifier/",
           "/merci"
         ]
       }

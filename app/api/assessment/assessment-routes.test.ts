@@ -7,6 +7,8 @@ import { POST as createCheckout } from "@/app/api/stripe/create-checkout-session
 import { db } from "@/lib/db";
 import { getWizardData } from "@/lib/wizard";
 
+const originalTrustedProxyHeaders = process.env.TRUSTED_PROXY_HEADERS;
+
 function request(path: string, body: unknown, ip: string, method = "POST") {
   return new Request(`http://localhost${path}`, {
     method,
@@ -26,10 +28,16 @@ function completeAnswers() {
 
 describe("assessment API routes", () => {
   beforeAll(async () => {
+    process.env.TRUSTED_PROXY_HEADERS = "1";
     await db.assessment.deleteMany();
   });
 
   afterAll(async () => {
+    if (originalTrustedProxyHeaders === undefined) {
+      delete process.env.TRUSTED_PROXY_HEADERS;
+    } else {
+      process.env.TRUSTED_PROXY_HEADERS = originalTrustedProxyHeaders;
+    }
     await db.$disconnect();
   });
 

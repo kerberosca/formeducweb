@@ -33,16 +33,12 @@ Ne jamais réutiliser une clé Stripe comme secret de désabonnement ou de tâch
    docker compose --env-file .env.production --profile ops run --rm formeducweb_migrate npx prisma migrate status
    ```
 
-5. Porter une attention particulière à
-   `20260722000000_add_demo839`. Cette migration antérieure crée un compte
-   administrateur initial. Si elle n’est pas déjà appliquée et sécurisée sur le
-   VPS, la commande refuse de poursuivre par défaut. Après validation de la
-   sauvegarde, définir temporairement
-   `DEMO839_PENDING_MIGRATION_ACTION=deactivate_seeded_admin`. Le lanceur
-   appliquera alors les migrations et désactivera le compte initial avant que
-   l’application soit démarrée. Le même contrôle bloque aussi un ancien
-   déploiement où cette migration serait déjà enregistrée, mais où le compte et
-   son secret initiaux seraient encore actifs.
+5. Vérifier que les migrations historiques comprennent
+   `20260722000000_add_demo839` et que la migration terminale
+   `20260820010000_drop_demo839` est en attente. Une base fraîche rejoue
+   l’historique complet, puis supprime immédiatement les tables Demo839. Sur une
+   base existante, la migration terminale retire ces mêmes tables après la
+   sauvegarde prémaintenance vérifiée.
 6. Tester la restauration de la sauvegarde.
 
 ## 3. Appliquer explicitement
@@ -54,10 +50,9 @@ docker compose --env-file .env.production --profile ops run --rm formeducweb_mig
 docker compose --env-file .env.production up -d
 ```
 
-Après une première migration sécurisée, retirer
-`DEMO839_PENDING_MIGRATION_ACTION` du fichier d’environnement. Si l’administration
-Demo839 doit être utilisée, provisionner ensuite un compte distinct avec un secret
-fort selon son processus d’exploitation; ne pas réactiver le compte initial.
+Demo839 est désormais exploité indépendamment sur `https://escadron839.ca`.
+FormeducWeb ne doit plus contenir sa configuration d’administration ni ses
+données actives.
 
 L’image contient `assets/kit-templates`; les téléchargements DOCX et XLSX ne
 dépendent donc pas du poste de développement. Le service

@@ -40,7 +40,7 @@ export default async function ExamplePage({ params }: ExamplePageProps) {
   const samplePdfPath = `/exemples/kit-${diagnostic.slug}-exemple.pdf`;
 
   return (
-    <main className="container py-14 md:py-20">
+    <section className="container py-14 md:py-20">
       <div className="mx-auto max-w-5xl">
         <Button asChild variant="link">
           <Link href={diagnostic.path}>
@@ -110,6 +110,6 @@ export default async function ExamplePage({ params }: ExamplePageProps) {
           7 jours, avec révocation de l’accès.
         </p>
       </div>
-    </main>
+    </section>
   );
 }

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 import {
   attachCheckoutSession,
-  findAssessmentById,
   findAssessmentByToken
 } from "@/lib/assessment-store";
 import {
@@ -60,9 +59,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const assessment = parsed.data.assessmentId
-      ? await findAssessmentById(parsed.data.assessmentId)
-      : await findAssessmentByToken(parsed.data.accessToken as string);
+    if (!parsed.data.accessToken) {
+      return NextResponse.json(
+        {
+          error: "La demande de paiement est invalide."
+        },
+        { status: 400 }
+      );
+    }
+
+    const assessment = await findAssessmentByToken(parsed.data.accessToken);
 
     if (!assessment) {
       return NextResponse.json(
@@ -74,8 +80,8 @@ export async function POST(request: Request) {
     }
 
     if (
-      parsed.data.accessToken &&
-      assessment.accessToken !== parsed.data.accessToken
+      parsed.data.assessmentId &&
+      assessment.id !== parsed.data.assessmentId
     ) {
       return NextResponse.json(
         {

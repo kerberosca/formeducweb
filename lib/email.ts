@@ -1,5 +1,6 @@
 import type { Assessment } from "@prisma/client";
 
+import { canSendAuthEmail, getAuthSmtpConfiguration } from "@/lib/auth-config";
 import { getDiagnosticConfig, type AssessmentType } from "@/lib/diagnostics";
 import { areExternalServicesDisabled } from "@/lib/external-services";
 import { getBaseUrl } from "@/lib/payments";
@@ -174,7 +175,44 @@ async function sendMail(options: MailOptions) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
 
-  if (areExternalServicesDisabled() || !apiKey || !from) {
+  if (areExternalServicesDisabled()) {
+    const smtp = getAuthSmtpConfiguration();
+
+    if (canSendAuthEmail(smtp)) {
+      const { createTransport } = await import("nodemailer");
+      const transport = createTransport({
+        host: smtp.host,
+        port: smtp.port!,
+        secure: smtp.secure,
+        auth:
+          smtp.user && smtp.pass
+            ? { user: smtp.user, pass: smtp.pass }
+            : undefined,
+        disableFileAccess: true,
+        disableUrlAccess: true
+      });
+
+      await transport.sendMail({
+        from: smtp.from,
+        to: options.to,
+        subject: options.subject,
+        html: options.html,
+        headers: options.idempotencyKey
+          ? { "X-FormeducWeb-Idempotency-Key": options.idempotencyKey }
+          : undefined
+      });
+
+      return { skipped: false, transport: "local-smtp" as const };
+    }
+
+    console.log("Email MVP fallback", {
+      to: maskEmail(options.to),
+      subject: options.subject
+    });
+    return { skipped: true };
+  }
+
+  if (!apiKey || !from) {
     console.log("Email MVP fallback", {
       to: maskEmail(options.to),
       subject: options.subject
@@ -237,6 +275,30 @@ export async function sendCommercialEmail(options: CommercialMailOptions) {
           communications de ForméducWeb.
           <a href="${escapeHtml(unsubscribeUrl)}">Se désabonner</a>.
         </p>
+      `
+    )
+  });
+}
+
+export async function sendCourseAccessEmail(payload: {
+  email: string;
+  courseTitle: string;
+  orderId: string;
+}) {
+  const dashboardUrl = toAbsoluteUrl("/mon-espace");
+
+  return sendMail({
+    to: payload.email,
+    subject: `Paiement confirmé — ${payload.courseTitle}`,
+    idempotencyKey: `course-access-${payload.orderId}`,
+    html: renderEmailLayout(
+      "Votre formation est maintenant accessible",
+      `
+        <p>Bonjour,</p>
+        <p>Votre paiement pour <strong>${escapeHtml(payload.courseTitle)}</strong> a été confirmé.</p>
+        <p>La formation, votre progression et les ressources protégées sont disponibles dans votre espace.</p>
+        ${renderPrimaryCta("Ouvrir mon espace", dashboardUrl)}
+        <p>Conservez ce courriel comme confirmation de votre achat.</p>
       `
     )
   });

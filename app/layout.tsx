@@ -34,9 +34,22 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: siteName,
+  description: siteConfig.description,
   url: siteUrl,
   logo: logoUrl,
   email: siteConfig.email,
+  areaServed: {
+    "@type": "AdministrativeArea",
+    name: "Québec"
+  },
+  knowsAbout: [
+    "Formation numérique",
+    "Création de sites Web",
+    "Automatisation des processus",
+    "Soutien informatique",
+    "Cybersécurité",
+    "Intelligence artificielle"
+  ],
   address: {
     "@type": "PostalAddress",
     streetAddress: "101-5121 av. Chauveau Ouest",
@@ -52,16 +65,33 @@ const websiteSchema = {
   "@type": "WebSite",
   name: siteName,
   url: siteUrl,
-  inLanguage: "fr-CA"
+  inLanguage: "fr-CA",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${getAbsoluteUrl("/recherche")}?q={search_term_string}`
+    },
+    "query-input": "required name=search_term_string"
+  }
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: siteName,
+    default: "ForméducWeb — Le numérique utile, à votre portée",
     template: `%s | ${siteName}`
   },
   description: siteConfig.description,
+  keywords: [
+    "formation numérique Québec",
+    "création site web PME",
+    "automatisation entreprise",
+    "formation intelligence artificielle",
+    "soutien informatique PME",
+    "Excel et Word",
+    "cybersécurité PME"
+  ],
   openGraph: {
     title: siteName,
     description: siteConfig.description,
@@ -74,7 +104,7 @@ export const metadata: Metadata = {
         url: socialImageUrl,
         width: 1200,
         height: 630,
-        alt: `${siteName} — diagnostics pour PME et OBNL`
+        alt: `${siteName} — formation, solutions numériques et autonomie`
       }
     ]
   },

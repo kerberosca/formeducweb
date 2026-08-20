@@ -43,6 +43,68 @@ model Assessment {
   @@index([stripeSessionId])
 }
 
+model User {
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  role          String          @default("learner")
+  isActive      Boolean         @default(true)
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  entitlements  Entitlement[]
+  enrollments   Enrollment[]
+  quizAttempts  QuizAttempt[]
+  certificates  Certificate[]
+  auditLogs     AdminAuditLog[] @relation("AdminAuditActor")
+
+  @@index([role, isActive])
+  @@index([createdAt])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expires])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@index([expires])
+}
+
 model ContactRequest {
   id               String    @id @default(cuid())
   createdAt        DateTime  @default(now())
@@ -69,42 +131,52 @@ model ContactRequest {
 }
 
 model Order {
-  id                  String        @id @default(cuid())
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
-  publicToken         String        @unique
-  email               String
-  contactName         String?
-  companyName         String?
-  productCode         String
-  amountCents         Int
-  currency            String        @default("cad")
-  status              String        @default("pending")
-  assessmentId        String?
-  assessment          Assessment?   @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
-  stripeSessionId     String?       @unique
-  stripePaymentIntent String?       @unique
-  paidAt              DateTime?
-  refundedAt          DateTime?
-  accessExpiresAt     DateTime?
-  upgradeFromOrderId  String?
-  upgradeFromOrder    Order?        @relation("OrderUpgrades", fields: [upgradeFromOrderId], references: [id], onDelete: SetNull)
-  upgrades            Order[]       @relation("OrderUpgrades")
-  utmSource           String?
-  utmMedium           String?
-  utmCampaign         String?
-  utmContent          String?
-  utmTerm             String?
-  landingPath         String?
-  referrerHost        String?
-  firstSeenAt         DateTime?
-  entitlements        Entitlement[]
-  emailJobs           EmailJob[]
-  stripeEvents        StripeEvent[]
+  id                     String                  @id @default(cuid())
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  publicToken            String                  @unique
+  email                  String
+  contactName            String?
+  companyName            String?
+  productCode            String
+  amountCents            Int
+  currency               String                  @default("cad")
+  status                 String                  @default("pending")
+  kind                   String                  @default("assessment")
+  userId                 String?
+  user                   User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  courseId               String?
+  course                 Course?                 @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  assessmentId           String?
+  assessment             Assessment?             @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  stripeSessionId        String?                 @unique
+  stripePaymentIntent    String?                 @unique
+  paidAt                 DateTime?
+  refundedAt             DateTime?
+  accessExpiresAt        DateTime?
+  upgradeFromOrderId     String?
+  upgradeFromOrder       Order?                  @relation("OrderUpgrades", fields: [upgradeFromOrderId], references: [id], onDelete: SetNull)
+  upgrades               Order[]                 @relation("OrderUpgrades")
+  utmSource              String?
+  utmMedium              String?
+  utmCampaign            String?
+  utmContent             String?
+  utmTerm                String?
+  landingPath            String?
+  referrerHost           String?
+  firstSeenAt            DateTime?
+  entitlements           Entitlement[]
+  emailJobs              EmailJob[]
+  stripeEvents           StripeEvent[]
+  stripeRefundTombstones StripeRefundTombstone[]
+  enrollment             Enrollment?
 
   @@index([email])
   @@index([productCode])
   @@index([status])
+  @@index([kind])
+  @@index([userId])
+  @@index([courseId])
   @@index([assessmentId])
   @@index([upgradeFromOrderId])
   @@index([createdAt])
@@ -118,20 +190,287 @@ model Entitlement {
   order                Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
   assessmentId         String?
   assessment           Assessment? @relation(fields: [assessmentId], references: [id], onDelete: SetNull)
+  userId               String?
+  user                 User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  courseId             String?
+  course               Course?     @relation(fields: [courseId], references: [id], onDelete: SetNull)
   ownerEmail           String
-  assessmentType       String
+  resourceType         String      @default("assessment")
+  resourceKey          String      @default("")
+  assessmentType       String?
   status               String      @default("active")
   accessToken          String      @unique
-  ownsAssessmentAccess Boolean     @default(true)
+  ownsAssessmentAccess Boolean?
   expiresAt            DateTime
   consumedAt           DateTime?
   revokedAt            DateTime?
 
-  @@unique([orderId, assessmentType])
+  @@unique([orderId, resourceType, resourceKey])
   @@index([ownerEmail])
   @@index([assessmentId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([resourceType, resourceKey])
   @@index([status])
   @@index([expiresAt])
+}
+
+model Course {
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  slug            String           @unique
+  title           String
+  shortTitle      String
+  description     String
+  theme           String
+  level           String
+  offer           String
+  priceCents      Int?
+  currency        String           @default("cad")
+  durationMinutes Int
+  durationLabel   String
+  format          String
+  audience        String
+  outcomes        Json
+  prerequisites   Json
+  status          String           @default("draft")
+  isPurchasable   Boolean          @default(false)
+  featured        Boolean          @default(false)
+  contentVersion  Int              @default(1)
+  publishedAt     DateTime?
+  archivedAt      DateTime?
+  modules         CourseModule[]
+  resources       CourseResource[]
+  enrollments     Enrollment[]
+  entitlements    Entitlement[]
+  orders          Order[]
+  quizAttempts    QuizAttempt[]
+  certificates    Certificate[]
+
+  @@index([status, featured])
+  @@index([theme])
+  @@index([offer])
+}
+
+model CourseModule {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  position    Int
+  isRequired  Boolean   @default(true)
+  archivedAt  DateTime?
+  lessons     Lesson[]
+
+  @@unique([courseId, position])
+  @@index([courseId, archivedAt])
+}
+
+model Lesson {
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  moduleId        String
+  module          CourseModule     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  slug            String
+  title           String
+  summary         String
+  durationMinutes Int
+  position        Int
+  content         Json
+  contentVersion  Int              @default(1)
+  status          String           @default("draft")
+  isRequired      Boolean          @default(true)
+  archivedAt      DateTime?
+  resources       CourseResource[]
+  progress        LessonProgress[]
+  quiz            Quiz?
+
+  @@unique([moduleId, slug])
+  @@unique([moduleId, position])
+  @@index([moduleId, status])
+}
+
+model CourseResource {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonId    String?
+  lesson      Lesson?   @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  kind        String    @default("file")
+  fileName    String?
+  storageKey  String?   @unique
+  mimeType    String?
+  sizeBytes   Int?
+  externalUrl String?
+  isProtected Boolean   @default(true)
+  archivedAt  DateTime?
+
+  @@index([courseId, archivedAt])
+  @@index([lessonId])
+}
+
+model Enrollment {
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId        String
+  course          Course           @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  orderId         String?          @unique
+  order           Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  status          String           @default("active")
+  source          String           @default("free")
+  progressPercent Int              @default(0)
+  lastLessonId    String?
+  enrolledAt      DateTime         @default(now())
+  completedAt     DateTime?
+  revokedAt       DateTime?
+  progress        LessonProgress[]
+  quizAttempts    QuizAttempt[]
+  certificate     Certificate?
+
+  @@unique([userId, courseId])
+  @@index([courseId, status])
+  @@index([userId, status])
+}
+
+model LessonProgress {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Restrict)
+  status       String     @default("in_progress")
+  lastPosition Int        @default(0)
+  startedAt    DateTime   @default(now())
+  completedAt  DateTime?
+
+  @@unique([enrollmentId, lessonId])
+  @@index([lessonId])
+}
+
+model Quiz {
+  id           String         @id @default(cuid())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lessonId     String         @unique
+  lesson       Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  passingScore Int            @default(80)
+  maxAttempts  Int?
+  status       String         @default("draft")
+  questions    QuizQuestion[]
+  attempts     QuizAttempt[]
+
+  @@index([status])
+}
+
+model QuizQuestion {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  quizId      String
+  quiz        Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  prompt      String
+  explanation String?
+  position    Int
+  choices     QuizChoice[]
+
+  @@unique([quizId, position])
+}
+
+model QuizChoice {
+  id         String       @id @default(cuid())
+  questionId String
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  label      String
+  isCorrect  Boolean      @default(false)
+  position   Int
+
+  @@unique([questionId, position])
+}
+
+model QuizAttempt {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  quizId       String
+  quiz         Quiz       @relation(fields: [quizId], references: [id], onDelete: Restrict)
+  score        Int
+  passed       Boolean
+  answers      Json
+  submittedAt  DateTime   @default(now())
+
+  @@index([enrollmentId, quizId])
+  @@index([userId, createdAt])
+}
+
+model Certificate {
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  enrollmentId String     @unique
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Restrict)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  token        String     @unique
+  issuedAt     DateTime   @default(now())
+  revokedAt    DateTime?
+  pdfHash      String?
+
+  @@index([userId, issuedAt])
+  @@index([courseId, issuedAt])
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  actorId    String?
+  actor      User?    @relation("AdminAuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  before     Json?
+  after      Json?
+  ipHash     String?
+
+  @@index([actorId, createdAt])
+  @@index([entityType, entityId])
+}
+
+model AuthRateLimit {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  scope         String
+  keyHash       String
+  attempts      Int       @default(0)
+  windowStarted DateTime  @default(now())
+  lastAttemptAt DateTime  @default(now())
+  blockedUntil  DateTime?
+
+  @@unique([scope, keyHash])
+  @@index([blockedUntil])
 }
 
 model Subscriber {
@@ -184,4 +523,16 @@ model StripeEvent {
 
   @@index([orderId])
   @@index([processedAt])
+}
+
+model StripeRefundTombstone {
+  id              String   @id @default(cuid())
+  paymentIntentId String   @unique
+  orderId         String?
+  order           Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  firstEventId    String
+  refundedAt      DateTime @default(now())
+
+  @@index([orderId])
+  @@index([refundedAt])
 }

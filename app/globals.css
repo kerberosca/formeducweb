@@ -4,20 +4,20 @@
 
 @layer base {
   :root {
-    --background: 220 45% 98%;
-    --foreground: 216 40% 14%;
+    --background: 214 45% 98%;
+    --foreground: 214 58% 13%;
     --card: 0 0% 100%;
     --card-foreground: 216 40% 14%;
     --popover: 0 0% 100%;
     --popover-foreground: 216 40% 14%;
-    --primary: 212 82% 46%;
+    --primary: 211 82% 46%;
     --primary-foreground: 0 0% 100%;
     --secondary: 215 42% 95%;
     --secondary-foreground: 216 35% 21%;
     --muted: 214 28% 93%;
     --muted-foreground: 215 16% 41%;
-    --accent: 31 97% 92%;
-    --accent-foreground: 28 90% 36%;
+    --accent: 31 100% 93%;
+    --accent-foreground: 27 92% 35%;
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 98%;
     --border: 215 25% 84%;
@@ -38,19 +38,20 @@
     @apply min-h-screen bg-background font-body text-foreground antialiased;
     background-image:
       radial-gradient(
-        circle at top left,
-        rgba(84, 151, 223, 0.22),
-        transparent 30%
+        circle at 8% -4%,
+        rgba(84, 151, 223, 0.19),
+        transparent 26rem
       ),
       radial-gradient(
-        circle at right 20%,
-        rgba(253, 132, 23, 0.14),
-        transparent 24%
+        circle at 96% 12%,
+        rgba(253, 132, 23, 0.12),
+        transparent 24rem
       ),
       linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.95),
-        rgba(246, 249, 255, 0.98)
+        rgba(255, 255, 255, 0.97),
+        rgba(246, 250, 255, 0.98) 42%,
+        rgba(255, 255, 255, 1)
       );
   }
 
@@ -89,6 +90,47 @@
 
   .eyebrow {
     @apply text-sm font-semibold uppercase tracking-[0.25em] text-primary/70;
+  }
+
+  .gradient-text {
+    background: linear-gradient(105deg, #0d4f9a 5%, #1571d4 58%, #5497df);
+    background-clip: text;
+    color: transparent;
+  }
+
+  .dot-pattern {
+    background-image: radial-gradient(
+      rgba(21, 113, 212, 0.2) 1.2px,
+      transparent 1.2px
+    );
+    background-size: 18px 18px;
+  }
+
+  .portal-panel {
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.98),
+        rgba(238, 246, 255, 0.94)
+      ),
+      radial-gradient(
+        circle at 80% 10%,
+        rgba(253, 132, 23, 0.16),
+        transparent 30%
+      );
+    box-shadow:
+      0 28px 80px rgba(13, 79, 154, 0.14),
+      0 4px 18px rgba(13, 47, 93, 0.06);
+  }
+
+  .ink-panel {
+    background:
+      radial-gradient(
+        circle at 85% 0%,
+        rgba(84, 151, 223, 0.3),
+        transparent 34%
+      ),
+      linear-gradient(135deg, #092f5d, #0d4f9a 68%, #1264bb);
   }
 }
 

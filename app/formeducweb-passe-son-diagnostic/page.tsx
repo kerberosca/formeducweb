@@ -49,7 +49,7 @@ const actions = [
 
 export default function SelfDiagnosticCasePage() {
   return (
-    <main className="container py-14 md:py-20">
+    <section className="container py-14 md:py-20">
       <div className="mx-auto max-w-5xl">
         <Badge>Preuve interne</Badge>
         <h1 className="mt-6 max-w-4xl font-heading text-4xl font-semibold tracking-tight md:text-6xl">
@@ -128,6 +128,6 @@ export default function SelfDiagnosticCasePage() {
           </Button>
         </div>
       </div>
-    </main>
+    </section>
   );
 }

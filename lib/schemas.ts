@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { contactReasons } from "@/lib/contact-options";
 import { assessmentTypes } from "@/lib/diagnostics";
 
 const optionalAttributionText = (maxLength: number) =>
@@ -86,28 +87,55 @@ export const tokenSearchParamSchema = z.object({
 });
 
 export const contactFormSchema = z.object({
-  name: z.string().min(2, "Veuillez entrer votre nom."),
-  company: z.string().min(2, "Veuillez entrer le nom de votre entreprise."),
+  name: z
+    .string()
+    .trim()
+    .min(2, "Veuillez entrer votre nom.")
+    .max(120, "Le nom est trop long."),
+  company: z
+    .string()
+    .trim()
+    .max(160, "Le nom de l’entreprise est trop long.")
+    .optional()
+    .default(""),
   email: z
     .string()
+    .trim()
+    .max(254, "Le courriel est trop long.")
     .email("Veuillez entrer un courriel valide.")
-    .transform((value) => value.trim().toLowerCase()),
-  phone: z.string().optional().default(""),
-  reason: z.string().min(2, "Veuillez sélectionner un motif."),
+    .transform((value) => value.toLowerCase()),
+  phone: z
+    .string()
+    .trim()
+    .max(40, "Le numéro de téléphone est trop long.")
+    .optional()
+    .default(""),
+  reason: z.enum(contactReasons, {
+    errorMap: () => ({ message: "Veuillez sélectionner un motif valide." })
+  }),
   message: z
     .string()
-    .min(10, "Veuillez préciser votre besoin en quelques mots."),
+    .trim()
+    .min(10, "Veuillez préciser votre besoin en quelques mots.")
+    .max(4000, "Le message est trop long."),
+  website: z.string().trim().max(200).optional().default(""),
   consentMarketing: z.boolean().default(false),
   attribution: attributionSchema.optional()
 });
 
 export const privacyRequestSchema = z.object({
-  fullName: z.string().min(2, "Veuillez entrer votre nom."),
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Veuillez entrer votre nom.")
+    .max(120, "Le nom est trop long."),
   email: z
     .string()
+    .trim()
+    .max(254, "Le courriel est trop long.")
     .email("Veuillez entrer un courriel valide.")
-    .transform((value) => value.trim().toLowerCase()),
-  companyName: z.string().optional().default(""),
+    .transform((value) => value.toLowerCase()),
+  companyName: z.string().trim().max(160).optional().default(""),
   requestType: z.enum(
     ["access", "rectification", "deletion", "withdrawal", "question"],
     {
@@ -118,7 +146,10 @@ export const privacyRequestSchema = z.object({
   ),
   message: z
     .string()
+    .trim()
     .min(20, "Veuillez ajouter quelques détails pour traiter votre demande.")
+    .max(4000, "Le message est trop long."),
+  website: z.string().trim().max(200).optional().default("")
 });
 
 export type LeadCaptureInput = z.infer<typeof leadCaptureSchema>;

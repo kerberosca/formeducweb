@@ -1,6 +1,7 @@
-﻿import type { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { areTrustedProxyHeadersEnabled } from "@/lib/client-ip";
 import {
   DEMO_ONATCHIWAY_COOKIE_NAME,
   DEMO_ONATCHIWAY_PATH,
@@ -8,6 +9,9 @@ import {
 } from "@/lib/demo-onatchiway-session";
 
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
+const PUBLIC_IMAGE_PATH = /\.(?:avif|gif|ico|jpe?g|png|svg|webp)$/i;
+const DEMO_ONATCHIWAY_ACCESS_PATH = `${DEMO_ONATCHIWAY_PATH}/acces`;
+const DEMO_ONATCHIWAY_PUBLIC_PREVIEW = `${DEMO_ONATCHIWAY_PATH}/apercu-prive.png`;
 
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Frame-Options": "DENY",
@@ -24,12 +28,12 @@ const NO_STORE_HEADERS: Record<string, string> = {
   Expires: "0"
 };
 
-const DEMO_839_PATH = "/Demo839web";
-const DEMO_ONATCHIWAY_ACCESS_PATH = `${DEMO_ONATCHIWAY_PATH}/acces`;
-const DEMO_ONATCHIWAY_PUBLIC_PREVIEW = `${DEMO_ONATCHIWAY_PATH}/apercu-prive.png`;
-
 function isSensitivePath(pathname: string) {
   return (
+    pathname.startsWith("/api/auth") ||
+    pathname === "/connexion" ||
+    pathname.startsWith("/mon-espace") ||
+    pathname.startsWith("/administration") ||
     pathname.startsWith("/api/assessment") ||
     pathname.startsWith("/api/contact") ||
     pathname.startsWith("/api/privacy-request") ||
@@ -43,7 +47,9 @@ function isSensitivePath(pathname: string) {
 }
 
 function getRequestProtocol(request: NextRequest) {
-  const forwardedProto = request.headers.get("x-forwarded-proto");
+  const forwardedProto = areTrustedProxyHeadersEnabled()
+    ? request.headers.get("x-forwarded-proto")
+    : null;
 
   if (forwardedProto) {
     return forwardedProto.split(",")[0]?.trim().toLowerCase() || "http";
@@ -53,7 +59,9 @@ function getRequestProtocol(request: NextRequest) {
 }
 
 function isLocalHostname(request: NextRequest) {
-  const forwardedHost = request.headers.get("x-forwarded-host");
+  const forwardedHost = areTrustedProxyHeadersEnabled()
+    ? request.headers.get("x-forwarded-host")
+    : null;
   const host =
     forwardedHost || request.headers.get("host") || request.nextUrl.host;
   const hostname =
@@ -61,10 +69,6 @@ function isLocalHostname(request: NextRequest) {
     request.nextUrl.hostname.toLowerCase();
 
   return LOCAL_HOSTNAMES.has(hostname);
-}
-
-function isDemo839Path(pathname: string) {
-  return pathname === DEMO_839_PATH || pathname.startsWith(`${DEMO_839_PATH}/`);
 }
 
 function isDemoOnatchiwayPath(pathname: string) {
@@ -149,14 +153,13 @@ export function proxy(request: NextRequest) {
     return unauthorizedResponse;
   }
 
-  const response = NextResponse.next();
-
-  applySecurityHeaders(response);
-
-  if (isDemo839Path(pathname)) {
-    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-    applyNoStoreHeaders(response);
+  // L'optimiseur Next.js peut récupérer une image locale en HTTP interne.
+  if (PUBLIC_IMAGE_PATH.test(pathname) && isLocalHostname(request)) {
+    return NextResponse.next();
   }
+
+  const response = NextResponse.next();
+  applySecurityHeaders(response);
 
   if (
     pathname.startsWith("/loi-25/rapport/") ||
@@ -170,7 +173,7 @@ export function proxy(request: NextRequest) {
     applyNoStoreHeaders(response);
   }
 
-  if (request.nextUrl.protocol === "https:") {
+  if (getRequestProtocol(request) === "https") {
     response.headers.set(
       "Strict-Transport-Security",
       "max-age=31536000; includeSubDomains; preload"
