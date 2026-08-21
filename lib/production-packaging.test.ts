@@ -33,6 +33,7 @@ describe("production low-ticket packaging", () => {
     expect(dockerignore).toContain("!.env.production.example");
     expect(nextConfig).toContain("serverActions");
     expect(nextConfig).toContain('bodySizeLimit: "26mb"');
+    expect(nextConfig).toContain("unoptimized: true");
   });
 
   it("fournit une surcouche Docker locale isolée des services externes", () => {
