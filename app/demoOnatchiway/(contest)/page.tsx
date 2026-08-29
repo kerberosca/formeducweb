@@ -4,7 +4,7 @@ import {
   contestConfig,
   getContestState,
   officialRules,
-  prizeTiers,
+  prizeTiers
 } from "../contest";
 import { Countdown, TicketButton } from "../interactive";
 import { PartnerBanner } from "../partner-banner";
@@ -12,22 +12,23 @@ import { PartnerBanner } from "../partner-banner";
 const currency = new Intl.NumberFormat("fr-CA", {
   style: "currency",
   currency: "CAD",
-  minimumFractionDigits: 2,
+  minimumFractionDigits: 2
 });
 
 const number = new Intl.NumberFormat("fr-CA");
 
 export default function Home() {
   const contest = getContestState(contestConfig.soldTickets);
+  const maxPrizeValue = prizeTiers.at(-1)?.cumulativeValue ?? 0;
   const ticketButtonProps = {
     salesClose: contestConfig.salesClose,
-    ticketingUrl: contestConfig.ticketingUrl,
+    ticketingUrl: contestConfig.ticketingUrl
   };
   const legalIds = [
     contestConfig.racjLicense
       ? `Licence RACJ : ${contestConfig.racjLicense}`
       : "",
-    contestConfig.neq ? `NEQ : ${contestConfig.neq}` : "",
+    contestConfig.neq ? `NEQ : ${contestConfig.neq}` : ""
   ].filter(Boolean);
 
   return (
@@ -92,15 +93,17 @@ export default function Home() {
             </div>
 
             <p className="collaboration">
-              En collaboration avec{" "}
+              Partenaire officiel :{" "}
               <strong>{contestConfig.collaborator}</strong>
             </p>
           </div>
 
           <div className="hero__side">
             <aside className="hero-card" aria-label="Résumé du tirage">
-              <p className="hero-card__kicker">Gros lot potentiel</p>
-              <p className="hero-card__value">8 168,20 $</p>
+              <p className="hero-card__kicker">Jusqu'à</p>
+              <p className="hero-card__value">
+                {currency.format(maxPrizeValue)}
+              </p>
               <p className="hero-card__note">en équipements · taxes incluses</p>
               <div className="hero-card__rule" />
               <div className="hero-card__stats">
@@ -202,13 +205,11 @@ export default function Home() {
                 {prizeTiers.slice(1).map((tier) => (
                   <span
                     className={`progress-track__marker${
-                      contest.soldTickets >= tier.minTickets
-                        ? " is-reached"
-                        : ""
+                      contest.soldTickets >= tier.minTickets ? "is-reached" : ""
                     }`}
                     key={tier.level}
                     style={{
-                      left: `${(tier.minTickets / contestConfig.maxTickets) * 100}%`,
+                      left: `${(tier.minTickets / contestConfig.maxTickets) * 100}%`
                     }}
                     title={`Palier ${tier.level} à ${number.format(tier.minTickets)} billets`}
                   />
@@ -248,8 +249,8 @@ export default function Home() {
                 const current = contest.currentTier.level === tier.level;
                 return (
                   <article
-                    className={`prize-card${unlocked ? " is-unlocked" : ""}${
-                      current ? " is-current" : ""
+                    className={`prize-card${unlocked ? "is-unlocked" : ""}${
+                      current ? "is-current" : ""
                     }`}
                     key={tier.level}
                   >
@@ -266,7 +267,10 @@ export default function Home() {
                             : `${number.format(tier.minTickets)} billets`}
                       </div>
                       <h3>{tier.shortName}</h3>
-                      <p>{tier.name}</p>
+                      <p className="prize-card__product">{tier.name}</p>
+                      <p className="prize-card__description">
+                        {tier.description}
+                      </p>
                       <div className="prize-card__values">
                         <span>
                           Valeur ajoutée{" "}
@@ -280,6 +284,13 @@ export default function Home() {
                         </span>
                       </div>
                     </div>
+                    <figure className="prize-card__visual">
+                      <img
+                        src={tier.image}
+                        alt={tier.imageAlt}
+                        style={{ objectPosition: tier.imagePosition }}
+                      />
+                    </figure>
                   </article>
                 );
               })}
@@ -305,8 +316,8 @@ export default function Home() {
               Soutenir le territoire. Préparer la suite.
             </h2>
             <p className="mission__lead">
-              Tous les bénéfices nets du tirage serviront à améliorer les
-              infrastructures et le territoire de l’Association Onatchiway.
+              Cent pour cent des bénéfices nets du tirage soutiennent la mission
+              de l’Association sportive Onatchiway Est inc.
             </p>
             <ul className="mission-list">
               <li>
@@ -389,12 +400,12 @@ export default function Home() {
             </div>
 
             <div className="platform-note">
-              <strong>À savoir avant le paiement</strong>
+              <strong>Achat et sécurité</strong>
               <p>
-                La plateforme de billetterie peut ajouter un don optionnel pour
-                son fonctionnement. Vous pourrez le modifier ou le ramener à 0 $
-                avant de payer. Aucun reçu fiscal n’est remis pour l’achat d’un
-                billet.
+                Chaque billet électronique avec numéro unique sera transmis par
+                courriel après l’achat sur {contestConfig.ticketingPlatform}.
+                Les transactions y sont chiffrées et aucune donnée bancaire
+                n’est conservée par l’association.
               </p>
             </div>
           </div>
@@ -407,11 +418,21 @@ export default function Home() {
                 <span className="section-label">Transparence</span>
                 <h2 id="rules-title">Règlement complet</h2>
               </div>
-              <p>
-                Cette version Web reprend les 24 articles du règlement. La
-                valeur cumulative du palier 5 est corrigée à 4 040,68 $,
-                conformément à la somme des prix et au total maximal déclaré.
-              </p>
+              <div className="rules-heading-copy">
+                <p>
+                  Cette version Web reprend les 31 articles du règlement
+                  officiel révisé le 24 août 2026, incluant les valeurs
+                  maintenant confirmées des sept paliers.
+                </p>
+                <a
+                  className="rules-download"
+                  href="/demoOnatchiway/reglement-officiel-appel-onatchiway.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Consulter le PDF officiel <span aria-hidden="true">↗</span>
+                </a>
+              </div>
             </div>
 
             <div className="rules-list">
@@ -432,8 +453,8 @@ export default function Home() {
             </div>
 
             <p className="rules-note">
-              Le PDF source n’est pas offert en téléchargement tant que sa
-              correction arithmétique n’a pas été officialisée.
+              Version officielle révisée le 24 août 2026. En cas de divergence,
+              le document PDF officiel prévaut sur cette présentation Web.
             </p>
           </div>
         </section>

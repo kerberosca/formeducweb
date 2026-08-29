@@ -4,8 +4,12 @@ export type PrizeTier = {
   maxTickets: number;
   name: string;
   shortName: string;
+  description: string;
   addedValue: number;
   cumulativeValue: number;
+  image: string;
+  imageAlt: string;
+  imagePosition: string;
 };
 
 export type ContestConfig = {
@@ -16,6 +20,7 @@ export type ContestConfig = {
   maxTickets: number;
   soldTickets: number;
   ticketingUrl: string;
+  ticketingPlatform: string;
   salesClose: string;
   drawDate: string;
   racjLicense: string;
@@ -38,19 +43,20 @@ export type OfficialRule = {
 
 export const contestConfig: ContestConfig = {
   name: "L'Appel d'Onatchiway",
-  organizer: "Association Onatchiway",
+  organizer: "Association sportive Onatchiway Est inc.",
   collaborator: "Jason Tremblay Morneau (La bête de chasse)",
   ticketPrice: 10,
   maxTickets: 10_000,
   // Modifier uniquement cette valeur pour actualiser toute la progression du site.
   soldTickets: 0,
-  // Ajouter ici l'adresse complète de la billetterie lorsqu'elle sera disponible.
-  ticketingUrl: "",
+  // Adresse officielle de la campagne de billetterie.
+  ticketingUrl: "https://tirage.moitiemoitie.com/901",
+  ticketingPlatform: "moitiermoitier.com",
   salesClose: "2026-10-18T23:55:00-04:00",
   drawDate: "2026-10-19T17:00:00-04:00",
-  // Ces identifiants restent invisibles tant qu'ils ne sont pas confirmés.
+  // La licence RACJ demeure invisible tant que son numéro n'est pas confirmé.
   racjLicense: "",
-  neq: "",
+  neq: "114 207 3668",
   contact: {
     address: "2496, rue Dubose",
     city: "Jonquière (Québec) G7S 1B4",
@@ -68,35 +74,55 @@ export const prizeTiers: PrizeTier[] = [
     maxTickets: 999,
     name: "L'ensemble « La bête de chasse »",
     shortName: "La bête de chasse",
+    description:
+      "Sélection officielle de Jason Tremblay Morneau réunissant formation et vêtements de chasse.",
     addedValue: 880.62,
-    cumulativeValue: 880.62
+    cumulativeValue: 880.62,
+    image: "/demoOnatchiway/prix-palier-1.png",
+    imageAlt: "Manteau et pantalon de chasse de la collection J.T. Moose",
+    imagePosition: "center"
   },
   {
     level: 2,
     minTickets: 1_000,
     maxTickets: 1_499,
-    name: "Le système « Zone T3 orignal pro »",
-    shortName: "Zone T3 orignal pro",
+    name: "Le système « Traîneau à orignal pro » de Zone T3",
+    shortName: "Traîneau à orignal pro",
+    description:
+      "Un système conçu pour faciliter l'évacuation forestière d'un orignal en terrain difficile.",
     addedValue: 551.87,
-    cumulativeValue: 1_432.49
+    cumulativeValue: 1_432.49,
+    image: "/demoOnatchiway/prix-palier-2.png",
+    imageAlt: "Système orange Traîneau à orignal pro de Zone T3",
+    imagePosition: "center"
   },
   {
     level: 3,
     minTickets: 1_500,
     maxTickets: 1_999,
-    name: "Le quadricoptère Mini 3 de DJI, télécommande et écran intégré",
+    name: "Le quadricoptère Mini 3 de DJI avec télécommande intelligente",
     shortName: "DJI Mini 3",
+    description:
+      "Ensemble avec télécommande et écran HD intégré pour voir le vol sans téléphone.",
     addedValue: 793.38,
-    cumulativeValue: 2_225.87
+    cumulativeValue: 2_225.87,
+    image: "/demoOnatchiway/prix-palier-3.png",
+    imageAlt: "Drone DJI Mini 3 avec télécommande et accessoires",
+    imagePosition: "center"
   },
   {
     level: 4,
     minTickets: 2_000,
     maxTickets: 2_499,
-    name: "La montre intelligente Garmin Instinct 3 Solar Tactical de 50 mm - Noir",
+    name: "La montre Garmin Instinct 3 Solar Tactical de 50 mm",
     shortName: "Garmin Instinct 3",
+    description:
+      "Montre intelligente multisport Bluetooth à recharge solaire, boîtier robuste et fini noir.",
     addedValue: 804.81,
-    cumulativeValue: 3_030.68
+    cumulativeValue: 3_030.68,
+    image: "/demoOnatchiway/prix-palier-4.png",
+    imageAlt: "Montre noire Garmin Instinct 3 Solar Tactical",
+    imagePosition: "center"
   },
   {
     level: 5,
@@ -104,8 +130,13 @@ export const prizeTiers: PrizeTier[] = [
     maxTickets: 2_999,
     name: "La scie à chaîne STIHL MS 271 et accessoires",
     shortName: "STIHL MS 271",
-    addedValue: 1_010,
-    cumulativeValue: 4_040.68
+    description:
+      "Modèle avec guide-chaîne de 16 po et sélection d'accessoires pour compléter l'ensemble.",
+    addedValue: 1_007.83,
+    cumulativeValue: 4_038.51,
+    image: "/demoOnatchiway/prix-palier-5.png",
+    imageAlt: "Scie à chaîne STIHL MS 271 avec guide-chaîne",
+    imagePosition: "center"
   },
   {
     level: 6,
@@ -113,8 +144,14 @@ export const prizeTiers: PrizeTier[] = [
     maxTickets: 3_999,
     name: "Le treuil à essence Portable Winch PCW3000-A",
     shortName: "Portable Winch PCW3000-A",
+    description:
+      "Ensemble de treuil portatif à essence avec moteur Honda et accessoires de traction.",
     addedValue: 1_943.02,
-    cumulativeValue: 5_983.7
+    cumulativeValue: 5_981.53,
+    image: "/demoOnatchiway/prix-palier-6.png",
+    imageAlt:
+      "Treuil portatif à essence Portable Winch PCW3000-A et accessoires",
+    imagePosition: "center"
   },
   {
     level: 7,
@@ -122,8 +159,13 @@ export const prizeTiers: PrizeTier[] = [
     maxTickets: 10_000,
     name: "L'ensemble débroussailleuse STIHL FS 460 C-EM K et harnais ADVANCE X-Treem",
     shortName: "STIHL FS 460 + harnais",
-    addedValue: 2_184.5,
-    cumulativeValue: 8_168.2
+    description:
+      "Débroussailleuse professionnelle accompagnée du harnais ergonomique ADVANCE X-Treem.",
+    addedValue: 2_104.02,
+    cumulativeValue: 8_085.55,
+    image: "/demoOnatchiway/prix-palier-7.png",
+    imageAlt: "Débroussailleuse STIHL FS 460 C-EM K",
+    imagePosition: "center"
   }
 ];
 
@@ -179,170 +221,221 @@ export const officialRules: OfficialRule[] = [
     number: 1,
     title: "Émission et prix des billets",
     paragraphs: [
-      "L'émission maximale absolue est strictement limitée à 10 000 billets électroniques. La valeur nominale et le prix d'achat de chaque billet unique demeurent fixes à 10,00 $ CAD, toutes taxes incluses, pendant toute la durée de l'activité."
+      "L'émission maximale absolue est strictement limitée à 10 000 billets électroniques. Le prix d'achat de chaque billet unique demeure fixe à 10,00 $ CAD, toutes taxes incluses, pendant toute la durée de l'activité. La vente est libre sans limite d'achat par personne. Aucun frais additionnel n'est exigé hormis le prix du billet."
     ]
   },
   {
     number: 2,
-    title: "Structure progressive par paliers",
+    title: "Méthode d'évaluation légale des lots",
     paragraphs: [
-      "Le tirage comporte une structure de prix cumulative et progressive à gagnant unique, déterminée exclusivement par le nombre total de billets admissibles vendus à la date et à l'heure de clôture. Un seul billet sera pigé pour remporter l'intégralité du lot accumulé.",
-      "Palier 1 (1 à 999 billets) - garanti : ensemble « La bête de chasse », valeur de 880,62 $. Palier 2 (1 000 à 1 499) : ajout du système « Zone T3 orignal pro », total de 1 432,49 $. Palier 3 (1 500 à 1 999) : ajout du quadricoptère Mini 3 de DJI, total de 2 225,87 $. Palier 4 (2 000 à 2 499) : ajout de la montre Garmin Instinct 3 Solar Tactical, total de 3 030,68 $.",
-      "Palier 5 (2 500 à 2 999) : ajout de la scie à chaîne STIHL MS 271 et accessoires, total corrigé de 4 040,68 $. Palier 6 (3 000 à 3 999) : ajout du treuil Portable Winch PCW3000-A, total de 5 983,70 $. Palier 7 (4 000 à 10 000) : ajout de l'ensemble débroussailleuse STIHL FS 460 C-EM K et harnais ADVANCE X-Treem, valeur totale maximale de 8 168,20 $."
+      "Toutes les valeurs marchandes déclarées ont été établies d'après les prix de détail suggérés par les fabricants sur leurs sites Web officiels canadiens, taxes incluses."
     ]
   },
   {
     number: 3,
-    title: "Clôture définitive des ventes",
+    title: "Structure progressive par paliers",
     paragraphs: [
-      "La vente des billets se terminera de manière absolue le dimanche 18 octobre 2026 à 23 h 55. Aucun billet ne pourra être émis ou vendu après cette échéance."
+      "Le tirage comporte une structure de prix cumulative et progressive. Un seul et unique billet sera pigé au sort. Le détenteur de ce billet remporte l'intégralité des prix déverrouillés selon le palier officiellement atteint à la clôture de la vente.",
+      "Palier 1 (1 à 999 billets), garanti : ensemble « La bête de chasse », total de 880,62 $. Palier 2 (1 000 à 1 499) : ajout du système « Zone T3 orignal pro », total de 1 432,49 $. Palier 3 (1 500 à 1 999) : ajout du DJI Mini 3, total de 2 225,87 $. Palier 4 (2 000 à 2 499) : ajout de la Garmin Instinct 3 Solar Tactical, total de 3 030,68 $.",
+      "Palier 5 (2 500 à 2 999) : ajout de la STIHL MS 271 et accessoires, total de 4 038,51 $. Palier 6 (3 000 à 3 999) : ajout du Portable Winch PCW3000-A, total de 5 981,53 $. Palier 7 (4 000 à 10 000) : ajout de la débroussailleuse STIHL FS 460 C-EM K et du harnais ADVANCE X-Treem, valeur totale maximale de 8 085,55 $.",
+      "Les participants pourront vérifier le palier atteint en temps réel sur la page d'achat officielle moitiermoitier.com, sur la page Web officielle du tirage et sur la page Facebook de la ZEC Onatchiway."
     ]
   },
   {
     number: 4,
-    title: "Date, heure et lieu du tirage",
+    title: "Géographie et âge",
     paragraphs: [
-      "Le tirage aura lieu le lundi 19 octobre 2026 à 17 h, au bureau de l'Association Onatchiway, au moyen d'un algorithme de tirage électronique certifié qui sélectionnera au hasard un numéro unique parmi les billets officiellement vendus."
+      "La participation est réservée aux résidents de la province de Québec âgés de 18 ans et plus à la date de la transaction."
     ]
   },
   {
     number: 5,
-    title: "Transparence et témoins",
+    title: "Preuve d'identité officielle obligatoire",
     paragraphs: [
-      "L'exécution de la pige électronique s'effectuera publiquement, en direct sur les réseaux sociaux officiels de l'organisme, devant au moins trois témoins officiels qui signeront le procès-verbal du tirage."
+      "Le gagnant devra fournir une preuve d'identité officielle valide avec photo, comme un permis de conduire ou une carte d'assurance-maladie, afin de confirmer sa majorité et sa résidence."
     ]
   },
   {
     number: 6,
-    title: "Gagnant unique",
+    title: "Exclusion des organisateurs",
     paragraphs: [
-      "Un seul billet sera pigé. Son détenteur remportera l'ensemble des prix déverrouillés selon le palier atteint à la clôture. Les billets non vendus sont exclus de la pige."
+      "Les employés, les administrateurs de l'association et les personnes résidant sous le même toit sont exclus."
     ]
   },
   {
     number: 7,
-    title: "Paliers non atteints",
+    title: "Processus d'émission",
     paragraphs: [
-      "Les prix associés aux paliers supérieurs non débloqués ne seront pas tirés et demeureront la propriété exclusive de l'Association Onatchiway."
+      "Chaque billet électronique portant un numéro unique est transmis automatiquement par courriel après l'achat."
     ]
   },
   {
     number: 8,
-    title: "Nature des lots",
+    title: "Cybersécurité",
     paragraphs: [
-      "Tous les prix décernés sont strictement non échangeables, non transférables et non monnayables."
+      "La transaction est chiffrée par la plateforme moitiermoitier.com. Aucune donnée bancaire n'est conservée par l'association."
     ]
   },
   {
     number: 9,
-    title: "Délai de réclamation",
+    title: "Conformité à la Loi 25",
     paragraphs: [
-      "Le gagnant doit communiquer avec le bureau de l'Association Onatchiway et présenter le billet électronique officiel reçu lors de l'achat. Il dispose de 60 jours après le tirage, soit jusqu'au vendredi 18 décembre 2026 inclusivement, pour réclamer ses prix."
+      "La plateforme d'émission utilisée, moitiermoitier.com, traite les renseignements personnels conformément aux exigences québécoises applicables en matière de protection des renseignements personnels."
     ]
   },
   {
     number: 10,
-    title: "Disqualification et gagnant substitut",
+    title: "Clôture définitive des ventes",
     paragraphs: [
-      "Si le gagnant ne peut être joint, ne réclame pas ses prix dans le délai prescrit ou s'avère inadmissible, une nouvelle pige électronique sera effectuée selon les mêmes modalités afin de désigner un gagnant substitut unique."
+      "La vente des billets se termine le dimanche 18 octobre 2026 à 23 h 55, heure du Québec."
     ]
   },
   {
     number: 11,
-    title: "Vocation des fonds",
+    title: "Date, heure et lieu du tirage",
     paragraphs: [
-      "L'intégralité des bénéfices nets de la vente des billets sera affectée à la mission communautaire de l'organisme, soit l'amélioration des infrastructures et du territoire de l'Association Onatchiway."
+      "Le tirage aura lieu le lundi 19 octobre 2026 à 17 h au bureau de l'association, au moyen d'un algorithme certifié."
     ]
   },
   {
     number: 12,
-    title: "Exclusion des organisateurs",
+    title: "Transparence et témoins",
     paragraphs: [
-      "Les employés réguliers et contractuels, les membres du conseil d'administration en fonction ainsi que les personnes résidant sous le même toit ne peuvent acheter de billets ni réclamer un prix."
+      "Le tirage s'effectuera publiquement en direct sur les réseaux sociaux devant un minimum de trois témoins."
     ]
   },
   {
     number: 13,
-    title: "Autorisation de publication",
+    title: "Procès-verbal",
     paragraphs: [
-      "En participant, le gagnant consent à la publication de son nom complet, de sa municipalité de résidence et de son image photographique par l'Association Onatchiway à des fins promotionnelles gratuites."
+      "Un document détaillé consignera la date, l'heure, le nombre de billets vendus, le numéro du gagnant et l'identité des témoins."
     ]
   },
   {
     number: 14,
-    title: "Force majeure",
+    title: "Principe du gagnant unique",
     paragraphs: [
-      "En cas de force majeure ou de panne technologique majeure, l'Association Onatchiway pourra reporter le tirage uniquement après avoir obtenu l'autorisation écrite préalable de la RACJ."
+      "Un seul billet sera pigé pour l'ensemble du lot accumulé. Les billets invendus sont exclus de la pige."
     ]
   },
   {
     number: 15,
-    title: "Règlement des différends",
+    title: "Paliers non atteints et déblocage des lots",
     paragraphs: [
-      "Tout différend relatif à l'organisation, à la conduite ou à l'attribution des prix sera soumis à l'arbitrage de la Régie des alcools, des courses et des jeux du Québec, dont la décision est finale et sans appel."
+      "Le déverrouillage est déterminé exclusivement par le nombre total de billets vendus. Les articles rattachés aux paliers non débloqués sont exclus du tirage et demeurent la propriété de l'association.",
+      "Exemple : si la vente se termine avec 1 200 billets vendus, le gagnant remporte les prix cumulés des paliers 1 et 2. Les lots des paliers 3 à 7 ne sont pas mis en jeu."
     ]
   },
   {
     number: 16,
-    title: "Lois applicables et non-remboursement",
+    title: "Nature des lots",
     paragraphs: [
-      "Le tirage est régi par le Code criminel canadien et la Loi sur les loteries du Québec. Aucune annulation ni aucun remboursement ne sera accepté après l'émission du reçu électronique. Toute transaction frauduleuse entraînera l'annulation du billet associé."
+      "Les lots sont strictement non échangeables, non transférables et non monnayables."
     ]
   },
   {
     number: 17,
-    title: "Conservation des registres et audit",
+    title: "Délai de réclamation",
     paragraphs: [
-      "L'Association Onatchiway conservera les données informatiques, les listes de transactions financières et les procès-verbaux de tirage pendant au moins trois ans après le tirage et les mettra à la disposition des inspecteurs de la RACJ sur demande."
+      "Le gagnant dispose de 60 jours suivant le tirage, soit jusqu'au vendredi 18 décembre 2026 inclusivement, pour réclamer son prix."
     ]
   },
   {
     number: 18,
-    title: "Renseignements personnels et cybersécurité",
+    title: "Disqualification",
     paragraphs: [
-      "Les renseignements personnels recueillis lors de l'achat seront traités de manière confidentielle et sécurisée conformément aux lois québécoises applicables. La plateforme transactionnelle doit chiffrer les données bancaires et aucune information de carte de crédit ne sera conservée par l'organisme."
+      "Si le gagnant est injoignable ou inadmissible, une nouvelle pige électronique sera effectuée afin de désigner un gagnant substitut unique."
     ]
   },
   {
     number: 19,
-    title: "Disponibilité et substitution des prix",
+    title: "Vocation des fonds",
     paragraphs: [
-      "Si l'un des prix annoncés n'est plus disponible, est en rupture de stock ou cesse d'être fabriqué, le gagnant recevra un prix similaire de modèle équivalent ou supérieur et d'une valeur marchande égale ou supérieure."
+      "Cent pour cent des bénéfices nets soutiennent la mission de l'Association sportive Onatchiway Est inc."
     ]
   },
   {
     number: 20,
-    title: "Plateforme de vente",
+    title: "Autorisation de publication",
     paragraphs: [
-      "La plateforme transactionnelle utilisée est gratuite pour l'organisme et lui reverse 100 % du montant des billets. Un don optionnel destiné au fonctionnement de la plateforme peut être ajouté par défaut; l'acheteur peut le modifier ou le ramener à 0 $ avant le paiement."
+      "Le gagnant consent à la publication de son nom, de sa municipalité et de son image à des fins promotionnelles gratuites."
     ]
   },
   {
     number: 21,
-    title: "Note fiscale",
+    title: "Force majeure et interruption technologique",
     paragraphs: [
-      "L'achat de billets de tirage ne donne pas droit à un reçu pour don déductible d'impôt."
+      "En cas de force majeure, l'association peut reporter le tirage sous réserve d'une autorisation préalable de la RACJ."
     ]
   },
   {
     number: 22,
-    title: "Limitation de responsabilité civile",
+    title: "Droit de contrôle gouvernemental",
     paragraphs: [
-      "La responsabilité civile de l'organisme ou des organisateurs envers un participant ne pourra excéder le prix d'achat réel du billet admissible payé par ce dernier, soit 10,00 $ CAD."
+      "La RACJ peut procéder à toute inspection ou à tout audit à tout moment durant l'activité."
     ]
   },
   {
     number: 23,
-    title: "Dysfonctionnements techniques",
+    title: "Limitation réglementaire de responsabilité",
     paragraphs: [
-      "L'organisme ne peut être tenu responsable des défaillances informatiques, bogues de serveurs, interruptions de réseau, pannes de transmission, cyberattaques de tiers ou blocages administratifs imposés par les plateformes de diffusion ou de billetterie qui échappent à son contrôle raisonnable."
+      "La RACJ n'assume aucune responsabilité quant à l'organisation ou à la conduite du tirage."
     ]
   },
   {
     number: 24,
+    title: "Mécanisme de gestion des plaintes",
+    paragraphs: [
+      "Toute plainte doit d'abord être adressée par écrit au conseil d'administration de l'association. Si le différend persiste, il sera soumis à l'arbitrage final de la RACJ."
+    ]
+  },
+  {
+    number: 25,
+    title: "Lois applicables et non-remboursement",
+    paragraphs: [
+      "Le tirage est régi par le Code criminel canadien et la Loi sur les loteries du Québec. Aucun remboursement n'est accordé après l'émission du reçu électronique. Toute fraude annule le billet associé."
+    ]
+  },
+  {
+    number: 26,
+    title: "Conservation des registres et audit",
+    paragraphs: [
+      "Les données et les procès-verbaux seront conservés pendant trois ans pour les inspecteurs de la RACJ."
+    ]
+  },
+  {
+    number: 27,
+    title: "Disponibilité et substitution",
+    paragraphs: [
+      "En cas de rupture de stock, un lot peut être remplacé par un lot de valeur équivalente ou supérieure."
+    ]
+  },
+  {
+    number: 28,
+    title: "Limitation de responsabilité civile",
+    paragraphs: [
+      "La responsabilité civile ne pourra excéder le prix d'achat réel du billet admissible, soit 10,00 $ CAD."
+    ]
+  },
+  {
+    number: 29,
+    title: "Dysfonctionnements techniques",
+    paragraphs: [
+      "L'organisme n'est pas responsable des pannes de serveurs ou de réseau hors de son contrôle, notamment celles de moitiermoitier.com ou de Facebook."
+    ]
+  },
+  {
+    number: 30,
+    title: "Procédure en cas d'erreur système",
+    paragraphs: [
+      "En cas d'erreur d'émission, l'association peut annuler et remplacer le billet concerné."
+    ]
+  },
+  {
+    number: 31,
     title: "Fin de responsabilité et garanties",
     paragraphs: [
-      "Dès la livraison et la prise de possession des prix, l'organisme est libéré de toute responsabilité future liée à leur utilisation, leur fonctionnement, leurs vices cachés ou aux accidents qui pourraient en découler. Le gagnant accepte les prix tels quels et doit se référer aux garanties des manufacturiers d'origine."
+      "Dès la prise de possession officielle des prix, l'organisme est libéré de toute obligation. Le gagnant accepte les prix tels quels et bénéficie des garanties offertes par les manufacturiers."
     ]
   }
 ];
