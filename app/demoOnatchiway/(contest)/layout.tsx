@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "L’Appel d’Onatchiway | Grand tirage progressif",
   description:
-    "Un seul gagnant remportera jusqu’à 8 168,20 $ d’équipements. Chaque billet soutient directement le territoire de l’Association Onatchiway.",
+    "Un seul gagnant remportera jusqu’à 8 085,55 $ d’équipements. Chaque billet soutient directement le territoire de l’Association sportive Onatchiway Est inc.",
   alternates: { canonical: "/demoOnatchiway" },
   robots: { index: false, follow: false, noarchive: true },
   openGraph: {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     siteName: "Zec Onatchiway",
     title: "L’Appel d’Onatchiway",
     description:
-      "Un billet à 10 $. Un seul gagnant. Jusqu’à 8 168,20 $ en équipements.",
+      "Un billet à 10 $. Un seul gagnant. Jusqu’à 8 085,55 $ en équipements.",
     images: [
       {
         url: "/demoOnatchiway/og.png",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "L’Appel d’Onatchiway",
     description:
-      "Un billet à 10 $. Un seul gagnant. Jusqu’à 8 168,20 $ en équipements.",
+      "Un billet à 10 $. Un seul gagnant. Jusqu’à 8 085,55 $ en équipements.",
     images: ["/demoOnatchiway/og.png"]
   }
 };
