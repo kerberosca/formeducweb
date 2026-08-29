@@ -6,8 +6,9 @@ import {
   officialRules,
   prizeTiers
 } from "../contest";
-import { Countdown, TicketButton } from "../interactive";
+import { Countdown, LiveTicketRefresh, TicketButton } from "../interactive";
 import { PartnerBanner } from "../partner-banner";
+import { getLiveSoldTickets } from "../ticket-sales";
 
 const currency = new Intl.NumberFormat("fr-CA", {
   style: "currency",
@@ -17,8 +18,8 @@ const currency = new Intl.NumberFormat("fr-CA", {
 
 const number = new Intl.NumberFormat("fr-CA");
 
-export default function Home() {
-  const contest = getContestState(contestConfig.soldTickets);
+export default async function Home() {
+  const contest = getContestState(await getLiveSoldTickets());
   const maxPrizeValue = prizeTiers.at(-1)?.cumulativeValue ?? 0;
   const ticketButtonProps = {
     salesClose: contestConfig.salesClose,
@@ -33,6 +34,7 @@ export default function Home() {
 
   return (
     <>
+      <LiveTicketRefresh intervalMs={contestConfig.ticketSalesRefreshMs} />
       <a className="skip-link" href="#contenu">
         Aller au contenu
       </a>
@@ -170,8 +172,9 @@ export default function Home() {
                 </h2>
               </div>
               <p>
-                Le compteur est mis à jour manuellement par l’équipe de la ZEC.
-                Tous les prix débloqués vont au même gagnant.
+                Le compteur est synchronisé avec la billetterie officielle
+                toutes les cinq minutes. Tous les prix débloqués vont au même
+                gagnant.
               </p>
             </div>
 
@@ -204,9 +207,12 @@ export default function Home() {
                 />
                 {prizeTiers.slice(1).map((tier) => (
                   <span
-                    className={`progress-track__marker${
-                      contest.soldTickets >= tier.minTickets ? "is-reached" : ""
-                    }`}
+                    className={[
+                      "progress-track__marker",
+                      contest.soldTickets >= tier.minTickets && "is-reached"
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                     key={tier.level}
                     style={{
                       left: `${(tier.minTickets / contestConfig.maxTickets) * 100}%`
@@ -249,9 +255,14 @@ export default function Home() {
                 const current = contest.currentTier.level === tier.level;
                 return (
                   <article
-                    className={`prize-card${unlocked ? "is-unlocked" : ""}${
-                      current ? "is-current" : ""
-                    }`}
+                    className={[
+                      "prize-card",
+                      tier.level === 1 && "prize-card--featured",
+                      unlocked && "is-unlocked",
+                      current && "is-current"
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                     key={tier.level}
                   >
                     <div className="prize-card__number">

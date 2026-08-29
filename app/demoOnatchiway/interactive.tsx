@@ -1,12 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type TicketButtonProps = {
   compact?: boolean;
   salesClose: string;
   ticketingUrl: string;
 };
+
+export function LiveTicketRefresh({ intervalMs }: { intervalMs: number }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === "visible") router.refresh();
+    };
+    const timer = window.setInterval(refresh, intervalMs);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") router.refresh();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [intervalMs, router]);
+
+  return null;
+}
 
 function getCountdown(deadline: string, now: Date) {
   const remaining = Math.max(0, Date.parse(deadline) - now.getTime());
@@ -63,7 +86,7 @@ export function TicketButton({
   if (state === "active") {
     return (
       <a
-        className={`ticket-button${compact ? " ticket-button--compact" : ""}`}
+        className={`ticket-button${compact ? "ticket-button--compact" : ""}`}
         href={ticketingUrl}
         target="_blank"
         rel="noreferrer"
@@ -76,7 +99,7 @@ export function TicketButton({
 
   return (
     <button
-      className={`ticket-button ticket-button--disabled${compact ? " ticket-button--compact" : ""}`}
+      className={`ticket-button ticket-button--disabled${compact ? "ticket-button--compact" : ""}`}
       type="button"
       disabled
     >

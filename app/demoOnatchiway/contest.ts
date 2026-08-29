@@ -21,6 +21,8 @@ export type ContestConfig = {
   soldTickets: number;
   ticketingUrl: string;
   ticketingPlatform: string;
+  ticketingStatsUrl: string;
+  ticketSalesRefreshMs: number;
   salesClose: string;
   drawDate: string;
   racjLicense: string;
@@ -51,7 +53,10 @@ export const contestConfig: ContestConfig = {
   soldTickets: 0,
   // Adresse officielle de la campagne de billetterie.
   ticketingUrl: "https://tirage.moitiemoitie.com/901",
-  ticketingPlatform: "moitiermoitier.com",
+  ticketingPlatform: "moitiemoitie.com",
+  ticketingStatsUrl:
+    "https://app.moitiemoitie.com/api/v1/public/raffle/901/transactions",
+  ticketSalesRefreshMs: 5 * 60 * 1_000,
   salesClose: "2026-10-18T23:55:00-04:00",
   drawDate: "2026-10-19T17:00:00-04:00",
   // La licence RACJ demeure invisible tant que son numéro n'est pas confirmé.

@@ -39,7 +39,7 @@ export default function ContestLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      <link rel="stylesheet" href="/demoOnatchiway/site.css" />
+      <link rel="stylesheet" href="/demoOnatchiway/site.css?v=20260829-ultra" />
       <div className="onatchiway-app">{children}</div>
     </>
   );

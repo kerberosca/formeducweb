@@ -36,6 +36,10 @@ describe("concours Onatchiway", () => {
     expect(contestConfig.ticketingUrl).toBe(
       "https://tirage.moitiemoitie.com/901"
     );
+    expect(contestConfig.ticketSalesRefreshMs).toBe(5 * 60 * 1_000);
+    expect(contestConfig.ticketingStatsUrl).toContain(
+      "/api/v1/public/raffle/901/transactions"
+    );
     expect(contestConfig.neq).toBe("114 207 3668");
   });
 
