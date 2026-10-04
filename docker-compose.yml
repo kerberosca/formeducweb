@@ -31,6 +31,9 @@ services:
     image: formeducweb_app:latest
     container_name: formeducweb_email_jobs
     restart: unless-stopped
+    mem_limit: 128m
+    memswap_limit: 192m
+    pids_limit: 64
     depends_on:
       - formeducweb
     environment:
