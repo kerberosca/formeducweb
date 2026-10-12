@@ -2,16 +2,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { areTrustedProxyHeadersEnabled } from "@/lib/client-ip";
-import {
-  DEMO_ONATCHIWAY_COOKIE_NAME,
-  DEMO_ONATCHIWAY_PATH,
-  verifyDemoOnatchiwaySessionToken
-} from "@/lib/demo-onatchiway-session";
 
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1", "::1"]);
 const PUBLIC_IMAGE_PATH = /\.(?:avif|gif|ico|jpe?g|png|svg|webp)$/i;
-const DEMO_ONATCHIWAY_ACCESS_PATH = `${DEMO_ONATCHIWAY_PATH}/acces`;
-const DEMO_ONATCHIWAY_PUBLIC_PREVIEW = `${DEMO_ONATCHIWAY_PATH}/apercu-prive.png`;
 
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Frame-Options": "DENY",
@@ -71,21 +64,6 @@ function isLocalHostname(request: NextRequest) {
   return LOCAL_HOSTNAMES.has(hostname);
 }
 
-function isDemoOnatchiwayPath(pathname: string) {
-  return (
-    pathname === DEMO_ONATCHIWAY_PATH ||
-    pathname.startsWith(`${DEMO_ONATCHIWAY_PATH}/`)
-  );
-}
-
-function isDemoOnatchiwayPublicPath(pathname: string) {
-  return (
-    pathname === DEMO_ONATCHIWAY_PUBLIC_PREVIEW ||
-    pathname === DEMO_ONATCHIWAY_ACCESS_PATH ||
-    pathname.startsWith(`${DEMO_ONATCHIWAY_ACCESS_PATH}/`)
-  );
-}
-
 function applySecurityHeaders(response: NextResponse) {
   Object.entries(SECURITY_HEADERS).forEach(([key, value]) => {
     response.headers.set(key, value);
@@ -98,16 +76,6 @@ function applyNoStoreHeaders(response: NextResponse) {
   });
 }
 
-function applyPrivateDemoHeaders(response: NextResponse) {
-  applySecurityHeaders(response);
-  applyNoStoreHeaders(response);
-  response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload"
-  );
-}
-
 export function proxy(request: NextRequest) {
   if (!isLocalHostname(request) && getRequestProtocol(request) !== "https") {
     const redirectUrl = request.nextUrl.clone();
@@ -116,42 +84,6 @@ export function proxy(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-
-  if (isDemoOnatchiwayPath(pathname)) {
-    if (isDemoOnatchiwayPublicPath(pathname)) {
-      const publicResponse = NextResponse.next();
-      applyPrivateDemoHeaders(publicResponse);
-      return publicResponse;
-    }
-
-    const token = request.cookies.get(DEMO_ONATCHIWAY_COOKIE_NAME)?.value;
-    const sessionSecret = process.env.DEMO_ONATCHIWAY_SESSION_SECRET ?? "";
-
-    if (verifyDemoOnatchiwaySessionToken(token, sessionSecret)) {
-      const authenticatedResponse = NextResponse.next();
-      applyPrivateDemoHeaders(authenticatedResponse);
-      return authenticatedResponse;
-    }
-
-    if (
-      (request.method === "GET" || request.method === "HEAD") &&
-      (pathname === DEMO_ONATCHIWAY_PATH ||
-        pathname === `${DEMO_ONATCHIWAY_PATH}/`)
-    ) {
-      const accessUrl = request.nextUrl.clone();
-      accessUrl.pathname = DEMO_ONATCHIWAY_ACCESS_PATH;
-      accessUrl.search = "";
-      const accessResponse = NextResponse.rewrite(accessUrl);
-      applyPrivateDemoHeaders(accessResponse);
-      return accessResponse;
-    }
-
-    const unauthorizedResponse = new NextResponse("Accès non autorisé.", {
-      status: 401
-    });
-    applyPrivateDemoHeaders(unauthorizedResponse);
-    return unauthorizedResponse;
-  }
 
   // L'optimiseur Next.js peut récupérer une image locale en HTTP interne.
   if (PUBLIC_IMAGE_PATH.test(pathname) && isLocalHostname(request)) {

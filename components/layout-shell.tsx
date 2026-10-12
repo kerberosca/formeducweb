@@ -1,18 +1,9 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { isHostedDemoPath } from "@/lib/hosted-demo-path";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
-  if (isHostedDemoPath(pathname)) {
-    return children;
-  }
-
   return (
     <>
       <a

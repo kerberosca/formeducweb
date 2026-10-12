@@ -10,7 +10,6 @@ import {
   readCookieConsent,
   type CookieConsentState
 } from "@/lib/cookie-consent";
-import { isHostedDemoPath } from "@/lib/hosted-demo-path";
 
 declare global {
   interface Window {
@@ -22,8 +21,7 @@ export function OptionalTrackers() {
   const trackerConfig = useMemo(() => getTrackerConfig(), []);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const hasTrackers =
-    Boolean(trackerConfig.gaMeasurementId) && !isHostedDemoPath(pathname);
+  const hasTrackers = Boolean(trackerConfig.gaMeasurementId);
   const [consent, setConsent] = useState<CookieConsentState | null>(null);
   const hasRouteTrackedInitialView = useRef(false);
 
